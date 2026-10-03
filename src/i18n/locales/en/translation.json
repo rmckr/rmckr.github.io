@@ -1,0 +1,125 @@
+{
+  "navCta": "Get in touch",
+  "hero": {
+    "tagline": "Computer science masters student. I build <highlight>small tools that scratch real itches</highlight> and <highlight>keep learning in public</highlight> — still figuring it out, one commit at a time.",
+    "location": "Ulm, Germany",
+    "status": "M.Sc. student @ HTWK Leipzig",
+    "avail": "Open to internships & working student roles",
+    "viewPortfolio": "View portfolio",
+    "github": "GitHub",
+    "scroll": "scroll"
+  },
+  "about": {
+    "label": "About",
+    "heading": "Student first. Builder always.",
+    "p1": "I'm Lukas — a computer science student based in Ulm. I completed my <highlight>dual-study bachelor's degree</highlight> at HTWK Leipzig (2022–2026), where I got to combine university coursework with real-world software development. Now I'm in my masters, digging deeper.",
+    "p2": "I'm drawn to <highlight>web development</highlight>, <highlight>tooling</highlight>, and the kind of projects that are just slightly too ambitious for the time I have — which is usually what makes them worth doing.",
+    "p3": "My GitHub isn't impressive yet. That's fine. I'm still early, and I'd rather be honest about that than pretend otherwise.",
+    "downloadCv": "Download CV"
+  },
+  "experience": {
+    "label": "Experience",
+    "heading": "From theory to practice."
+  },
+  "experienceLabel": "Education",
+  "github": {
+    "label": "GitHub",
+    "heading": "Open source activity.",
+    "loading": "Loading repositories…",
+    "error": "Could not load repositories.",
+    "retry": "Retry",
+    "viewProfile": "View profile",
+    "noDescription": "No description",
+    "followers": "followers",
+    "stats": {
+      "stars": "Stars",
+      "forks": "Forks",
+      "pullRequests": "Pull requests",
+      "issues": "Issues opened"
+    }
+  },
+  "skills.label": "Skills",
+  "skills.heading": "Technical stack.",
+  "educationLabel": "Education",
+  "otherAreasLabel": "Other areas",
+  "projectsLabel": "Projects",
+  "projectsHeading": "Selected work.",
+  "contactLabel": "Contact",
+  "contactHeading": "Say hello.",
+  "contactDesc": "I'm looking for <highlight>working student positions</highlight> or <highlight>internships</highlight> where I can contribute meaningfully and keep learning. If you're building something interesting and don't mind someone who asks a lot of questions — let's talk.",
+  "socialLinks": [
+    "GitHub",
+    "LinkedIn",
+    "Twitter / X",
+    "Blog"
+  ],
+  "footer": "© 2026 Lukas Romacker · Built by hand.",
+  "loadingRepos": "Loading repositories…",
+  "errorRepos": "Could not load repositories.",
+  "education": [
+    {
+      "degree": "M.Sc. Computer Science",
+      "note": "(ongoing)",
+      "school": "HTWK Leipzig",
+      "period": "2026 — present",
+      "desc": "Currently enrolled in the masters programme. Focusing on software engineering, distributed systems, and applied machine learning."
+    },
+    {
+      "degree": "B.Sc. Computer Science",
+      "note": "(dual studies)",
+      "school": "HTWK Leipzig",
+      "period": "2022 — 2026",
+      "desc": "Dual-study bachelor combining academic coursework with integrated practical training at a partner company."
+    }
+  ],
+  "otherAreas": [
+    "System design",
+    "API architecture",
+    "Web development",
+    "Code review",
+    "Technical writing",
+    "CI/CD",
+    "Observability",
+    "WebAssembly",
+    "Edge computing",
+    "Team collaboration"
+  ],
+  "projects": [
+    {
+      "num": "001",
+      "name": "flux-engine",
+      "type": "Open Source Library",
+      "year": "2025",
+      "desc": "A minimal reactive state primitive for TypeScript. Designed for composability — works with or without a framework. Ships at 3.1 kb gzipped.",
+      "tags": [
+        "TypeScript",
+        "State",
+        "OSS"
+      ]
+    },
+    {
+      "num": "002",
+      "name": "prism-ui",
+      "type": "Component Library",
+      "year": "2024",
+      "desc": "Unstyled, accessible React primitives. Full ARIA compliance, keyboard navigation, and zero-config dark mode.",
+      "tags": [
+        "React",
+        "Accessibility",
+        "OSS"
+      ]
+    },
+    {
+      "num": "003",
+      "name": "cortex-cli",
+      "type": "Developer Tool",
+      "year": "2024",
+      "desc": "Terminal toolkit for managing local dev environments with a unified config format and live diff view.",
+      "tags": [
+        "Go",
+        "CLI",
+        "DevOps"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "nav": [
+    "Über mich",
+    "GitHub",
+    "Skills",
+    "Projekte",
+    "Kontakt"
+  ],
+  "navCta": "Kontakt aufnehmen",
+  "hero.tagline": "Informatik-Masterstudent. Ich baue <highlight>kleine Tools für echte Probleme</highlight> und <highlight>lerne öffentlich</highlight> — noch am Herausfinden, ein Commit nach dem anderen.",
+  "hero.location": "Ulm, Deutschland",
+  "hero.status": "M.Sc.-Student @ HTWK Leipzig",
+  "hero.avail": "Offen für Praktika & Werkstudentenstellen",
+  "hero.viewPortfolio": "Portfolio ansehen",
+  "hero.github": "GitHub",
+  "scroll": "scrollen",
+  "about": {
+    "label": "Über mich",
+    "heading": "Erst Student. Immer Macher.",
+    "p1": "Ich bin Lukas — Informatikstudent aus Ulm. Ich habe meinen <highlight>dualen Bachelor</highlight> an der HTWK Leipzig (2022–2026) abgeschlossen, wo ich Studium und Berufspraxis kombiniert habe. Jetzt bin ich im Master und tauche tiefer ein.",
+    "p2": "Ich interessiere mich besonders für <highlight>Webentwicklung</highlight>, <highlight>Tooling</highlight> und Projekte, die etwas zu ambitioniert für die verfügbare Zeit sind — genau das macht sie interessant.",
+    "p3": "Mein GitHub ist noch nicht beeindruckend. Das ist okay. Ich bin am Anfang und ehrlich lieber als übertrieben.",
+    "downloadCv": "Lebenslauf herunterladen"
+  },
+  "experience": {
+    "label": "Erfahrung",
+    "heading": "Von Theorie bis Praxis."
+  },
+  "experienceLabel": "Ausbildung",
+  "github": {
+    "label": "GitHub",
+    "heading": "Open-Source-Aktivität.",
+    "loading": "Repositories werden geladen…",
+    "error": "Repositories konnten nicht geladen werden.",
+    "retry": "Erneut versuchen",
+    "viewProfile": "Profil ansehen",
+    "noDescription": "Keine Beschreibung",
+    "followers": "Follower",
+    "stats": {
+      "stars": "Sterne",
+      "forks": "Forks",
+      "pullRequests": "Pull Requests",
+      "issues": "Issues geöffnet"
+    }
+  },
+  "skills.label": "Skills",
+  "skills.heading": "Technischer Stack.",
+  "educationLabel": "Ausbildung",
+  "otherAreasLabel": "Weitere Bereiche",
+  "projectsLabel": "Projekte",
+  "projectsHeading": "Ausgewählte Arbeiten.",
+  "contactLabel": "Kontakt",
+  "contactHeading": "Hallo sagen.",
+  "contactDesc": "Ich suche nach <highlight>Werkstudentenstellen</highlight> oder <highlight>Praktika</highlight>, bei denen ich sinnvoll mitarbeiten und weiterlernen kann. Wenn du an etwas Interessantem arbeitest und jemanden nicht scheust, der viele Fragen stellt — lass uns reden.",
+  "socialLinks": [
+    "GitHub",
+    "LinkedIn",
+    "Twitter / X",
+    "Blog"
+  ],
+  "footer": "© 2026 Lukas Romacker · Von Hand gebaut.",
+  "loadingRepos": "Repositories werden geladen…",
+  "errorRepos": "Repositories konnten nicht geladen werden.",
+  "education": [
+    {
+      "degree": "M.Sc. Informatik",
+      "note": "(laufend)",
+      "school": "HTWK Leipzig",
+      "period": "2026 — heute",
+      "desc": "Aktuell eingeschrieben. Schwerpunkte: Software-Engineering, verteilte Systeme und angewandtes maschinelles Lernen."
+    },
+    {
+      "degree": "B.Sc. Informatik",
+      "note": "(duales Studium)",
+      "school": "HTWK Leipzig",
+      "period": "2022 — 2026",
+      "desc": "Duales Studium, das akademische Ausbildung mit integrierter Berufspraxis bei einem Partnerunternehmen verknüpfte."
+    }
+  ],
+  "otherAreas": [
+    "Systemdesign",
+    "API-Architektur",
+    "Webentwicklung",
+    "Code-Review",
+    "Technisches Schreiben",
+    "CI/CD",
+    "Observability",
+    "WebAssembly",
+    "Edge Computing",
+    "Teamarbeit"
+  ],
+  "projects": [
+    {
+      "num": "001",
+      "name": "flux-engine",
+      "type": "Open-Source-Bibliothek",
+      "year": "2025",
+      "desc": "Ein minimales reaktives State-Primitiv für TypeScript. Kompositionsfähig — funktioniert mit und ohne Framework. 3,1 kb gzipped.",
+      "tags": [
+        "TypeScript",
+        "State",
+        "OSS"
+      ]
+    },
+    {
+      "num": "002",
+      "name": "prism-ui",
+      "type": "Komponentenbibliothek",
+      "year": "2024",
+      "desc": "Unstyled, barrierefreie React-Primitive. Volle ARIA-Konformität, Tastaturnavigation und Zero-Config-Dark-Mode.",
+      "tags": [
+        "React",
+        "Barrierefreiheit",
+        "OSS"
+      ]
+    },
+    {
+      "num": "003",
+      "name": "cortex-cli",
+      "type": "Entwickler-Tool",
+      "year": "2024",
+      "desc": "Terminal-Toolkit zur Verwaltung lokaler Entwicklungsumgebungen mit einheitlichem Konfigurationsformat und Live-Diff-Ansicht.",
+      "tags": [
+        "Go",
+        "CLI",
+        "DevOps"
+      ]
+    }
+  ]
+}
