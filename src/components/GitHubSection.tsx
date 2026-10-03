@@ -1,17 +1,6 @@
-import SiGithub from '@icons-pack/react-simple-icons/icons/SiGithub'
-import {
-  ArrowUpRight,
-  ExternalLinkIcon,
-  FileExclamationPointIcon,
-  GitFork,
-  GitForkIcon,
-  GitPullRequestIcon,
-  MapPin,
-  Star,
-  StarIcon,
-  UserRoundGroupIcon
-} from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
+import { FaGithub } from 'react-icons/fa'
+import { LuExternalLink, LuFileWarning, LuGitFork, LuGitPullRequest, LuMapPin, LuStar, LuUsersRound } from 'react-icons/lu'
 import { GITHUB_USERNAME } from '../data'
 import type { GHRepo, GHUser } from '../data/github'
 import { useReveal } from '../hooks/useReveal'
@@ -283,7 +272,7 @@ export function GitHubSection() {
                         ) :
                         (
                           <div className={'w-12 h-12 rounded-full flex items-center justify-center bg-accent-dim text-accent shrink-0'}>
-                            <SiGithub size={22}/>
+                            <FaGithub size={22}/>
                           </div>
                         )}
 
@@ -307,14 +296,14 @@ export function GitHubSection() {
                     <div className={'flex flex-col gap-1'}>
                       {data.user.followers && (
                         <div className={'flex items-center gap-1.5 font-mono text-xs text-muted'}>
-                          <UserRoundGroupIcon size={10}/>
+                          <LuUsersRound size={10}/>
                           <span>{data.user.followers} {t('github.followers')}</span>
                         </div>
                       )}
 
                       {data.user.location && (
                         <div className={'flex items-center gap-1.5 font-mono text-xs text-muted'}>
-                          <MapPin size={10}/>
+                          <LuMapPin size={10}/>
                           <span>{data.user.location}</span>
                         </div>
                       )}
@@ -327,9 +316,9 @@ export function GitHubSection() {
                     rel={'noreferrer'}
                     className={'self-start btn-secondary'}
                   >
-                    <SiGithub size={12}/>
+                    <FaGithub size={12}/>
                     {t('github.viewProfile')}
-                    <ExternalLinkIcon size={10}/>
+                    <LuExternalLink size={10}/>
                   </a>
                 </div>
 
@@ -339,22 +328,22 @@ export function GitHubSection() {
                     {
                       label: t('github.stats.stars'),
                       value: data.totalStars.toLocaleString(),
-                      icon: StarIcon
+                      icon: LuStar
                     },
                     {
                       label: t('github.stats.forks'),
                       value: data.totalForks.toLocaleString(),
-                      icon: GitForkIcon
+                      icon: LuGitFork
                     },
                     {
                       label: t('github.stats.pullRequests'),
                       value: data.prCount.toLocaleString(),
-                      icon: GitPullRequestIcon
+                      icon: LuGitPullRequest
                     },
                     {
                       label: t('github.stats.issues'),
                       value: data.issueCount.toLocaleString(),
-                      icon: FileExclamationPointIcon
+                      icon: LuFileWarning
                     }
                   ].map((s) => (
                     <div key={s.label} className={'card p-4'}>
@@ -391,8 +380,8 @@ export function GitHubSection() {
                         <span className={'font-mono text-sm font-medium text-accent'}>
                           {repo.name}
                         </span>
-                        <ArrowUpRight
-                          size={13}
+                        <LuExternalLink
+                          size={12}
                           className={'opacity-30 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all mt-1'}
                         />
                       </div>
@@ -417,12 +406,12 @@ export function GitHubSection() {
                         )}
 
                         <span className={'flex items-center gap-1 font-mono text-xs text-muted'}>
-                          <Star size={10}/>
+                          <LuStar size={10}/>
                           {repo.stargazers_count}
                         </span>
 
                         <span className={'flex items-center gap-1 font-mono text-xs text-muted'}>
-                          <GitFork size={10}/>
+                          <LuGitFork size={10}/>
                           {repo.forks_count}
                         </span>
                       </div>

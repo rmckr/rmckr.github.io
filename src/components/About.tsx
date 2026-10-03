@@ -38,10 +38,7 @@ export function About() {
 
             {/* Text */}
             <div className={'w-full lg:w-2/3'}>
-              <div
-                className={'space-y-5 text-muted leading-relaxed'}
-                style={{ fontSize: '1.05rem' }}
-              >
+              <div className={'text-lg space-y-5 text-muted leading-relaxed'}>
                 <p>
                   <Trans
                     i18nKey={'about.p1'}

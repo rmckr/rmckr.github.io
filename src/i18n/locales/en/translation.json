@@ -1,31 +1,56 @@
 {
   "navCta": "Get in touch",
   "hero": {
-    "tagline": "Computer science masters student. I build <highlight>small tools that scratch real itches</highlight> and <highlight>keep learning in public</highlight> — still figuring it out, one commit at a time.",
+    "tagline": "Computer science student with experience in software development. I like building things, figuring out how they work, and learning along the way.",
     "location": "Ulm, Germany",
-    "status": "M.Sc. student @ HTWK Leipzig",
-    "avail": "Open to internships & working student roles",
+    "status": "M.Sc. Computer Science @ Ulm University",
+    "avail": "Open to working student positions",
     "viewPortfolio": "View portfolio",
     "github": "GitHub",
     "scroll": "scroll"
   },
   "about": {
     "label": "About",
-    "heading": "Student first. Builder always.",
-    "p1": "I'm Lukas — a computer science student based in Ulm. I completed my <highlight>dual-study bachelor's degree</highlight> at HTWK Leipzig (2022–2026), where I got to combine university coursework with real-world software development. Now I'm in my masters, digging deeper.",
-    "p2": "I'm drawn to <highlight>web development</highlight>, <highlight>tooling</highlight>, and the kind of projects that are just slightly too ambitious for the time I have — which is usually what makes them worth doing.",
-    "p3": "My GitHub isn't impressive yet. That's fine. I'm still early, and I'd rather be honest about that than pretend otherwise.",
+    "heading": "A bit about me.",
+    "p1": "I'm Lukas, a computer science student based in Ulm. I completed my B.Sc. in Computer Science at HTWK Leipzig in 2026 as part of a dual-study programme, combining university coursework with practical software development at T-Systems International GmbH.",
+    "p2": "During my time there, I worked on a large frontend project with Vue alongside a larger development team, as well as on a few smaller projects in different areas. Outside of university and work, I mostly build things because I find them interesting or want to understand how they work.",
+    "p3": "These days, I mostly work with TypeScript, JavaScript and Python. I'm particularly interested in full-stack development, with a focus on the frontend, but I also enjoy working with Node.js, Express and databases.",
     "downloadCv": "Download CV"
   },
   "experience": {
     "label": "Experience",
-    "heading": "From theory to practice."
+    "heading": "From theory to practice.",
+    "desc": "This timeline gives a quick overview of my academic background and the practical experience I've gained along the way. It starts with my current master's degree and goes back through my bachelor's degree and the practical work that was part of it.",
+    "entries": [
+      {
+        "title": "M.Sc. Computer Science",
+        "note": "(ongoing)",
+        "organisation": "Ulm University",
+        "period": "2026 — present",
+        "desc": "Currently studying Computer Science at Ulm University."
+      },
+      {
+        "title": "B.Sc. Computer Science",
+        "note": "(dual studies)",
+        "organisation": "HTWK Leipzig",
+        "period": "2022 — 2026",
+        "desc": "Completed a dual-study degree combining academic coursework with practical software development at T-Systems International GmbH. Worked primarily on a large Vue frontend project as part of a larger development team."
+      }
+    ]
   },
-  "experienceLabel": "Education",
+  "skills": {
+    "label": "Skills",
+    "heading": "Technical stack.",
+    "tiers": {
+      "basic": "Basic",
+      "proficient": "Proficient",
+      "advanced": "Advanced"
+    },
+    "all": "All"
+  },
   "github": {
     "label": "GitHub",
-    "heading": "Open source activity.",
-    "loading": "Loading repositories…",
+    "heading": "What I've been working on.",
     "error": "Could not load repositories.",
     "retry": "Retry",
     "viewProfile": "View profile",
@@ -38,88 +63,14 @@
       "issues": "Issues opened"
     }
   },
-  "skills.label": "Skills",
-  "skills.heading": "Technical stack.",
-  "educationLabel": "Education",
-  "otherAreasLabel": "Other areas",
-  "projectsLabel": "Projects",
-  "projectsHeading": "Selected work.",
-  "contactLabel": "Contact",
-  "contactHeading": "Say hello.",
-  "contactDesc": "I'm looking for <highlight>working student positions</highlight> or <highlight>internships</highlight> where I can contribute meaningfully and keep learning. If you're building something interesting and don't mind someone who asks a lot of questions — let's talk.",
-  "socialLinks": [
-    "GitHub",
-    "LinkedIn",
-    "Twitter / X",
-    "Blog"
-  ],
-  "footer": "© 2026 Lukas Romacker · Built by hand.",
-  "loadingRepos": "Loading repositories…",
-  "errorRepos": "Could not load repositories.",
-  "education": [
-    {
-      "degree": "M.Sc. Computer Science",
-      "note": "(ongoing)",
-      "school": "HTWK Leipzig",
-      "period": "2026 — present",
-      "desc": "Currently enrolled in the masters programme. Focusing on software engineering, distributed systems, and applied machine learning."
-    },
-    {
-      "degree": "B.Sc. Computer Science",
-      "note": "(dual studies)",
-      "school": "HTWK Leipzig",
-      "period": "2022 — 2026",
-      "desc": "Dual-study bachelor combining academic coursework with integrated practical training at a partner company."
-    }
-  ],
-  "otherAreas": [
-    "System design",
-    "API architecture",
-    "Web development",
-    "Code review",
-    "Technical writing",
-    "CI/CD",
-    "Observability",
-    "WebAssembly",
-    "Edge computing",
-    "Team collaboration"
-  ],
-  "projects": [
-    {
-      "num": "001",
-      "name": "flux-engine",
-      "type": "Open Source Library",
-      "year": "2025",
-      "desc": "A minimal reactive state primitive for TypeScript. Designed for composability — works with or without a framework. Ships at 3.1 kb gzipped.",
-      "tags": [
-        "TypeScript",
-        "State",
-        "OSS"
-      ]
-    },
-    {
-      "num": "002",
-      "name": "prism-ui",
-      "type": "Component Library",
-      "year": "2024",
-      "desc": "Unstyled, accessible React primitives. Full ARIA compliance, keyboard navigation, and zero-config dark mode.",
-      "tags": [
-        "React",
-        "Accessibility",
-        "OSS"
-      ]
-    },
-    {
-      "num": "003",
-      "name": "cortex-cli",
-      "type": "Developer Tool",
-      "year": "2024",
-      "desc": "Terminal toolkit for managing local dev environments with a unified config format and live diff view.",
-      "tags": [
-        "Go",
-        "CLI",
-        "DevOps"
-      ]
-    }
-  ]
+  "contact": {
+    "label": "Contact",
+    "heading": "Say hello.",
+    "desc": "I'm currently looking for a working student position where I can get more experience in software development and contribute to a real project. If you're looking for someone who enjoys learning, building things and getting into the details, feel free to get in touch."
+  },
+  "footer": {
+    "copyright": "© 2026 Lukas Romacker",
+    "builtWith": "Built with",
+    "and": "and"
+  }
 }

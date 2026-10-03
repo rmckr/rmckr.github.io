@@ -1,5 +1,5 @@
-import SiGithub from '@icons-pack/react-simple-icons/icons/SiGithub'
-import { BriefcaseIcon, ContactIcon, ExternalLinkIcon, MapPinIcon } from 'lucide-react'
+import { FaGithub } from 'react-icons/fa'
+import { LuBriefcase, LuContact, LuExternalLink, LuMapPin } from 'react-icons/lu'
 import { useEffect, useState } from 'react'
 import { Trans } from 'react-i18next'
 import { GITHUB_USERNAME } from '../data'
@@ -60,15 +60,15 @@ export function Hero() {
         {/* Meta row */}
         <div className={'hero-meta flex flex-wrap gap-6 mb-12 items-center font-mono text-xs text-muted'}>
           <span className={'flex items-center gap-2'}>
-            <MapPinIcon size={12} className={'text-accent'}/>
+            <LuMapPin size={12} className={'text-accent'}/>
             <span>{t('hero.location')}</span>
           </span>
           <span className={'flex items-center gap-2'}>
-            <BriefcaseIcon size={12} className={'text-accent'}/>
+            <LuBriefcase size={12} className={'text-accent'}/>
             <span>{t('hero.status')}</span>
           </span>
           <span className={'flex items-center gap-2'}>
-            <ContactIcon size={12} className={'text-accent'}/>
+            <LuContact size={12} className={'text-accent'}/>
             <span>{t('hero.avail')}</span>
           </span>
         </div>
@@ -84,9 +84,9 @@ export function Hero() {
             rel={'noreferrer'}
             className={'btn-secondary'}
           >
-            <SiGithub size={14}/>
+            <FaGithub size={14}/>
             {t('hero.github')}
-            <ExternalLinkIcon size={10}/>
+            <LuExternalLink size={10}/>
           </a>
         </div>
       </div>

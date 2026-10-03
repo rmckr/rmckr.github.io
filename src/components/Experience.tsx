@@ -6,7 +6,13 @@ import { SectionHeader } from './SectionHeader'
 
 // ── Timeline entry ────────────────────────────────────────────────────────────
 
-type ExperienceEntry = { degree: string, note: string, school: string, period: string, desc: string }
+type ExperienceEntry = {
+  title: string,
+  note: string,
+  organisation: string,
+  period: string,
+  desc: string
+}
 
 type TimelineEntryProps = {
   entry: ExperienceEntry,
@@ -64,11 +70,11 @@ function TimelineEntry({ entry, index, total }: TimelineEntryProps) {
       <div className={'pb-6'}>
         <p className={'font-mono text-xs text-muted mb-1'}>{entry.period}</p>
         <p className={'font-semibold text-foreground'}>
-          {entry.degree}
+          {entry.title}
           {' '}
           <span className={'font-normal text-muted text-sm'}>{entry.note}</span>
         </p>
-        <p className={'text-sm text-accent mt-0.5'}>{entry.school}</p>
+        <p className={'text-sm text-accent mt-0.5'}>{entry.organisation}</p>
         <p className={'text-sm text-muted leading-relaxed mt-1.5'}>{entry.desc}</p>
       </div>
     </div>
@@ -81,7 +87,7 @@ export function Experience() {
   const { t } = useTranslation()
   const ref = useReveal()
 
-  const education = t('education', { returnObjects: true }) as ExperienceEntry[]
+  const entries = t('experience.entries', { returnObjects: true }) as ExperienceEntry[]
 
   return (
     <section id={'experience'} className={'py-32'}>
@@ -92,26 +98,24 @@ export function Experience() {
           <div className={'lg:col-span-3'}>
             <SectionHeader label={t('experience.label')} heading={t('experience.heading')}/>
 
-            <div className={'space-y-5 text-muted leading-relaxed'}>
-              <p>
-                <Trans
-                  i18nKey={'experience.P1'}
-                  components={{ highlight: <span className={'text-foreground'}/> }}
-                />
-              </p>
-              <p>
-                <Trans
-                  i18nKey={'experience.P2'}
-                  components={{ highlight: <span className={'text-foreground'}/> }}
-                />
-              </p>
-              <p>{t('experience.P3')}</p>
-            </div>
+            <p className={'space-y-5 text-muted leading-relaxed'}>
+              <Trans
+                i18nKey={'experience.desc'}
+                components={{ highlight: <span className={'text-foreground'}/> }}
+              />
+            </p>
           </div>
 
           {/* Right — education timeline */}
           <div className={'lg:col-span-2'}>
-            {[...education].reverse().map((entry, i, arr) => <TimelineEntry key={entry.period} entry={entry} index={i} total={arr.length}/>)}
+            {[...entries].reverse().map((entry, i, arr) => (
+              <TimelineEntry
+                key={entry.period + entry.title}
+                entry={entry}
+                index={i}
+                total={arr.length}
+              />
+            ))}
           </div>
         </div>
       </div>

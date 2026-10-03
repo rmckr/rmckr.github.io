@@ -9,5 +9,5 @@ export const sections = [
   { id: 'experience', labelKey: 'experience.label', Section: Experience },
   { id: 'skills', labelKey: 'skills.label', Section: Skills },
   { id: 'github', labelKey: 'github.label', Section: GitHubSection },
-  { id: 'contact', labelKey: 'contactLabel', Section: Contact }
+  { id: 'contact', labelKey: 'contact.label', Section: Contact }
 ] as const

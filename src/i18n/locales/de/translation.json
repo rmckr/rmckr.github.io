@@ -1,36 +1,56 @@
 {
-  "nav": [
-    "Über mich",
-    "GitHub",
-    "Skills",
-    "Projekte",
-    "Kontakt"
-  ],
-  "navCta": "Kontakt aufnehmen",
-  "hero.tagline": "Informatik-Masterstudent. Ich baue <highlight>kleine Tools für echte Probleme</highlight> und <highlight>lerne öffentlich</highlight> — noch am Herausfinden, ein Commit nach dem anderen.",
-  "hero.location": "Ulm, Deutschland",
-  "hero.status": "M.Sc.-Student @ HTWK Leipzig",
-  "hero.avail": "Offen für Praktika & Werkstudentenstellen",
-  "hero.viewPortfolio": "Portfolio ansehen",
-  "hero.github": "GitHub",
-  "scroll": "scrollen",
+  "navCta": "Kontakt",
+  "hero": {
+    "tagline": "Informatikstudent mit Erfahrung in der Softwareentwicklung. Ich entwickle gerne Dinge, finde heraus, wie sie funktionieren, und lerne dabei Neues.",
+    "location": "Ulm, Deutschland",
+    "status": "M.Sc. Informatik @ Universität Ulm",
+    "avail": "Offen für Werkstudentenstellen",
+    "viewPortfolio": "Portfolio ansehen",
+    "github": "GitHub",
+    "scroll": "scrollen"
+  },
   "about": {
     "label": "Über mich",
-    "heading": "Erst Student. Immer Macher.",
-    "p1": "Ich bin Lukas — Informatikstudent aus Ulm. Ich habe meinen <highlight>dualen Bachelor</highlight> an der HTWK Leipzig (2022–2026) abgeschlossen, wo ich Studium und Berufspraxis kombiniert habe. Jetzt bin ich im Master und tauche tiefer ein.",
-    "p2": "Ich interessiere mich besonders für <highlight>Webentwicklung</highlight>, <highlight>Tooling</highlight> und Projekte, die etwas zu ambitioniert für die verfügbare Zeit sind — genau das macht sie interessant.",
-    "p3": "Mein GitHub ist noch nicht beeindruckend. Das ist okay. Ich bin am Anfang und ehrlich lieber als übertrieben.",
+    "heading": "Etwas über mich.",
+    "p1": "Ich bin Lukas und studiere Informatik in Ulm. 2026 habe ich meinen B.Sc. in Informatik an der HTWK Leipzig abgeschlossen. Im Rahmen meines dualen Studiums konnte ich mein Studium mit praktischer Softwareentwicklung bei der T-Systems International GmbH verbinden.",
+    "p2": "Dort habe ich unter anderem an einem großen Frontend-Projekt mit Vue in einem größeren Entwicklungsteam gearbeitet und daneben kleinere Projekte in verschiedenen Bereichen umgesetzt. Neben Studium und Arbeit entwickle ich vor allem Dinge, die ich interessant finde oder bei denen ich etwas Neues ausprobieren möchte.",
+    "p3": "Aktuell arbeite ich hauptsächlich mit TypeScript, JavaScript und Python. Besonders interessant finde ich Full-Stack-Entwicklung mit einem Schwerpunkt auf dem Frontend. Mit Node.js, Express und Datenbanken arbeite ich ebenfalls gerne.",
     "downloadCv": "Lebenslauf herunterladen"
   },
   "experience": {
     "label": "Erfahrung",
-    "heading": "Von Theorie bis Praxis."
+    "heading": "Von Theorie bis Praxis.",
+    "desc": "Diese Übersicht zeigt meinen bisherigen Weg durch Studium und praktische Erfahrung. Sie beginnt mit meinem aktuellen Masterstudium und geht zurück über mein Bachelorstudium, das ich mit praktischer Erfahrung in der Softwareentwicklung verbunden habe.",
+    "entries": [
+      {
+        "title": "M.Sc. Informatik",
+        "note": "(laufend)",
+        "organisation": "Uni Ulm",
+        "period": "2026 — heute",
+        "desc": "Aktuelles Masterstudium der Informatik an der Uni Ulm."
+      },
+      {
+        "title": "B.Sc. Informatik",
+        "note": "(duales Studium)",
+        "organisation": "HTWK Leipzig",
+        "period": "2022 — 2026",
+        "desc": "Duales Studium mit einer Kombination aus Hochschulstudium und praktischer Softwareentwicklung bei der T-Systems International GmbH. Dabei habe ich hauptsächlich an einem großen Vue-Frontend in einem größeren Entwicklungsteam gearbeitet."
+      }
+    ]
   },
-  "experienceLabel": "Ausbildung",
+  "skills": {
+    "label": "Skills",
+    "heading": "Technischer Stack.",
+    "tiers": {
+      "basic": "Grundkenntnisse",
+      "proficient": "Gute Kenntnisse",
+      "advanced": "Fortgeschritten"
+    },
+    "all": "Alle"
+  },
   "github": {
     "label": "GitHub",
-    "heading": "Open-Source-Aktivität.",
-    "loading": "Repositories werden geladen…",
+    "heading": "Woran ich gerade arbeite.",
     "error": "Repositories konnten nicht geladen werden.",
     "retry": "Erneut versuchen",
     "viewProfile": "Profil ansehen",
@@ -40,91 +60,17 @@
       "stars": "Sterne",
       "forks": "Forks",
       "pullRequests": "Pull Requests",
-      "issues": "Issues geöffnet"
+      "issues": "Geöffnete Issues"
     }
   },
-  "skills.label": "Skills",
-  "skills.heading": "Technischer Stack.",
-  "educationLabel": "Ausbildung",
-  "otherAreasLabel": "Weitere Bereiche",
-  "projectsLabel": "Projekte",
-  "projectsHeading": "Ausgewählte Arbeiten.",
-  "contactLabel": "Kontakt",
-  "contactHeading": "Hallo sagen.",
-  "contactDesc": "Ich suche nach <highlight>Werkstudentenstellen</highlight> oder <highlight>Praktika</highlight>, bei denen ich sinnvoll mitarbeiten und weiterlernen kann. Wenn du an etwas Interessantem arbeitest und jemanden nicht scheust, der viele Fragen stellt — lass uns reden.",
-  "socialLinks": [
-    "GitHub",
-    "LinkedIn",
-    "Twitter / X",
-    "Blog"
-  ],
-  "footer": "© 2026 Lukas Romacker · Von Hand gebaut.",
-  "loadingRepos": "Repositories werden geladen…",
-  "errorRepos": "Repositories konnten nicht geladen werden.",
-  "education": [
-    {
-      "degree": "M.Sc. Informatik",
-      "note": "(laufend)",
-      "school": "HTWK Leipzig",
-      "period": "2026 — heute",
-      "desc": "Aktuell eingeschrieben. Schwerpunkte: Software-Engineering, verteilte Systeme und angewandtes maschinelles Lernen."
-    },
-    {
-      "degree": "B.Sc. Informatik",
-      "note": "(duales Studium)",
-      "school": "HTWK Leipzig",
-      "period": "2022 — 2026",
-      "desc": "Duales Studium, das akademische Ausbildung mit integrierter Berufspraxis bei einem Partnerunternehmen verknüpfte."
-    }
-  ],
-  "otherAreas": [
-    "Systemdesign",
-    "API-Architektur",
-    "Webentwicklung",
-    "Code-Review",
-    "Technisches Schreiben",
-    "CI/CD",
-    "Observability",
-    "WebAssembly",
-    "Edge Computing",
-    "Teamarbeit"
-  ],
-  "projects": [
-    {
-      "num": "001",
-      "name": "flux-engine",
-      "type": "Open-Source-Bibliothek",
-      "year": "2025",
-      "desc": "Ein minimales reaktives State-Primitiv für TypeScript. Kompositionsfähig — funktioniert mit und ohne Framework. 3,1 kb gzipped.",
-      "tags": [
-        "TypeScript",
-        "State",
-        "OSS"
-      ]
-    },
-    {
-      "num": "002",
-      "name": "prism-ui",
-      "type": "Komponentenbibliothek",
-      "year": "2024",
-      "desc": "Unstyled, barrierefreie React-Primitive. Volle ARIA-Konformität, Tastaturnavigation und Zero-Config-Dark-Mode.",
-      "tags": [
-        "React",
-        "Barrierefreiheit",
-        "OSS"
-      ]
-    },
-    {
-      "num": "003",
-      "name": "cortex-cli",
-      "type": "Entwickler-Tool",
-      "year": "2024",
-      "desc": "Terminal-Toolkit zur Verwaltung lokaler Entwicklungsumgebungen mit einheitlichem Konfigurationsformat und Live-Diff-Ansicht.",
-      "tags": [
-        "Go",
-        "CLI",
-        "DevOps"
-      ]
-    }
-  ]
+  "contact": {
+    "label": "Kontakt",
+    "heading": "Sag hallo.",
+    "desc": "Ich suche aktuell eine Werkstudentenstelle, in der ich weitere Erfahrung in der Softwareentwicklung sammeln und an einem echten Projekt mitarbeiten kann. Wenn du jemanden suchst, der gerne dazulernt, Dinge entwickelt und sich auch mit den Details beschäftigt, melde dich gerne."
+  },
+  "footer": {
+    "copyright": "© 2026 Lukas Romacker",
+    "builtWith": "Gebaut mit",
+    "and": "und"
+  }
 }

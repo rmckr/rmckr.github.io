@@ -72,7 +72,7 @@ export function Skills() {
                         >
                           <div className={'flex items-center justify-between gap-4 py-3'}>
                             <div className={'flex items-center gap-2.5 min-w-0'}>
-                              <skill.icon/>
+                              <skill.icon size={20}/>
                               <span className={'text-sm text-foreground'}>
                                 {skill.name}
                               </span>

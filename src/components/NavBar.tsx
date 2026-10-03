@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
-import { Languages } from 'lucide-react'
-import { useTranslation } from '../i18n/i18n'
-import { cn } from '@/lib/utils'
 import { sections } from '@/data/sections'
+import { cn } from '@/lib/utils'
+import { useEffect, useState } from 'react'
+import { LuLanguages } from 'react-icons/lu'
+import { useTranslation } from '../i18n/i18n'
 
 export function NavBar() {
   const { t, i18n } = useTranslation()
@@ -57,7 +57,7 @@ export function NavBar() {
             className={'btn-secondary'}
             aria-label={'Toggle language'}
           >
-            <Languages size={12}/>
+            <LuLanguages size={12}/>
             <span>{i18n.resolvedLanguage === 'en' ? 'DE' : 'EN'}</span>
           </button>
 
