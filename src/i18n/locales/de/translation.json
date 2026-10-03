@@ -3,7 +3,7 @@
   "hero": {
     "tagline": "Informatikstudent mit Erfahrung in der Softwareentwicklung. Ich entwickle gerne Dinge, finde heraus, wie sie funktionieren, und lerne dabei Neues.",
     "location": "Ulm, Deutschland",
-    "status": "M.Sc. Informatik @ Universität Ulm",
+    "status": "M.Sc. Informatik",
     "avail": "Offen für Werkstudentenstellen",
     "viewPortfolio": "Portfolio ansehen",
     "github": "GitHub",
@@ -66,7 +66,7 @@
   "contact": {
     "label": "Kontakt",
     "heading": "Sag hallo.",
-    "desc": "Ich suche aktuell eine Werkstudentenstelle, in der ich weitere Erfahrung in der Softwareentwicklung sammeln und an einem echten Projekt mitarbeiten kann. Wenn du jemanden suchst, der gerne dazulernt, Dinge entwickelt und sich auch mit den Details beschäftigt, melde dich gerne."
+    "desc": "Ich suche derzeit eine Werkstudentenstelle, in der ich mehr Erfahrung in der Softwareentwicklung sammeln und an einem echten Projekt mitarbeiten kann. Wenn Sie jemanden suchen, der gerne dazulernt, Dinge entwickelt und sich mit den Details beschäftigt, freue ich mich über Ihre Kontaktaufnahme."
   },
   "footer": {
     "copyright": "© 2026 Lukas Romacker",

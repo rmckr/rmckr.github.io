@@ -25,7 +25,7 @@ export function Contact() {
 
             <a
               href={`mailto:${CONTACT_EMAIL}`}
-              className={'group inline-flex items-center gap-3 text-lg font-semibold text-accent no-underline mb-12'}
+              className={'group inline-flex items-center gap-3 text-lg font-semibold text-accent hover:text-foreground transition-colors duration-200 no-underline mb-12'}
             >
               <LuMail size={18}/>
               <span>{CONTACT_EMAIL}</span>

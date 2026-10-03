@@ -25,8 +25,11 @@ export function Footer() {
             color={'#61DAFB'}
           />
         </span>
-        {/* eslint-disable-next-line @eslint-react/jsx-no-comment-textnodes */}
-        <span className={'font-mono text-xs text-accent'}>//RMCKR</span>
+        <span className={'font-mono text-xs'}>
+          {/* eslint-disable-next-line @eslint-react/jsx-no-comment-textnodes */}
+          <span className={'text-accent'}>//</span>
+          RMCKR
+        </span>
       </div>
     </footer>
   )

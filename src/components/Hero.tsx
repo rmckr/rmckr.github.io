@@ -35,7 +35,7 @@ export function Hero() {
             <span className={'invisible inline-block w-[0.45em]'}>/</span>
 
             {/* Wordmark */}
-            <span className={'inline-block whitespace-nowrap text-foreground animate-name-reveal'}>
+            <span className={'inline-block whitespace-nowrap text-foreground pr-1 animate-name-reveal'}>
               RMCKR
             </span>
 
@@ -58,17 +58,19 @@ export function Hero() {
         </p>
 
         {/* Meta row */}
-        <div className={'hero-meta flex flex-wrap gap-6 mb-12 items-center font-mono text-xs text-muted'}>
-          <span className={'flex items-center gap-2'}>
-            <LuMapPin size={12} className={'text-accent'}/>
+        <div className={'hero-meta min-h-10 max-w-2xl flex flex-wrap gap-x-4 gap-y-2 mb-12 items-center font-mono text-xs text-muted'}>
+          <span className={'flex items-start gap-2'}>
+            <LuMapPin size={12} className={'shrink-0 mt-0.5 text-accent'}/>
             <span>{t('hero.location')}</span>
           </span>
-          <span className={'flex items-center gap-2'}>
-            <LuBriefcase size={12} className={'text-accent'}/>
+
+          <span className={'flex items-start gap-2'}>
+            <LuBriefcase size={12} className={'shrink-0 mt-0.5 text-accent'}/>
             <span>{t('hero.status')}</span>
           </span>
-          <span className={'flex items-center gap-2'}>
-            <LuContact size={12} className={'text-accent'}/>
+
+          <span className={'flex items-start gap-2'}>
+            <LuContact size={12} className={'shrink-0 mt-0.5 text-accent'}/>
             <span>{t('hero.avail')}</span>
           </span>
         </div>

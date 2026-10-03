@@ -21,7 +21,7 @@ export function About() {
           />
 
           {/* Content */}
-          <div className={'mt-12 flex flex-col lg:flex-row gap-12 lg:gap-20 items-center'}>
+          <div className={'mt-12 flex flex-col lg:flex-row gap-12 lg:gap-20 items-start'}>
 
             {/* Image */}
             <div className={'w-full lg:w-1/3'}>

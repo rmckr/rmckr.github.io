@@ -29,7 +29,7 @@ export function NavBar() {
           'border-transparent bg-transparent'
       )}
     >
-      <div className={'max-w-6xl mx-auto px-6 py-4 flex items-center justify-between'}>
+      <div className={'max-w-6xl mx-auto px-6 py-4 grid grid-cols-[1fr_auto_1fr] items-center'}>
         {/* Logo */}
         <a href={'#hero'} className={'font-mono text-sm font-medium tracking-widest text-foreground'}>
           {/* eslint-disable-next-line @eslint-react/jsx-no-comment-textnodes */}
@@ -38,7 +38,7 @@ export function NavBar() {
         </a>
 
         {/* Nav links */}
-        <div className={'hidden md:flex items-center gap-8'}>
+        <div className={'hidden md:flex items-center justify-center gap-8'}>
           {sections.map((item) => (
             <a
               key={item.id}
@@ -51,7 +51,7 @@ export function NavBar() {
         </div>
 
         {/* Actions */}
-        <div className={'flex items-center gap-3'}>
+        <div className={'flex items-center justify-end gap-3'}>
           <button
             onClick={languageToggle}
             className={'btn-secondary'}
