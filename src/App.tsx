@@ -5,12 +5,12 @@ import { sections } from './data/sections'
 
 export default function App() {
   return (
-    <div style={{ background: 'var(--color-bg)', minHeight: '100vh' }}>
-      <div className={'noise'}/>
+    <>
+      <div className={'noise'} aria-hidden={'true'}/>
       <NavBar/>
       <Hero/>
       {sections.map((item) => <item.Section key={item.id}/>)}
       <Footer/>
-    </div>
+    </>
   )
 }

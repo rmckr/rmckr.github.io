@@ -1,22 +1,19 @@
 import { LuHeart } from 'react-icons/lu'
 import { useTranslation } from '../i18n/i18n'
 import { FaReact } from 'react-icons/fa'
+import { Logo } from './Logo'
 
 export function Footer() {
   const { t } = useTranslation()
   return (
     <footer className={'py-8 border-t border-subtle'}>
-      <div className={'max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4'}>
-        <span className={'font-mono text-xs text-muted'}>
+      <div className={'container-page flex flex-col md:flex-row items-center justify-between gap-4'}>
+        <span className={'meta'}>
           {t('footer.copyright')}
           {' · '}
           {t('footer.builtWith')}
           {' '}
-          <LuHeart
-            className={'inline-block align-middle'}
-            fill={'#FF0000'}
-            color={'#FF0000'}
-          />
+          <LuHeart className={'inline-block align-middle fill-accent text-accent'}/>
           {' '}
           {t('footer.and')}
           {' '}
@@ -25,11 +22,7 @@ export function Footer() {
             color={'#61DAFB'}
           />
         </span>
-        <span className={'font-mono text-xs'}>
-          {/* eslint-disable-next-line @eslint-react/jsx-no-comment-textnodes */}
-          <span className={'text-accent'}>//</span>
-          RMCKR
-        </span>
+        <Logo className={'text-xs'}/>
       </div>
     </footer>
   )

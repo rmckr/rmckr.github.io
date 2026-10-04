@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Trans } from 'react-i18next'
+import { cn } from '@/lib/utils'
+import { highlightComponents } from '@/lib/trans'
 import { useTranslation } from '../i18n/i18n'
-import { useReveal } from '../hooks/useReveal'
+import { Section } from './Section'
 import { SectionHeader } from './SectionHeader'
 
 // ── Timeline entry ────────────────────────────────────────────────────────────
@@ -49,18 +51,17 @@ function TimelineEntry({ entry, index, total }: TimelineEntryProps) {
       {/* Rail */}
       <div className={'flex flex-col items-center w-5 shrink-0'}>
         <div
-          className={'w-2.5 h-2.5 rounded-full border-2 z-10 mt-1 transition-colors duration-300 border-accent'}
-          style={{
-            background: dotActive ? 'var(--color-accent)' : 'var(--color-bg)',
-            boxShadow: dotActive ? '0 0 8px rgba(229,53,53,0.5)' : 'none'
-          }}
+          className={cn(
+            'w-2.5 h-2.5 rounded-full border-2 border-accent z-10 mt-1 transition-[background-color,box-shadow] duration-300',
+            dotActive ? 'bg-accent shadow-[0_0_8px] shadow-accent/50' : 'bg-bg'
+          )}
         />
         {!isLast && (
-          <div className={'relative flex-1 mt-1 w-1 bg-white/8 overflow-hidden'}>
+          <div className={'relative flex-1 mt-1 w-1 bg-subtle overflow-hidden'}>
             {/* animated fill — height is dynamic, inline style is correct */}
             <div
-              className={'absolute top-0 left-0 w-full opacity-60'}
-              style={{ height: `${lineHeight}px`, background: 'var(--color-accent)' }}
+              className={'absolute top-0 left-0 w-full bg-accent opacity-60'}
+              style={{ height: `${lineHeight}px` }}
             />
           </div>
         )}
@@ -68,7 +69,7 @@ function TimelineEntry({ entry, index, total }: TimelineEntryProps) {
 
       {/* Content */}
       <div className={'pb-6'}>
-        <p className={'font-mono text-xs text-muted mb-1'}>{entry.period}</p>
+        <p className={'meta mb-1'}>{entry.period}</p>
         <p className={'font-semibold text-foreground'}>
           {entry.title}
           {' '}
@@ -81,44 +82,35 @@ function TimelineEntry({ entry, index, total }: TimelineEntryProps) {
   )
 }
 
-// ── About section ─────────────────────────────────────────────────────────────
+// ── Experience section ────────────────────────────────────────────────────────
 
 export function Experience() {
   const { t } = useTranslation()
-  const ref = useReveal()
 
   const entries = t('experience.entries', { returnObjects: true }) as ExperienceEntry[]
 
   return (
-    <section id={'experience'} className={'py-32'}>
-      <div className={'max-w-6xl mx-auto px-6'}>
-        <div ref={ref} className={'reveal grid grid-cols-1 lg:grid-cols-5 gap-16 items-start'}>
+    <Section id={'experience'} contentClassName={'grid grid-cols-1 lg:grid-cols-5 gap-16 items-start'}>
+      {/* Left — text */}
+      <div className={'lg:col-span-3'}>
+        <SectionHeader label={t('experience.label')} heading={t('experience.heading')}/>
 
-          {/* Left — text */}
-          <div className={'lg:col-span-3'}>
-            <SectionHeader label={t('experience.label')} heading={t('experience.heading')}/>
-
-            <p className={'space-y-5 text-muted leading-relaxed'}>
-              <Trans
-                i18nKey={'experience.desc'}
-                components={{ highlight: <span className={'text-foreground'}/> }}
-              />
-            </p>
-          </div>
-
-          {/* Right — education timeline */}
-          <div className={'lg:col-span-2'}>
-            {[...entries].reverse().map((entry, i, arr) => (
-              <TimelineEntry
-                key={entry.period + entry.title}
-                entry={entry}
-                index={i}
-                total={arr.length}
-              />
-            ))}
-          </div>
-        </div>
+        <p className={'copy'}>
+          <Trans i18nKey={'experience.desc'} components={highlightComponents}/>
+        </p>
       </div>
-    </section>
+
+      {/* Right — education timeline */}
+      <div className={'lg:col-span-2'}>
+        {[...entries].reverse().map((entry, i, arr) => (
+          <TimelineEntry
+            key={entry.period + entry.title}
+            entry={entry}
+            index={i}
+            total={arr.length}
+          />
+        ))}
+      </div>
+    </Section>
   )
 }

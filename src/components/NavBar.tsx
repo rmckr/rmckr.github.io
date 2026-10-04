@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils'
 import { useEffect, useState } from 'react'
 import { LuLanguages } from 'react-icons/lu'
 import { useTranslation } from '../i18n/i18n'
+import { Logo } from './Logo'
 
 export function NavBar() {
   const { t, i18n } = useTranslation()
@@ -25,16 +26,14 @@ export function NavBar() {
       className={cn(
         'fixed inset-x-0 top-0 z-50 transition-all duration-300',
         scrolled ?
-          'border-b border-subtle bg-black/92 backdrop-blur-md' :
+          'border-b border-subtle bg-bg/92 backdrop-blur-md' :
           'border-transparent bg-transparent'
       )}
     >
-      <div className={'max-w-6xl mx-auto px-6 py-4 grid grid-cols-[1fr_auto_1fr] items-center'}>
+      <div className={'container-page py-4 grid grid-cols-[1fr_auto_1fr] items-center'}>
         {/* Logo */}
-        <a href={'#hero'} className={'font-mono text-sm font-medium tracking-widest text-foreground'}>
-          {/* eslint-disable-next-line @eslint-react/jsx-no-comment-textnodes */}
-          <span className={'text-accent'}>//</span>
-          RMCKR
+        <a href={'#hero'} aria-label={'RMCKR'}>
+          <Logo className={'text-sm'}/>
         </a>
 
         {/* Nav links */}
@@ -43,7 +42,7 @@ export function NavBar() {
             <a
               key={item.id}
               href={`#${item.id}`}
-              className={'text-sm text-muted hover:text-foreground transition-colors duration-200'}
+              className={'text-sm link-muted'}
             >
               {t(item.labelKey)}
             </a>
@@ -51,17 +50,17 @@ export function NavBar() {
         </div>
 
         {/* Actions */}
-        <div className={'flex items-center justify-end gap-3'}>
+        <div className={'col-start-3 flex items-center justify-end gap-3'}>
           <button
             onClick={languageToggle}
             className={'btn-secondary'}
             aria-label={'Toggle language'}
           >
-            <LuLanguages size={12}/>
+            <LuLanguages size={14}/>
             <span>{i18n.resolvedLanguage === 'en' ? 'DE' : 'EN'}</span>
           </button>
 
-          <a href={'#contact'} className={'hidden md:inline-flex px-4! py-2! btn-primary uppercase tracking-wider'}>
+          <a href={'#contact'} className={'hidden md:inline-flex btn-primary uppercase tracking-wider'}>
             {t('navCta')}
           </a>
         </div>

@@ -2,8 +2,8 @@ import { useEffect, useRef } from 'react'
 
 /**
  * Returns a ref to attach to a container element.
- * Once the element intersects the viewport, the `visible` class is added,
- * triggering the `.reveal.visible` CSS transition defined in index.css.
+ * Once the element intersects the viewport, `data-visible` is set,
+ * triggering the `reveal` utility's transition defined in index.css.
  */
 export function useReveal() {
   const ref = useRef<HTMLDivElement>(null)
@@ -15,7 +15,7 @@ export function useReveal() {
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          el.classList.add('visible')
+          el.dataset.visible = ''
           obs.disconnect()
         }
       },
