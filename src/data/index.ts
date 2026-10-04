@@ -8,7 +8,7 @@ import { SiC, SiDocker, SiExpress, SiGit, SiGithubactions, SiHtml5, SiJavascript
 
 export const NAME = 'Lukas Romacker'
 export const GITHUB_USERNAME = 'rmckr'
-export const CONTACT_EMAIL = 'lukas@rmckr.com'
+export const CONTACT_EMAIL = 'rmckr.dev@gmail.com'
 
 export const socialLinks = [
   { label: 'GitHub', href: `https://github.com/${GITHUB_USERNAME}`, icon: FaGithub },
