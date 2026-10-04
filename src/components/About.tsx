@@ -20,12 +20,12 @@ export function About() {
 
         {/* Image */}
         <div className={'w-full lg:w-1/3'}>
-          <div className={'relative aspect-4/5 overflow-hidden rounded-lg border border-subtle'}>
-            <div className={'absolute inset-0 flex items-center justify-center'}>
-              <span className={'label text-xs text-muted'}>
-                Image placeholder
-              </span>
-            </div>
+          <div className={'relative border-b-4 border-accent bg-linear-to-t from-accent/50 to-transparent'}>
+            <img
+              src={'/images/portrait.png'}
+              alt={'Portrait Lukas Romacker'}
+              className={'size-full px-1'}
+            />
           </div>
         </div>
 
