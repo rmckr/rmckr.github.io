@@ -6,14 +6,14 @@ import { Logo } from './Logo'
 export function Footer() {
   const { t } = useTranslation()
   return (
-    <footer className={'py-8 border-t border-subtle'}>
-      <div className={'container-page flex flex-col md:flex-row items-center justify-between gap-4'}>
+    <footer className={'border-t border-subtle py-8'}>
+      <div className={'container-page flex flex-col items-center justify-between gap-4 md:flex-row'}>
         <span className={'meta'}>
           {t('footer.copyright')}
           {' · '}
           {t('footer.builtWith')}
           {' '}
-          <LuHeart className={'inline-block align-middle fill-accent text-accent'}/>
+          <LuHeart className={'inline-block fill-accent align-middle text-accent'}/>
           {' '}
           {t('footer.and')}
           {' '}

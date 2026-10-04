@@ -34,10 +34,10 @@ export function Skills() {
 
           return (
             <div key={tier} className={'py-2 md:px-6 md:first:pl-0 md:last:pr-0'}>
-              <div className={'flex items-end justify-between gap-4 mb-8'}>
+              <div className={'mb-8 flex items-end justify-between gap-4'}>
                 <h3 className={'text-xl'}>{label}</h3>
 
-                <span className={'font-display font-extrabold text-xl text-accent'}>
+                <span className={'font-display text-xl font-extrabold text-accent'}>
                   {String(items.length)}
                 </span>
               </div>
@@ -53,7 +53,7 @@ export function Skills() {
                       className={cn('transition-opacity duration-200', visible ? 'opacity-100' : 'opacity-20')}
                     >
                       <div className={'flex items-center justify-between gap-4 py-3'}>
-                        <div className={'flex items-center gap-2.5 min-w-0'}>
+                        <div className={'flex min-w-0 items-center gap-2.5'}>
                           <skill.icon size={20}/>
                           <span className={'text-sm text-foreground'}>
                             {skill.name}
@@ -61,7 +61,7 @@ export function Skills() {
                         </div>
 
                         <span
-                          className={'label shrink-0 border px-1.5 py-0.5 text-2xs'}
+                          className={'shrink-0 border px-1.5 py-0.5 label text-2xs'}
                           style={{
                             borderColor: tagColors[skill.tag],
                             color: tagColors[skill.tag]
@@ -79,7 +79,7 @@ export function Skills() {
         })}
       </div>
 
-      <div role={'group'} className={'label mt-10 flex flex-wrap gap-x-6 gap-y-3 text-xs'}>
+      <div role={'group'} className={'mt-10 flex flex-wrap gap-x-6 gap-y-3 label text-xs'}>
         <button
           type={'button'}
           onClick={() => setFilter(null)}
@@ -95,7 +95,7 @@ export function Skills() {
             type={'button'}
             onClick={() => setFilter(filter === tag ? null : tag)}
             aria-pressed={filter === tag}
-            className={'link-muted aria-pressed:text-foreground flex items-center gap-2'}
+            className={'flex items-center gap-2 link-muted aria-pressed:text-foreground'}
           >
             <span className={'size-1.5'} style={{ background: tagColors[tag] }}/>
             {tag}

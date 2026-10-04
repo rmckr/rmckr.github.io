@@ -14,13 +14,13 @@ export function Contact() {
       <SectionHeader label={t('contact.label')} heading={t('contact.heading')}/>
 
       <div className={'max-w-2xl'}>
-        <p className={'copy mb-10'}>
+        <p className={'mb-10 copy'}>
           <Trans i18nKey={'contact.desc'} components={highlightComponents}/>
         </p>
 
         <a
           href={`mailto:${CONTACT_EMAIL}`}
-          className={'group inline-flex items-center gap-3 text-lg font-semibold text-accent hover:text-foreground transition-colors duration-200 mb-12'}
+          className={'group mb-12 inline-flex items-center gap-3 text-lg font-semibold text-accent transition-colors duration-200 hover:text-foreground'}
         >
           <LuMail size={18}/>
           <span>{CONTACT_EMAIL}</span>
@@ -34,7 +34,7 @@ export function Contact() {
               href={link.href}
               target={'_blank'}
               rel={'noreferrer'}
-              className={'link-muted inline-flex items-center gap-1.5 font-mono text-sm'}
+              className={'inline-flex items-center gap-1.5 font-mono text-sm link-muted'}
             >
               <link.icon/>
               {link.label}

@@ -6,8 +6,8 @@ type SectionHeaderProps = {
 export function SectionHeader({ label, heading }: SectionHeaderProps) {
   return (
     <>
-      <p className={'section-counter-title mb-3'}>{label}</p>
-      <h2 className={'mb-16 whitespace-pre-line text-heading tracking-display'}>
+      <p className={'mb-3 section-counter-title'}>{label}</p>
+      <h2 className={'mb-16 text-heading tracking-display whitespace-pre-line'}>
         {heading}
       </h2>
     </>

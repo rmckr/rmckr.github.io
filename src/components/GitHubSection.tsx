@@ -229,12 +229,12 @@ export function GitHubSection() {
 
       {loading && (
         <div className={'flex justify-center py-20'}>
-          <div className={'size-5 rounded-full border-2 border-subtle border-t-accent animate-spin'}/>
+          <div className={'size-5 animate-spin rounded-full border-2 border-subtle border-t-accent'}/>
         </div>
       )}
 
       {error && (
-        <div className={'card flex items-center justify-between gap-4 font-mono text-accent p-4'}>
+        <div className={'flex items-center justify-between gap-4 card p-4 font-mono text-accent'}>
           <span>{t('github.error')}</span>
 
           <button
@@ -248,13 +248,13 @@ export function GitHubSection() {
       )}
 
       {!loading && !error && data && (
-        <div className={'grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-3'}>
+        <div className={'grid grid-cols-1 gap-3 lg:grid-cols-[1fr_2fr]'}>
 
           {/* ── Left column: profile + stats ── */}
           <div className={'flex flex-col gap-3'}>
 
             {/* Profile card — grows to fill remaining height after stats */}
-            <div className={'relative card p-6 flex flex-col gap-4 justify-between overflow-hidden flex-1'}>
+            <div className={'relative flex flex-1 flex-col justify-between gap-4 overflow-hidden card p-6'}>
               <div className={'absolute inset-y-0 left-0 w-px bg-accent'}/>
 
               <div className={'flex flex-col gap-4'}>
@@ -264,17 +264,17 @@ export function GitHubSection() {
                       <img
                         src={data.user.avatar_url}
                         alt={data.user.name ?? data.user.login}
-                        className={'size-12 rounded-full border border-subtle shrink-0'}
+                        className={'size-12 shrink-0 rounded-full border border-subtle'}
                       />
                     ) :
                     (
-                      <div className={'size-12 rounded-full flex items-center justify-center bg-accent-dim text-accent shrink-0'}>
+                      <div className={'flex size-12 shrink-0 items-center justify-center rounded-full bg-accent-dim text-accent'}>
                         <FaGithub size={22}/>
                       </div>
                     )}
 
                   <div>
-                    <p className={'font-display font-extrabold text-lg text-foreground leading-tight'}>
+                    <p className={'font-display text-lg/tight font-extrabold text-foreground'}>
                       {data.user.name ?? GITHUB_USERNAME}
                     </p>
 
@@ -285,21 +285,21 @@ export function GitHubSection() {
                 </div>
 
                 {data.user.bio && (
-                  <p className={'text-sm text-muted leading-relaxed'}>
+                  <p className={'text-sm/relaxed text-muted'}>
                     {data.user.bio}
                   </p>
                 )}
 
                 <div className={'flex flex-col gap-1'}>
                   {data.user.followers && (
-                    <div className={'meta flex items-center gap-1.5'}>
+                    <div className={'flex items-center gap-1.5 meta'}>
                       <LuUsersRound/>
                       <span>{data.user.followers} {t('github.followers')}</span>
                     </div>
                   )}
 
                   {data.user.location && (
-                    <div className={'meta flex items-center gap-1.5'}>
+                    <div className={'flex items-center gap-1.5 meta'}>
                       <LuMapPin/>
                       <span>{data.user.location}</span>
                     </div>
@@ -311,7 +311,7 @@ export function GitHubSection() {
                 href={`https://github.com/${GITHUB_USERNAME}`}
                 target={'_blank'}
                 rel={'noreferrer'}
-                className={'self-start btn-secondary'}
+                className={'btn-secondary self-start'}
               >
                 <FaGithub size={14}/>
                 {t('github.viewProfile')}
@@ -344,11 +344,11 @@ export function GitHubSection() {
                 }
               ].map((s) => (
                 <div key={s.label} className={'card p-4'}>
-                  <p className={'font-display font-extrabold text-3xl text-accent leading-none tracking-display'}>
+                  <p className={'font-display text-3xl leading-none font-extrabold tracking-display text-accent'}>
                     {s.value}
                   </p>
 
-                  <div className={'label meta mt-1.5 flex items-center gap-1.5'}>
+                  <div className={'mt-1.5 flex items-center gap-1.5 meta label'}>
                     <s.icon/>
                     <span>{s.label}</span>
                   </div>
@@ -365,33 +365,33 @@ export function GitHubSection() {
                 href={repo.html_url}
                 target={'_blank'}
                 rel={'noreferrer'}
-                className={'group relative card p-5 hover:border-accent/35 hover:bg-accent-dim transition-all duration-200 flex items-start gap-4 overflow-hidden'}
+                className={'group relative flex items-start gap-4 overflow-hidden card p-5 transition-all duration-200 hover:border-accent/35 hover:bg-accent-dim'}
               >
                 {/* index number */}
-                <span className={'font-mono text-xs text-muted/40 group-hover:text-foreground transition-colors duration-200 w-4 shrink-0 mt-0.5 select-none'}>
+                <span className={'mt-0.5 w-4 shrink-0 font-mono text-xs text-muted/40 transition-colors duration-200 select-none group-hover:text-foreground'}>
                   {String(i + 1).padStart(2, '0')}
                 </span>
 
-                <div className={'flex-1 min-w-0'}>
+                <div className={'min-w-0 flex-1'}>
                   <div className={'flex justify-between'}>
                     <span className={'font-mono text-sm font-medium text-accent'}>
                       {repo.name}
                     </span>
                     <LuExternalLink
                       size={12}
-                      className={'icon-nudge mt-1 opacity-30 group-hover:opacity-100'}
+                      className={'mt-1 icon-nudge opacity-30 group-hover:opacity-100'}
                     />
                   </div>
 
-                  <p className={'text-sm text-muted leading-relaxed'}>
+                  <p className={'text-sm/relaxed text-muted'}>
                     {repo.description ?? t('github.noDescription')}
                   </p>
 
-                  <div className={'flex gap-4 mt-2'}>
+                  <div className={'mt-2 flex gap-4'}>
                     {repo.language && (
-                      <span className={'meta flex items-center gap-1'}>
+                      <span className={'flex items-center gap-1 meta'}>
                         <span
-                          className={'inline-block size-2 rounded-full shrink-0'}
+                          className={'inline-block size-2 shrink-0 rounded-full'}
                           style={{
                             background:
                               data.langColors[repo.language]?.color ?? '#888'
@@ -402,12 +402,12 @@ export function GitHubSection() {
                       </span>
                     )}
 
-                    <span className={'meta flex items-center gap-1'}>
+                    <span className={'flex items-center gap-1 meta'}>
                       <LuStar/>
                       {repo.stargazers_count}
                     </span>
 
-                    <span className={'meta flex items-center gap-1'}>
+                    <span className={'flex items-center gap-1 meta'}>
                       <LuGitFork/>
                       {repo.forks_count}
                     </span>

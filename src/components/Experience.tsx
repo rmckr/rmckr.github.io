@@ -49,15 +49,15 @@ function TimelineEntry({ entry, index, total }: TimelineEntryProps) {
   return (
     <div ref={ref} className={'relative flex gap-6'}>
       {/* Rail */}
-      <div className={'flex flex-col items-center w-5 shrink-0'}>
+      <div className={'flex w-5 shrink-0 flex-col items-center'}>
         <div
           className={cn(
-            'w-2.5 h-2.5 rounded-full border-2 border-accent z-10 mt-1 transition-[background-color,box-shadow] duration-300',
+            'z-10 mt-1 size-2.5 rounded-full border-2 border-accent transition-[background-color,box-shadow] duration-300',
             dotActive ? 'bg-accent shadow-[0_0_8px] shadow-accent/50' : 'bg-bg'
           )}
         />
         {!isLast && (
-          <div className={'relative flex-1 mt-1 w-1 bg-subtle overflow-hidden'}>
+          <div className={'relative mt-1 w-1 flex-1 overflow-hidden bg-subtle'}>
             {/* animated fill — height is dynamic, inline style is correct */}
             <div
               className={'absolute top-0 left-0 w-full bg-accent opacity-60'}
@@ -69,14 +69,14 @@ function TimelineEntry({ entry, index, total }: TimelineEntryProps) {
 
       {/* Content */}
       <div className={'pb-6'}>
-        <p className={'meta mb-1'}>{entry.period}</p>
+        <p className={'mb-1 meta'}>{entry.period}</p>
         <p className={'font-semibold text-foreground'}>
           {entry.title}
           {' '}
-          <span className={'font-normal text-muted text-sm'}>{entry.note}</span>
+          <span className={'text-sm font-normal text-muted'}>{entry.note}</span>
         </p>
-        <p className={'text-sm text-accent mt-0.5'}>{entry.organisation}</p>
-        <p className={'text-sm text-muted leading-relaxed mt-1.5'}>{entry.desc}</p>
+        <p className={'mt-0.5 text-sm text-accent'}>{entry.organisation}</p>
+        <p className={'mt-1.5 text-sm/relaxed text-muted'}>{entry.desc}</p>
       </div>
     </div>
   )

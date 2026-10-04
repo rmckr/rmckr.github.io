@@ -18,13 +18,13 @@ export function Hero() {
   }, [])
 
   return (
-    <section id={'hero'} className={'relative min-h-screen flex flex-col justify-center grid-bg overflow-hidden'}>
+    <section id={'hero'} className={'relative flex min-h-screen flex-col justify-center overflow-hidden grid-bg'}>
       {/* Background radial glow */}
-      <div className={'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-150 rounded-full pointer-events-none glow-accent'}/>
+      <div className={'pointer-events-none absolute top-1/2 left-1/2 size-150 -translate-1/2 rounded-full glow-accent'}/>
 
       <div className={'relative container-page pt-32 pb-24'}>
         {/* Brand mark */}
-        <div className={'flex items-baseline select-none font-display font-black tracking-display text-display'}>
+        <div className={'flex items-baseline font-display text-display font-black tracking-display select-none'}>
           {/* Fixed first slash */}
           <span className={'inline-block text-accent'}>/</span>
 
@@ -34,7 +34,7 @@ export function Hero() {
             <span className={'invisible inline-block w-[0.45em]'}>/</span>
 
             {/* Wordmark */}
-            <span className={'inline-block whitespace-nowrap text-foreground pr-1 motion-safe:animate-name-reveal'}>
+            <span className={'inline-block pr-1 whitespace-nowrap text-foreground motion-safe:animate-name-reveal'}>
               RMCKR
             </span>
 
@@ -46,30 +46,30 @@ export function Hero() {
         </div>
 
         {/* Tagline */}
-        <p className={'max-w-2xl mb-8 text-lead text-muted motion-safe:animate-fade-up [--delay:1.8s]'}>
+        <p className={'mb-8 max-w-2xl text-lead text-muted [--delay:1.8s] motion-safe:animate-fade-up'}>
           <Trans i18nKey={'hero.tagline'} components={highlightComponents}/>
         </p>
 
         {/* Meta row */}
-        <div className={'meta min-h-10 max-w-2xl flex flex-wrap gap-x-4 gap-y-2 mb-12 items-center motion-safe:animate-fade-up [--delay:2.1s]'}>
+        <div className={'mb-12 flex min-h-10 max-w-2xl flex-wrap items-center gap-x-4 gap-y-2 meta [--delay:2.1s] motion-safe:animate-fade-up'}>
           <span className={'flex items-start gap-2'}>
-            <LuMapPin className={'shrink-0 mt-0.5 text-accent'}/>
+            <LuMapPin className={'mt-0.5 shrink-0 text-accent'}/>
             <span>{t('hero.location')}</span>
           </span>
 
           <span className={'flex items-start gap-2'}>
-            <LuBriefcase className={'shrink-0 mt-0.5 text-accent'}/>
+            <LuBriefcase className={'mt-0.5 shrink-0 text-accent'}/>
             <span>{t('hero.status')}</span>
           </span>
 
           <span className={'flex items-start gap-2'}>
-            <LuContact className={'shrink-0 mt-0.5 text-accent'}/>
+            <LuContact className={'mt-0.5 shrink-0 text-accent'}/>
             <span>{t('hero.avail')}</span>
           </span>
         </div>
 
         {/* CTAs */}
-        <div className={'flex flex-wrap gap-4 motion-safe:animate-fade-up [--delay:2.35s]'}>
+        <div className={'flex flex-wrap gap-4 [--delay:2.35s] motion-safe:animate-fade-up'}>
           <a href={'#about'} className={'btn-primary btn-lg'}>
             {t('hero.viewPortfolio')}
           </a>
@@ -89,12 +89,12 @@ export function Hero() {
       {/* Scroll indicator */}
       <div
         className={cn(
-          'meta absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none transition-all duration-500',
-          scrolled ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'
+          'pointer-events-none absolute bottom-10 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 meta transition-all duration-500',
+          scrolled ? 'translate-y-2 opacity-0' : 'translate-y-0 opacity-100'
         )}
       >
         <span>{t('hero.scroll')}</span>
-        <div className={'w-px h-12 bg-linear-to-b from-muted to-transparent'}/>
+        <div className={'h-12 w-px bg-linear-to-b from-muted to-transparent'}/>
       </div>
     </section>
   )

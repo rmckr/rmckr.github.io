@@ -1,5 +1,6 @@
 import eslintReact from '@eslint-react/eslint-plugin'
 import eslint from '@eslint/js'
+import betterTailwind from 'eslint-plugin-better-tailwindcss'
 import stylistic from '@stylistic/eslint-plugin'
 import reactHooks from 'eslint-plugin-react-hooks'
 import { defineConfig } from 'eslint/config'
@@ -12,9 +13,9 @@ function stylisticWarnings(config) {
     rules: Object.fromEntries(
       Object.entries(config.rules).map(([rule, options]) => [
         rule,
-        Array.isArray(options)
-          ? ['warn', ...options.slice(1)]
-          : 'warn'
+        Array.isArray(options) ?
+          ['warn', ...options.slice(1)] :
+          'warn'
       ])
     )
   }
@@ -169,24 +170,29 @@ export default defineConfig(
     }
   },
 
+  { settings: { react: { version: 'detect' } } },
+
   {
+    files: ['**/*.{ts,tsx}'],
+    plugins: { 'better-tailwindcss': betterTailwind },
     settings: {
-      react: {
-        version: 'detect'
+      'better-tailwindcss': {
+        // Tailwind v4: CSS entry that holds @import 'tailwindcss' and @theme
+        entryPoint: 'src/index.css'
       }
+    },
+    rules: {
+      ...betterTailwind.configs.recommended.rules,
+      'better-tailwindcss/no-unknown-classes': 'error',
+      // Too noisy for single-line className strings
+      'better-tailwindcss/enforce-consistent-line-wrapping': 'off'
     }
   },
 
-  {
-    ignores: [
-      'dist/'
-    ]
-  },
+  { ignores: ['dist/'] },
 
   {
     files: ['**/*.js'],
-    extends: [
-      tseslint.configs.disableTypeChecked
-    ]
+    extends: [tseslint.configs.disableTypeChecked]
   }
 )

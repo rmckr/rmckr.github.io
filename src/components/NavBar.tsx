@@ -30,14 +30,14 @@ export function NavBar() {
           'border-transparent bg-transparent'
       )}
     >
-      <div className={'container-page py-4 grid grid-cols-[1fr_auto_1fr] items-center'}>
+      <div className={'container-page grid grid-cols-[1fr_auto_1fr] items-center py-4'}>
         {/* Logo */}
         <a href={'#hero'} aria-label={'RMCKR'}>
           <Logo className={'text-sm'}/>
         </a>
 
         {/* Nav links */}
-        <div className={'hidden md:flex items-center justify-center gap-8'}>
+        <div className={'hidden items-center justify-center gap-8 md:flex'}>
           {sections.map((item) => (
             <a
               key={item.id}
@@ -60,7 +60,7 @@ export function NavBar() {
             <span>{i18n.resolvedLanguage === 'en' ? 'DE' : 'EN'}</span>
           </button>
 
-          <a href={'#contact'} className={'hidden md:inline-flex btn-primary uppercase tracking-wider'}>
+          <a href={'#contact'} className={'btn-primary hidden tracking-wider uppercase md:inline-flex'}>
             {t('navCta')}
           </a>
         </div>

@@ -54,10 +54,10 @@ export const skills: Skill[] = [
 // ── Tag accent colors ─────────────────────────────────────────────────────────
 
 export const tagColors: Record<SkillTag, string> = {
-  lang: '#F472B6',      // pink
-  frontend: '#60A5FA',  // blue
-  backend: '#F97316',   // orange
-  tool: '#4ADE80',      // green
-  db: '#FACC15',        // yellow
-  infra: '#D8B4FE'      // lavender
+  lang: '#F472B6', // pink
+  frontend: '#60A5FA', // blue
+  backend: '#F97316', // orange
+  tool: '#4ADE80', // green
+  db: '#FACC15', // yellow
+  infra: '#D8B4FE' // lavender
 }

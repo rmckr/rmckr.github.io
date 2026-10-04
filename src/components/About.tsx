@@ -16,7 +16,7 @@ export function About() {
         heading={t('about.heading')}
       />
 
-      <div className={'mt-12 flex flex-col lg:flex-row gap-12 lg:gap-20 items-start'}>
+      <div className={'mt-12 flex flex-col items-start gap-12 lg:flex-row lg:gap-20'}>
 
         {/* Image */}
         <div className={'w-full lg:w-1/3'}>
@@ -31,7 +31,7 @@ export function About() {
 
         {/* Text */}
         <div className={'w-full lg:w-2/3'}>
-          <div className={'copy space-y-5'}>
+          <div className={'space-y-5 copy'}>
             <p>
               <Trans i18nKey={'about.p1'} components={highlightComponents}/>
             </p>

@@ -19,7 +19,7 @@ export function useReveal() {
           obs.disconnect()
         }
       },
-      { threshold: 0.1 },
+      { threshold: 0.1 }
     )
 
     obs.observe(el)
