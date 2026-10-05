@@ -44,7 +44,12 @@ export function About() {
           </div>
 
           <div className={'mt-10'}>
-            <a href={'#'} className={'btn-primary btn-lg'}>
+            <a
+              href={'/Lukas-Romacker-Resume.pdf'}
+              target={'_blank'}
+              rel={'noopener noreferrer'}
+              className={'btn-primary btn-lg'}
+            >
               {t('about.downloadCv')}
             </a>
           </div>
