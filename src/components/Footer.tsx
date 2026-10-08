@@ -6,7 +6,7 @@ import { Logo } from './Logo'
 export function Footer() {
   const { t } = useTranslation()
   return (
-    <footer className={'border-t border-subtle py-8'}>
+    <footer className={'border-t border-subtle bg-bg/92 py-8 backdrop-blur-md'}>
       <div className={'container-page flex flex-col items-center justify-between gap-4 md:flex-row'}>
         <span className={'meta'}>
           {t('footer.copyright')}

@@ -86,13 +86,28 @@
   body {
     @apply bg-bg text-foreground antialiased;
 
-    /* Numbers the section headers: 01 / ABOUT, 02 / … (see section-counter-title) */
+    /* Numbers the section headers: 01 // ABOUT, 02 // … (see section-counter-title) */
     counter-reset: section;
   }
 
-  /* Alternate section backgrounds (the hero is the first <section>, so it stays on bg) */
+  /* Sections are positioned so their content can be layered normally. The
+     backdrop sits behind them; each section paints a nearly-solid tone on top
+     so the ambient grid only really reads through the hero and the
+     contact section, which stay fully transparent. */
+  section {
+    position: relative;
+    background-color: color-mix(in srgb, var(--color-bg) 85%, transparent);
+  }
+
+  /* Alternate section backgrounds (hero and contact override this below) */
   section:nth-of-type(even) {
-    @apply bg-surface;
+    background-color: color-mix(in srgb, var(--color-surface) 75%, transparent);
+  }
+
+  /* The two sections that stay see-through to the ambient grid */
+  #hero,
+  #contact {
+    background-color: transparent;
   }
 
   h1,
@@ -157,14 +172,14 @@
   @apply transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5;
 }
 
-/* "01 / ABOUT" eyebrow above each section heading */
+/* "01 // ABOUT" eyebrow above each section heading */
 @utility section-counter-title {
   @apply label text-xs text-foreground;
   counter-increment: section;
 
   &::before {
     @apply text-accent;
-    content: counter(section, decimal-leading-zero) ' / ';
+    content: counter(section, decimal-leading-zero) ' // ';
   }
 }
 
@@ -177,6 +192,31 @@
 @utility btn {
   @apply inline-flex items-center gap-2 border text-sm transition-[color,background-color,border-color,box-shadow] duration-200;
   padding: var(--btn-py, 0.5rem) var(--btn-px, 1rem);
+  position: relative;
+  overflow: hidden;
+
+  /* Light sweeping across the button on hover — shared by both variants,
+     which tune the tint via --btn-sheen */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      125deg,
+      transparent 30%,
+      color-mix(in srgb, var(--color-foreground) var(--btn-sheen, 30%), transparent) 50%,
+      transparent 70%
+    );
+    transform: translateX(-130%);
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: transform 0.6s var(--ease-out-expo);
+    }
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    &:hover::after { transform: translateX(130%); }
+  }
 }
 
 @utility btn-lg {
@@ -186,6 +226,7 @@
 
 @utility btn-primary {
   @apply btn border-accent bg-accent-dim font-semibold text-accent;
+  --btn-sheen: 32%;
 
   &:hover {
     @apply bg-accent text-bg shadow-[0_0_20px] shadow-accent/75;
@@ -194,6 +235,7 @@
 
 @utility btn-secondary {
   @apply btn border-subtle bg-transparent font-mono text-muted;
+  --btn-sheen: 26%;
 
   &:hover {
     @apply border-foreground/40 text-foreground;
@@ -207,17 +249,6 @@
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
 }
 
-@utility grid-bg {
-  background-image:
-    linear-gradient(color-mix(in srgb, var(--color-foreground) 3%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--color-foreground) 3%, transparent) 1px, transparent 1px);
-  background-size: 60px 60px;
-}
-
-@utility glow-accent {
-  background-image: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 7%, transparent) 0%, transparent 70%);
-}
-
 /* ── Section reveal ────────────────────────────────────────────────────────────
    useReveal() sets data-visible once the element enters the viewport.
    Content is only hidden when motion is allowed, so reduced-motion users (and
@@ -227,7 +258,7 @@
   @media (prefers-reduced-motion: no-preference) {
     opacity: 0;
     transform: translateY(1.5rem);
-    transition: opacity 0.7s ease, transform 0.7s ease;
+    transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
 
     &[data-visible] {
       opacity: 1;
@@ -235,3 +266,200 @@
     }
   }
 }
+
+/* ── Ambient backdrop ────────────────────────────────────────────────────────
+   A fixed layer behind the page: a perspective floor that fills the whole
+   viewport (vanishing point hidden under the top fade, so there is no hard
+   horizon line), a breathing glow and a vignette. Solid sections cover it
+   everywhere except the hero and the contact section.
+   The only JS-driven piece is the floor's --bx / --by parallax offset
+   (see Backdrop.tsx); everything else is pure CSS.
+─────────────────────────────────────────────────────────────────────────────── */
+@utility ambient {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 60% at 50% 42%, color-mix(in srgb, var(--color-accent) 6%, transparent), transparent 70%),
+    linear-gradient(180deg, #0a0a0a 0%, #080808 55%, #060606 100%);
+}
+
+/* Soft light source behind the hero — the only remaining glow, no hard line */
+@utility ambient-glow {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  width: min(1500px, 170vw);
+  height: 44vh;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-accent) 15%, transparent), transparent 72%);
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: glow-breathe 8s ease-in-out infinite;
+  }
+}
+
+/* Perspective window the floor is projected through. It fills the whole
+   backdrop, so the grid recedes into a vanishing point hidden under the top
+   fade — there is no separate "back wall", just depth. */
+@utility ambient-floor {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  perspective: 500px;
+  perspective-origin: 50% 0%;
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 84%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 84%, transparent 100%);
+}
+
+/* The grid plane: rotated flat, anchored above the top edge, scrolling toward you */
+@utility ambient-plane {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 300%;
+  height: 490px;
+  transform-origin: 50% 0%;
+  transform: translate3d(var(--bx, 0px), var(--by, 0px), 0) rotateX(60deg);
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--color-foreground) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-foreground) 5%, transparent) 1px, transparent 1px);
+  background-size: 64px 64px;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: floor-approach 5.5s linear infinite;
+  }
+}
+
+@utility ambient-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 90% at 50% 45%, transparent 35%, rgba(0, 0, 0, 0.6) 100%);
+}
+
+@keyframes floor-approach {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 0 64px, 0 64px; }
+}
+
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.06); }
+}
+
+/* ── Word-by-word heading reveal ──────────────────────────────────────────────
+   SectionHeader wraps every word in .word-mask and sets the per-word
+   transition-delay inline; the words slide up once an ancestor (the section's
+   reveal element) gets data-visible.
+─────────────────────────────────────────────────────────────────────────────── */
+@utility word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  /* room for descenders inside the clipped box */
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+
+  & > span {
+    display: inline-block;
+
+    @media (prefers-reduced-motion: no-preference) {
+      transform: translateY(115%);
+      transition: transform 0.8s var(--ease-out-expo);
+    }
+  }
+
+  [data-visible] & > span {
+    transform: none;
+  }
+}
+
+/* One-shot light passing over the hero wordmark */
+@utility wordmark-sheen {
+  background-image: linear-gradient(
+    105deg,
+    var(--color-foreground) 45%,
+    #ffffff 50%,
+    var(--color-foreground) 55%
+  );
+  background-size: 260% 100%;
+  background-position: 0 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: wordmark-sheen 2.4s ease-in-out 3.6s both;
+  }
+}
+
+@keyframes wordmark-sheen {
+  from { background-position: 130% 0; }
+  to { background-position: 0 0; }
+}
+
+/* ── Staggered children ───────────────────────────────────────────────────────
+   Direct children fade up one after another as soon as any ancestor with
+   data-visible fires. Delays are capped so long lists don't drag on.
+─────────────────────────────────────────────────────────────────────────────── */
+@utility stagger {
+  @media (prefers-reduced-motion: no-preference) {
+    & > * {
+      opacity: 0;
+      transform: translateY(1.25rem);
+      transition:
+        opacity 0.7s var(--ease-out-expo) var(--stagger, 0ms),
+        transform 0.7s var(--ease-out-expo) var(--stagger, 0ms);
+    }
+
+    & > *:nth-child(2) { --stagger: 90ms; }
+    & > *:nth-child(3) { --stagger: 180ms; }
+    & > *:nth-child(4) { --stagger: 270ms; }
+    & > *:nth-child(5) { --stagger: 360ms; }
+    & > *:nth-child(6) { --stagger: 450ms; }
+    & > *:nth-child(7) { --stagger: 540ms; }
+    & > *:nth-child(n + 8) { --stagger: 620ms; }
+
+    &[data-visible] > *,
+    [data-visible] & > * {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* ── Ticker ────────────────────────────────────────────────────────────────────
+   Two identical groups inside a track that scrolls by exactly one group width.
+─────────────────────────────────────────────────────────────────────────────── */
+@utility ticker {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--color-subtle);
+  border-bottom: 1px solid var(--color-subtle);
+  background: color-mix(in srgb, var(--color-bg) 90%, transparent);
+}
+
+@utility ticker-track {
+  display: flex;
+  width: max-content;
+
+  /* the two identical groups */
+  & > div {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ticker-scroll 55s linear infinite;
+
+    &:hover { animation-play-state: paused; }
+  }
+}
+
+@keyframes ticker-scroll {
+  to { transform: translateX(-50%); }
+}
+

@@ -1,28 +1,39 @@
 import { FaGithub } from 'react-icons/fa'
 import { LuBriefcase, LuContact, LuExternalLink, LuMapPin } from 'react-icons/lu'
-import { useEffect, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Trans } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { highlightComponents } from '@/lib/trans'
 import { GITHUB_USERNAME } from '../data'
+import { useRafScroll } from '../hooks/useRafScroll'
 import { useTranslation } from '../i18n/i18n'
 
 export function Hero() {
   const { t } = useTranslation()
   const [scrolled, setScrolled] = useState(false)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const parallax = useMemo(
+    () => window.matchMedia('(prefers-reduced-motion: no-preference)').matches,
+    []
+  )
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  useRafScroll((scrollY) => {
+    setScrolled(scrollY > 60)
+
+    if (!parallax) return
+
+    const content = contentRef.current
+    if (!content) return
+
+    // Content drifts down slower than the page and fades out as it leaves
+    const progress = Math.min(scrollY / window.innerHeight, 1)
+    content.style.transform = `translate3d(0, ${(scrollY * 0.18).toFixed(1)}px, 0)`
+    content.style.opacity = String(Math.max(0, 1 - progress * 1.25))
+  })
 
   return (
-    <section id={'hero'} className={'relative flex min-h-screen flex-col justify-center overflow-hidden grid-bg'}>
-      {/* Background radial glow */}
-      <div className={'pointer-events-none absolute top-1/2 left-1/2 size-150 -translate-1/2 rounded-full glow-accent'}/>
-
-      <div className={'relative container-page pt-32 pb-24'}>
+    <section id={'hero'} className={'relative flex min-h-screen flex-col justify-center overflow-hidden'}>
+      <div ref={contentRef} className={'relative container-page pt-32 pb-24'}>
         {/* Brand mark */}
         <div className={'flex items-baseline font-display text-display font-black tracking-display select-none'}>
           {/* Fixed first slash */}
@@ -34,8 +45,8 @@ export function Hero() {
             <span className={'invisible inline-block w-[0.45em]'}>/</span>
 
             {/* Wordmark */}
-            <span className={'inline-block pr-1 whitespace-nowrap text-foreground motion-safe:animate-name-reveal'}>
-              RMCKR
+            <span className={'inline-block whitespace-nowrap text-foreground motion-safe:animate-name-reveal'}>
+              <span className={'wordmark-sheen pr-1'}>RMCKR</span>
             </span>
 
             {/* Moving slash */}

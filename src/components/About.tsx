@@ -16,15 +16,17 @@ export function About() {
         heading={t('about.heading')}
       />
 
-      <div className={'mt-12 flex flex-col items-start gap-12 lg:flex-row lg:gap-20'}>
+      <div className={'mt-12 flex stagger flex-col items-start gap-12 lg:flex-row lg:gap-20'}>
 
-        {/* Image */}
-        <div className={'w-full lg:w-1/3'}>
-          <div className={'relative border-b-4 border-accent bg-linear-to-t from-accent/50 to-transparent'}>
+        {/* Image: full width on phones, capped from sm up so medium screens don't get a giant portrait */}
+        <div className={'w-full sm:w-1/2 md:w-2/5 lg:w-1/3'}>
+          <div
+            className={'group relative overflow-hidden border-b-4 border-accent bg-linear-to-t from-accent/50 to-transparent'}
+          >
             <img
               src={'/images/portrait.png'}
               alt={'Portrait Lukas Romacker'}
-              className={'size-full px-1'}
+              className={'size-full px-1 transition-transform duration-700 ease-out group-hover:scale-[1.04]'}
             />
           </div>
         </div>

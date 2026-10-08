@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import { FaGithub } from 'react-icons/fa'
+import type { IconType } from 'react-icons'
 import { LuExternalLink, LuFileWarning, LuGitFork, LuGitPullRequest, LuMapPin, LuStar, LuUsersRound } from 'react-icons/lu'
 import { GITHUB_USERNAME } from '../data'
 import type { GHRepo, GHUser } from '../data/github'
 import { useTranslation } from '../i18n/i18n'
+import { Counter } from './Counter'
 import { Section } from './Section'
 import { SectionHeader } from './SectionHeader'
 
@@ -164,6 +166,30 @@ function getGitHubData(): Promise<GitHubData> {
   return githubRequest
 }
 
+// ── Stat card ──────────────────────────────────────────────────────────────────
+// Uses the same card surface and hover treatment as the repository cards.
+
+type StatCardProps = {
+  label: string,
+  value: number,
+  icon: IconType
+}
+
+function StatCard({ label, value, icon: Icon }: StatCardProps) {
+  return (
+    <div className={'card p-4'}>
+      <p className={'font-display text-3xl leading-none font-extrabold tracking-display text-accent'}>
+        <Counter value={value}/>
+      </p>
+
+      <div className={'mt-1.5 flex items-center gap-1.5 meta label'}>
+        <Icon/>
+        <span>{label}</span>
+      </div>
+    </div>
+  )
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function GitHubSection() {
@@ -248,7 +274,7 @@ export function GitHubSection() {
       )}
 
       {!loading && !error && data && (
-        <div className={'grid grid-cols-1 gap-3 lg:grid-cols-[1fr_2fr]'}>
+        <div className={'grid stagger grid-cols-1 gap-3 lg:grid-cols-[1fr_2fr]'}>
 
           {/* ── Left column: profile + stats ── */}
           <div className={'flex flex-col gap-3'}>
@@ -294,7 +320,11 @@ export function GitHubSection() {
                   {data.user.followers && (
                     <div className={'flex items-center gap-1.5 meta'}>
                       <LuUsersRound/>
-                      <span>{data.user.followers} {t('github.followers')}</span>
+                      <span>
+                        <Counter value={data.user.followers}/>
+                        {' '}
+                        {t('github.followers')}
+                      </span>
                     </div>
                   )}
 
@@ -320,45 +350,16 @@ export function GitHubSection() {
             </div>
 
             {/* Stats — two rows of two */}
-            <div className={'grid grid-cols-2 gap-3'}>
-              {[
-                {
-                  label: t('github.stats.stars'),
-                  value: data.totalStars.toLocaleString(),
-                  icon: LuStar
-                },
-                {
-                  label: t('github.stats.forks'),
-                  value: data.totalForks.toLocaleString(),
-                  icon: LuGitFork
-                },
-                {
-                  label: t('github.stats.pullRequests'),
-                  value: data.prCount.toLocaleString(),
-                  icon: LuGitPullRequest
-                },
-                {
-                  label: t('github.stats.issues'),
-                  value: data.issueCount.toLocaleString(),
-                  icon: LuFileWarning
-                }
-              ].map((s) => (
-                <div key={s.label} className={'card p-4'}>
-                  <p className={'font-display text-3xl leading-none font-extrabold tracking-display text-accent'}>
-                    {s.value}
-                  </p>
-
-                  <div className={'mt-1.5 flex items-center gap-1.5 meta label'}>
-                    <s.icon/>
-                    <span>{s.label}</span>
-                  </div>
-                </div>
-              ))}
+            <div className={'grid stagger grid-cols-2 gap-3'}>
+              <StatCard label={t('github.stats.stars')} value={data.totalStars} icon={LuStar}/>
+              <StatCard label={t('github.stats.forks')} value={data.totalForks} icon={LuGitFork}/>
+              <StatCard label={t('github.stats.pullRequests')} value={data.prCount} icon={LuGitPullRequest}/>
+              <StatCard label={t('github.stats.issues')} value={data.issueCount} icon={LuFileWarning}/>
             </div>
           </div>
 
           {/* ── Right column: repos ── */}
-          <div className={'flex flex-col gap-3'}>
+          <div className={'flex stagger flex-col gap-3'}>
             {data.repos.map((repo, i) => (
               <a
                 key={repo.id}

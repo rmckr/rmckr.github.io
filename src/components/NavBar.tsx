@@ -1,13 +1,18 @@
 import { sections } from '@/data/sections'
 import { cn } from '@/lib/utils'
-import { useEffect, useState } from 'react'
+import { useRef, useState } from 'react'
 import { LuLanguages } from 'react-icons/lu'
+import { useRafScroll } from '../hooks/useRafScroll'
 import { useTranslation } from '../i18n/i18n'
 import { Logo } from './Logo'
+
+const SECTION_IDS = ['hero', ...sections.map((item) => item.id)] as const
 
 export function NavBar() {
   const { t, i18n } = useTranslation()
   const [scrolled, setScrolled] = useState(false)
+  const [active, setActive] = useState<string>('hero')
+  const progressRef = useRef<HTMLDivElement>(null)
 
   function languageToggle() {
     void i18n.changeLanguage(
@@ -15,11 +20,25 @@ export function NavBar() {
     )
   }
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  useRafScroll((scrollY) => {
+    setScrolled(scrollY > 40)
+
+    // Reading progress across the very top edge of the bar
+    const doc = document.documentElement
+    const max = doc.scrollHeight - window.innerHeight
+    const progress = max > 0 ? Math.min(scrollY / max, 1) : 0
+    if (progressRef.current) {
+      progressRef.current.style.transform = `scaleX(${progress.toFixed(4)})`
+    }
+
+    // Section currently under the nav
+    let current: string = SECTION_IDS[0]
+    for (const id of SECTION_IDS) {
+      const el = document.getElementById(id)
+      if (el && el.getBoundingClientRect().top <= 140) current = id
+    }
+    setActive((previous) => previous === current ? previous : current)
+  }, true)
 
   return (
     <nav
@@ -38,15 +57,32 @@ export function NavBar() {
 
         {/* Nav links */}
         <div className={'hidden items-center justify-center gap-8 md:flex'}>
-          {sections.map((item) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              className={'text-sm link-muted'}
-            >
-              {t(item.labelKey)}
-            </a>
-          ))}
+          {sections.map((item) => {
+            const isActive = active === item.id
+
+            return (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                aria-current={isActive ? 'true' : undefined}
+                className={cn(
+                  'group relative py-1 text-sm link-muted',
+                  isActive && 'text-foreground'
+                )}
+              >
+                {t(item.labelKey)}
+
+                {/* Sliding underline: active section, or the hovered link */}
+                <span
+                  aria-hidden={'true'}
+                  className={cn(
+                    'absolute inset-x-0 -bottom-0.5 h-px origin-left bg-accent transition-transform duration-300 ease-out',
+                    isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                  )}
+                />
+              </a>
+            )
+          })}
         </div>
 
         {/* Actions */}
@@ -65,6 +101,14 @@ export function NavBar() {
           </a>
         </div>
       </div>
+
+      {/* Reading progress */}
+      <div
+        ref={progressRef}
+        aria-hidden={'true'}
+        style={{ transform: 'scaleX(0)' }}
+        className={'absolute inset-x-0 bottom-0 h-px origin-left bg-accent'}
+      />
     </nav>
   )
 }

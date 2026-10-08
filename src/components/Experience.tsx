@@ -50,12 +50,18 @@ function TimelineEntry({ entry, index, total }: TimelineEntryProps) {
     <div ref={ref} className={'relative flex gap-6'}>
       {/* Rail */}
       <div className={'flex w-5 shrink-0 flex-col items-center'}>
-        <div
-          className={cn(
-            'z-10 mt-1 size-2.5 rounded-full border-2 border-accent transition-[background-color,box-shadow] duration-300',
-            dotActive ? 'bg-accent shadow-[0_0_8px] shadow-accent/50' : 'bg-bg'
-          )}
-        />
+        <span className={'relative z-10 mt-1 block size-2.5'}>
+          <span
+            className={cn(
+              'block size-full rounded-full border-2 border-accent transition-[background-color,box-shadow] duration-300',
+              dotActive ? 'bg-accent shadow-[0_0_8px] shadow-accent/50' : 'bg-bg'
+            )}
+          />
+
+          {/* ripple while the entry is in focus */}
+          {dotActive &&
+            <span className={'absolute inset-0 rounded-full bg-accent motion-safe:animate-ping'}/>}
+        </span>
         {!isLast && (
           <div className={'relative mt-1 w-1 flex-1 overflow-hidden bg-subtle'}>
             {/* animated fill — height is dynamic, inline style is correct */}
@@ -90,7 +96,7 @@ export function Experience() {
   const entries = t('experience.entries', { returnObjects: true }) as ExperienceEntry[]
 
   return (
-    <Section id={'experience'} contentClassName={'grid grid-cols-1 lg:grid-cols-5 gap-16 items-start'}>
+    <Section id={'experience'} contentClassName={'grid grid-cols-1 lg:grid-cols-5 gap-16 items-start stagger'}>
       {/* Left — text */}
       <div className={'lg:col-span-3'}>
         <SectionHeader label={t('experience.label')} heading={t('experience.heading')}/>
@@ -102,7 +108,7 @@ export function Experience() {
 
       {/* Right — education timeline */}
       <div className={'lg:col-span-2'}>
-        {[...entries].reverse().map((entry, i, arr) => (
+        {entries.map((entry, i, arr) => (
           <TimelineEntry
             key={entry.period + entry.title}
             entry={entry}
