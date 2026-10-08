@@ -3,168 +3,11 @@ import { FaGithub } from 'react-icons/fa'
 import type { IconType } from 'react-icons'
 import { LuExternalLink, LuFileWarning, LuGitFork, LuGitPullRequest, LuMapPin, LuStar, LuUsersRound } from 'react-icons/lu'
 import { GITHUB_USERNAME } from '../data'
-import type { GHRepo, GHUser } from '../data/github'
+import { loadGitHub, type GitHubData } from '../data/loadGitHub'
 import { useTranslation } from '../i18n/i18n'
 import { Counter } from './Counter'
 import { Section } from './Section'
 import { SectionHeader } from './SectionHeader'
-
-// ── GitHub API ────────────────────────────────────────────────────────────────
-
-const CACHE_KEY = `github-section:${GITHUB_USERNAME}`
-const CACHE_TTL = 10 * 60 * 1000 // 10 minutes
-
-let githubRequest: Promise<GitHubData> | null = null
-
-async function fetchJson<T>(url: string): Promise<T> {
-  const response = await fetch(url, { headers: { Accept: 'application/vnd.github+json' } })
-
-  if (!response.ok) {
-    throw new Error(`GitHub API error: ${response.status}`)
-  }
-
-  return (await response.json()) as T
-}
-
-// ── Types ─────────────────────────────────────────────────────────────────────
-
-type LangColors = Record<string, { color: string | null }>
-
-type GitHubData = {
-  user: GHUser,
-  repos: GHRepo[],
-  totalStars: number,
-  totalForks: number,
-  prCount: number,
-  issueCount: number,
-  langColors: LangColors
-}
-
-type CachedGitHubData = {
-  timestamp: number,
-  data: GitHubData
-}
-
-// ── Cache ─────────────────────────────────────────────────────────────────────
-
-function readCache(): GitHubData | null {
-  try {
-    const raw = localStorage.getItem(CACHE_KEY)
-
-    if (!raw) {
-      return null
-    }
-
-    const cached = JSON.parse(raw) as CachedGitHubData
-
-    if (Date.now() - cached.timestamp > CACHE_TTL) {
-      localStorage.removeItem(CACHE_KEY)
-      return null
-    }
-
-    return cached.data
-  } catch {
-    return null
-  }
-}
-
-function writeCache(data: GitHubData): void {
-  try {
-    const cached: CachedGitHubData = {
-      timestamp: Date.now(),
-      data
-    }
-
-    localStorage.setItem(CACHE_KEY, JSON.stringify(cached))
-  } catch {
-    // localStorage may be unavailable or full.
-    // The GitHub request can still succeed without caching.
-  }
-}
-
-function clearCache(): void {
-  try {
-    localStorage.removeItem(CACHE_KEY)
-  } catch {
-    // Ignore storage errors.
-  }
-}
-
-// ── GitHub data loader ────────────────────────────────────────────────────────
-
-async function requestGitHubData(): Promise<GitHubData> {
-  const [
-    user,
-    allRepos,
-    prResult,
-    issueResult,
-    langColors
-  ] = await Promise.all([
-    fetchJson<GHUser>(
-      `https://api.github.com/users/${GITHUB_USERNAME}`
-    ),
-
-    fetchJson<GHRepo[]>(
-      `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=stars&per_page=100`
-    ),
-
-    fetchJson<{ total_count: number }>(
-      `https://api.github.com/search/issues?q=author:${GITHUB_USERNAME}+type:pr&per_page=1`
-    ),
-
-    fetchJson<{ total_count: number }>(
-      `https://api.github.com/search/issues?q=author:${GITHUB_USERNAME}+type:issue&per_page=1`
-    ),
-
-    fetchJson<LangColors>(
-      'https://raw.githubusercontent.com/ozh/github-colors/master/colors.json'
-    )
-  ])
-
-  const ownRepos = allRepos.filter((repo) => !repo.fork)
-
-  const sortedRepos = [...ownRepos].sort(
-    (a, b) => b.stargazers_count - a.stargazers_count
-  )
-
-  const data: GitHubData = {
-    user,
-    repos: sortedRepos.slice(0, 4),
-    totalStars: ownRepos.reduce(
-      (sum, repo) => sum + repo.stargazers_count,
-      0
-    ),
-    totalForks: ownRepos.reduce(
-      (sum, repo) => sum + repo.forks_count,
-      0
-    ),
-    prCount: prResult.total_count,
-    issueCount: issueResult.total_count,
-    langColors
-  }
-
-  writeCache(data)
-
-  return data
-}
-
-function getGitHubData(): Promise<GitHubData> {
-  const cached = readCache()
-
-  if (cached) {
-    return Promise.resolve(cached)
-  }
-
-  if (githubRequest) {
-    return githubRequest
-  }
-
-  githubRequest = requestGitHubData().finally(() => {
-    githubRequest = null
-  })
-
-  return githubRequest
-}
 
 // ── Stat card ──────────────────────────────────────────────────────────────────
 // Uses the same card surface and hover treatment as the repository cards.
@@ -190,7 +33,7 @@ function StatCard({ label, value, icon: Icon }: StatCardProps) {
   )
 }
 
-// ── Component ─────────────────────────────────────────────────────────────────
+// ── Component ──────────────────────────────────────────────────────────────────
 
 export function GitHubSection() {
   const { t } = useTranslation()
@@ -199,55 +42,22 @@ export function GitHubSection() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
-  const loadGitHub = useCallback(async (force = false): Promise<void> => {
-    setLoading(true)
-    setError(false)
+  const request = useCallback((force = false) => loadGitHub(force), [])
 
-    if (force) {
-      clearCache()
-    }
-
-    try {
-      const githubData = await getGitHubData()
-
-      setData(githubData)
-    } catch {
-      setError(true)
-    } finally {
-      setLoading(false)
-    }
+  const apply = useCallback((result: GitHubData): void => {
+    setData(result)
+    setLoading(false)
   }, [])
 
+  const fail = useCallback((): void => {
+    setError(true)
+    setLoading(false)
+  }, [])
+
+  // The rule allows setState in promise callbacks, not in the effect body itself.
   useEffect(() => {
-    let active = true
-
-    const load = async (): Promise<void> => {
-      setLoading(true)
-      setError(false)
-
-      try {
-        const githubData = await getGitHubData()
-
-        if (active) {
-          setData(githubData)
-        }
-      } catch {
-        if (active) {
-          setError(true)
-        }
-      } finally {
-        if (active) {
-          setLoading(false)
-        }
-      }
-    }
-
-    void load()
-
-    return () => {
-      active = false
-    }
-  }, [])
+    request().then(apply, fail)
+  }, [request, apply, fail])
 
   return (
     <Section id={'github'}>
@@ -265,7 +75,11 @@ export function GitHubSection() {
 
           <button
             type={'button'}
-            onClick={() => { void loadGitHub(true) }}
+            onClick={() => {
+              setLoading(true)
+              setError(false)
+              request(true).then(apply, fail)
+            }}
             className={'btn-secondary shrink-0'}
           >
             {t('github.retry')}
@@ -285,19 +99,11 @@ export function GitHubSection() {
 
               <div className={'flex flex-col gap-4'}>
                 <div className={'flex items-center gap-3'}>
-                  {data.user.avatar_url ?
-                    (
-                      <img
-                        src={data.user.avatar_url}
-                        alt={data.user.name ?? data.user.login}
-                        className={'size-12 shrink-0 rounded-full border border-subtle'}
-                      />
-                    ) :
-                    (
-                      <div className={'flex size-12 shrink-0 items-center justify-center rounded-full bg-accent-dim text-accent'}>
-                        <FaGithub size={22}/>
-                      </div>
-                    )}
+                  <img
+                    src={data.user.avatar_url}
+                    alt={data.user.name ?? data.user.login}
+                    className={'size-12 shrink-0 rounded-full border border-subtle'}
+                  />
 
                   <div>
                     <p className={'font-display text-lg/tight font-extrabold text-foreground'}>
@@ -317,7 +123,7 @@ export function GitHubSection() {
                 )}
 
                 <div className={'flex flex-col gap-1'}>
-                  {data.user.followers && (
+                  {data.user.followers > 0 && (
                     <div className={'flex items-center gap-1.5 meta'}>
                       <LuUsersRound/>
                       <span>

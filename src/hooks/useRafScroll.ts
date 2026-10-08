@@ -12,10 +12,10 @@ type TickCallback = (scrollY: number) => void
  * don't need to memoize it.
  */
 export function useRafScroll(onTick: TickCallback, withResize = false) {
-  const latest = useRef(onTick)
+  const latestRef = useRef(onTick)
 
   useEffect(() => {
-    latest.current = onTick
+    latestRef.current = onTick
   })
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export function useRafScroll(onTick: TickCallback, withResize = false) {
 
     const tick = () => {
       frame = 0
-      latest.current(window.scrollY)
+      latestRef.current(window.scrollY)
     }
 
     const schedule = () => {
