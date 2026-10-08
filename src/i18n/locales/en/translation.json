@@ -20,21 +20,21 @@
   "experience": {
     "label": "Experience",
     "heading": "From theory to practice.",
-    "desc": "This timeline gives a quick overview of my academic background and the practical experience I've gained along the way. It starts with my current master's degree and goes back through my bachelor's degree and the practical work that was part of it.",
+    "desc": "A look at the different stages of my journey through computer science, shaped by a mix of academic study and practical experience. From my first steps in software development to my current studies, each stage has brought new perspectives, challenges, and things to explore.",
     "entries": [
-      {
-        "title": "M.Sc. Computer Science",
-        "note": "(ongoing)",
-        "organisation": "Ulm University",
-        "period": "2026 — present",
-        "desc": "Currently studying Computer Science at Ulm University."
-      },
       {
         "title": "B.Sc. Computer Science",
         "note": "(dual studies)",
         "organisation": "HTWK Leipzig",
         "period": "2022 — 2026",
         "desc": "Completed a dual-study degree combining academic coursework with practical software development at T-Systems International GmbH. Worked primarily on a large Vue frontend project as part of a larger development team."
+      },
+      {
+        "title": "M.Sc. Computer Science",
+        "note": "(ongoing)",
+        "organisation": "Ulm University",
+        "period": "2026 — present",
+        "desc": "Currently studying Computer Science at Ulm University."
       }
     ]
   },

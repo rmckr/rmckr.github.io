@@ -10,10 +10,12 @@ export function Contact() {
   const { t } = useTranslation()
 
   return (
-    <Section id={'contact'} className={'grid-bg'}>
+    // See-through by design (#contact is transparent in index.css) so the
+    // ambient grid runs right through this section
+    <Section id={'contact'}>
       <SectionHeader label={t('contact.label')} heading={t('contact.heading')}/>
 
-      <div className={'max-w-2xl'}>
+      <div className={'max-w-2xl stagger'}>
         <p className={'mb-10 copy'}>
           <Trans i18nKey={'contact.desc'} components={highlightComponents}/>
         </p>
@@ -23,7 +25,13 @@ export function Contact() {
           className={'group mb-12 inline-flex items-center gap-3 text-lg font-semibold text-accent transition-colors duration-200 hover:text-foreground'}
         >
           <LuMail size={18}/>
-          <span>{CONTACT_EMAIL}</span>
+          <span className={'relative'}>
+            {CONTACT_EMAIL}
+            <span
+              aria-hidden={'true'}
+              className={'absolute inset-x-0 -bottom-1 h-px origin-left scale-x-0 bg-current transition-transform duration-300 ease-out group-hover:scale-x-100'}
+            />
+          </span>
           <LuExternalLink size={12} className={'icon-nudge'}/>
         </a>
 
@@ -34,7 +42,7 @@ export function Contact() {
               href={link.href}
               target={'_blank'}
               rel={'noreferrer'}
-              className={'inline-flex items-center gap-1.5 font-mono text-sm link-muted'}
+              className={'inline-flex items-center gap-1.5 font-mono text-sm link-muted transition-transform duration-200 hover:-translate-y-0.5'}
             >
               <link.icon/>
               {link.label}

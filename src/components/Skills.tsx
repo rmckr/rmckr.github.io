@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { useTranslation } from '../i18n/i18n'
+import { Counter } from './Counter'
 import { Section } from './Section'
 import { SectionHeader } from './SectionHeader'
 import { skills, tagColors } from '../data'
@@ -21,7 +22,7 @@ export function Skills() {
         heading={t('skills.heading')}
       />
 
-      <div className={'grid grid-cols-1 gap-y-10 md:grid-cols-3 md:divide-x md:divide-subtle'}>
+      <div className={'grid stagger grid-cols-1 gap-y-10 md:grid-cols-3 md:divide-x md:divide-subtle'}>
         {[3, 2, 1].map((tier) => {
           const items = skills.filter((skill) => skill.tier === tier)
 
@@ -37,9 +38,10 @@ export function Skills() {
               <div className={'mb-8 flex items-end justify-between gap-4'}>
                 <h3 className={'text-xl'}>{label}</h3>
 
-                <span className={'font-display text-xl font-extrabold text-accent'}>
-                  {String(items.length)}
-                </span>
+                <Counter
+                  value={items.length}
+                  className={'font-display text-xl font-extrabold text-accent'}
+                />
               </div>
 
               <ul>
@@ -50,9 +52,11 @@ export function Skills() {
                   return (
                     <li
                       key={skill.name}
-                      className={cn('transition-opacity duration-200', visible ? 'opacity-100' : 'opacity-20')}
+                      className={cn('group transition-opacity duration-200', visible ? 'opacity-100' : 'opacity-20')}
                     >
-                      <div className={'flex items-center justify-between gap-4 py-3'}>
+                      <div
+                        className={'flex items-center justify-between gap-4 py-3 transition-transform duration-300 ease-out group-hover:translate-x-1.5'}
+                      >
                         <div className={'flex min-w-0 items-center gap-2.5'}>
                           <skill.icon size={20}/>
                           <span className={'text-sm text-foreground'}>
