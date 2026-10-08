@@ -1,23 +1,26 @@
+import { Fragment } from 'react'
 import { skills } from '@/data'
 
 /**
  * Full-bleed marquee strip: one group of stack keywords rendered twice inside a
  * track that scrolls by exactly one group width (see `ticker-*` in index.css).
- * Cells centre their `// SKILL` label, pause on hover and stay static when the
- * user prefers reduced motion.
+ * Each skill renders as its own `//` mark plus an icon and its uppercase name,
+ * so every pair sits midway between two `//` marks (padding-based gaps keep
+ * the rhythm seamless across the group join); cells pause on hover and stay
+ * static for reduced-motion users.
  */
 export function Ticker() {
   const group = (
-    <div aria-hidden={'true'}>
+    <div aria-hidden={'true'} className={'py-4 meta uppercase select-none'}>
       {skills.map((skill) => (
-        <span
-          key={skill.name}
-          className={'flex shrink-0 items-center justify-center gap-2.5 px-7 py-4 meta tracking-widest whitespace-nowrap uppercase select-none'}
-        >
+        <Fragment key={skill.name}>
           {/* eslint-disable-next-line @eslint-react/jsx-no-comment-textnodes */}
-          <span className={'text-accent'}>//</span>
-          {skill.name}
-        </span>
+          <span className={'px-5 text-accent'}>//</span>
+          <span className={'flex shrink-0 items-center justify-center gap-2.5 px-5'}>
+            <skill.icon size={20}/>
+            {skill.name}
+          </span>
+        </Fragment>
       ))}
     </div>
   )
