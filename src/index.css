@@ -459,6 +459,80 @@
   }
 }
 
+/* ── Timeline ─────────────────────────────────────────────────────────────────
+   One observer per entry (useReveal sets data-visible on it): the rail draws
+   a one-shot stretch, then the entry's dot ignites the moment the rail lands.
+   The final dot has no rail above it to wait for, so it lights immediately.
+   No scroll scrubbing; reduced-motion users get the finished state, no ripple.
+──────────────────────────────────────────────────────────────────────────── */
+@utility timeline-entry {
+  /* anchor for the per-entry reveal; the ripple stays invisible unless its
+     animation runs */
+  & .timeline-ping {
+    opacity: 0;
+  }
+}
+
+@utility timeline-dot {
+  @media (prefers-reduced-motion: no-preference) {
+    /* :is() raises specificity so these outrank bg-accent from JSX;
+       delay = rail duration (0.1s + 1s), so the dot lands with the line */
+    :is(.timeline-entry) & {
+      background-color: var(--color-bg);
+      box-shadow: 0 0 8px color-mix(in oklab, var(--color-accent) 0%, transparent);
+      transition:
+        background-color 0.3s ease 1.1s,
+        box-shadow 0.3s ease 1.1s;
+    }
+
+    :is(.timeline-entry[data-visible]) & {
+      background-color: var(--color-accent);
+      box-shadow: 0 0 8px color-mix(in oklab, var(--color-accent) 50%, transparent);
+    }
+
+    /* the last entry has no rail — nothing to wait for */
+    :is(.timeline-entry:last-child) & {
+      transition-delay: 0s;
+    }
+  }
+}
+
+@utility timeline-fill {
+  @media (prefers-reduced-motion: no-preference) {
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 1s var(--ease-out-expo) 0.1s;
+
+    :is(.timeline-entry[data-visible]) & {
+      transform: scaleY(1);
+    }
+  }
+}
+
+@utility timeline-ping {
+  @media (prefers-reduced-motion: no-preference) {
+    :is(.timeline-entry[data-visible]) & {
+      animation: timeline-ping 0.8s ease-out 1.1s 1 both;
+    }
+
+    :is(.timeline-entry:last-child) & {
+      animation-delay: 0s;
+    }
+  }
+}
+
+@keyframes timeline-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
 @keyframes ticker-scroll {
   to { transform: translateX(-50%); }
 }

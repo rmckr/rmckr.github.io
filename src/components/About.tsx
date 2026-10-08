@@ -26,6 +26,10 @@ export function About() {
             <img
               src={'/images/portrait.png'}
               alt={'Portrait Lukas Romacker'}
+              width={2775}
+              height={2580}
+              loading={'lazy'}
+              decoding={'async'}
               className={'size-full px-1 transition-transform duration-700 ease-out group-hover:scale-[1.04]'}
             />
           </div>
