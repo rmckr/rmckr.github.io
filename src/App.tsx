@@ -9,16 +9,18 @@ export default function App() {
   return (
     <>
       {/* Fixed ambient layer (horizon grid, glow, cursor spotlight) */}
-      <Backdrop/>
+      <Backdrop />
 
       {/* Everything above it, so translucent section backgrounds let it show through */}
       <div className={'relative z-10'}>
-        <div className={'noise'} aria-hidden={'true'}/>
-        <NavBar/>
-        <Hero/>
-        <Ticker/>
-        {sections.map((item) => <item.Section key={item.id}/>)}
-        <Footer/>
+        <div className={'noise'} aria-hidden={'true'} />
+        <NavBar />
+        <Hero />
+        <Ticker />
+        {sections.map((item) => (
+          <item.Section key={item.id} />
+        ))}
+        <Footer />
       </div>
     </>
   )

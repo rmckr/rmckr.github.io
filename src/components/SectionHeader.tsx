@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 
 type SectionHeaderProps = {
-  label: string,
+  label: string
   heading: string
 }
 
@@ -48,8 +48,7 @@ export function SectionHeader({ label, heading }: SectionHeaderProps) {
                   <Fragment key={wordKeys[wordAt]}>
                     <span className={'word-mask'}>
                       <span style={{ transitionDelay: `${index * 60}ms` }}>{word}</span>
-                    </span>
-                    {' '}
+                    </span>{' '}
                   </Fragment>
                 )
               })}

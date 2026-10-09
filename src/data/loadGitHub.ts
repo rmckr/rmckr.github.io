@@ -6,17 +6,17 @@ import type { GHRepo, GHUser } from './github'
 type LangColors = Record<string, { color: string | null }>
 
 export type GitHubData = {
-  user: GHUser,
-  repos: GHRepo[],
-  totalStars: number,
-  totalForks: number,
-  prCount: number,
-  issueCount: number,
+  user: GHUser
+  repos: GHRepo[]
+  totalStars: number
+  totalForks: number
+  prCount: number
+  issueCount: number
   langColors: LangColors
 }
 
 type CachedGitHubData = {
-  timestamp: number,
+  timestamp: number
   data: GitHubData
 }
 
@@ -36,7 +36,7 @@ const CACHE_TTL = 10 * 60 * 1000 // 10 minutes
 function readCache(store: CacheStore): CachedGitHubData | null {
   try {
     const raw = store.getItem(CACHE_KEY)
-    return raw ? JSON.parse(raw) as CachedGitHubData : null
+    return raw ? (JSON.parse(raw) as CachedGitHubData) : null
   } catch {
     return null
   }
@@ -78,24 +78,14 @@ async function fetchJson<T>(url: string): Promise<T> {
     throw new Error(`GitHub API error: ${response.status}`)
   }
 
-  return await response.json() as T
+  return (await response.json()) as T
 }
 
 async function requestGitHubData(): Promise<GitHubData> {
-  const [
-    user,
-    allRepos,
-    prResult,
-    issueResult,
-    langColors
-  ] = await Promise.all([
-    fetchJson<GHUser>(
-      `https://api.github.com/users/${GITHUB_USERNAME}`
-    ),
+  const [user, allRepos, prResult, issueResult, langColors] = await Promise.all([
+    fetchJson<GHUser>(`https://api.github.com/users/${GITHUB_USERNAME}`),
 
-    fetchJson<GHRepo[]>(
-      `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100`
-    ),
+    fetchJson<GHRepo[]>(`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100`),
 
     fetchJson<{ total_count: number }>(
       `https://api.github.com/search/issues?q=author:${GITHUB_USERNAME}+type:pr&per_page=1`
@@ -113,21 +103,13 @@ async function requestGitHubData(): Promise<GitHubData> {
 
   const ownRepos = allRepos.filter((repo) => !repo.fork)
 
-  const repos = [...ownRepos]
-    .sort((a, b) => b.stargazers_count - a.stargazers_count)
-    .slice(0, 4)
+  const repos = [...ownRepos].sort((a, b) => b.stargazers_count - a.stargazers_count).slice(0, 4)
 
   return {
     user,
     repos,
-    totalStars: ownRepos.reduce(
-      (sum, repo) => sum + repo.stargazers_count,
-      0
-    ),
-    totalForks: ownRepos.reduce(
-      (sum, repo) => sum + repo.forks_count,
-      0
-    ),
+    totalStars: ownRepos.reduce((sum, repo) => sum + repo.stargazers_count, 0),
+    totalForks: ownRepos.reduce((sum, repo) => sum + repo.forks_count, 0),
     prCount: prResult.total_count,
     issueCount: issueResult.total_count,
     langColors
@@ -146,7 +128,9 @@ let inFlight: Promise<GitHubData> | null = null
 export function loadGitHub(force = false): Promise<GitHubData> {
   if (inFlight) return inFlight
 
-  inFlight = load(force).finally(() => { inFlight = null })
+  inFlight = load(force).finally(() => {
+    inFlight = null
+  })
   return inFlight
 }
 

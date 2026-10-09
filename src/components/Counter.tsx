@@ -2,9 +2,9 @@ import { useCountUp } from '../hooks/useCountUp'
 
 type CounterProps = {
   /** Final value, counted up from 0 once scrolled into view */
-  value: number,
+  value: number
   /** Display formatter, defaults to the locale-aware number (e.g. 1,234) */
-  format?: (n: number) => string,
+  format?: (n: number) => string
   className?: string
 }
 

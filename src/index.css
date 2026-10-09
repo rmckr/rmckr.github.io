@@ -46,18 +46,32 @@
   --animate-slash-reveal: slash-reveal 1.4s var(--ease-out-expo) 0.35s both;
 
   @keyframes name-reveal {
-    from { clip-path: polygon(100% 0%, 100% 0%, 100% 100%, 87% 100%); }
-    to { clip-path: polygon(0% 0%, 100% 0%, 100% 100%, -13% 100%); }
+    from {
+      clip-path: polygon(100% 0%, 100% 0%, 100% 100%, 87% 100%);
+    }
+    to {
+      clip-path: polygon(0% 0%, 100% 0%, 100% 100%, -13% 100%);
+    }
   }
 
   @keyframes slash-reveal {
-    from { left: calc(100% - 0.45em); }
-    to { left: 0; }
+    from {
+      left: calc(100% - 0.45em);
+    }
+    to {
+      left: 0;
+    }
   }
 
   @keyframes fade-up {
-    from { opacity: 0; transform: translateY(1.25rem); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(1.25rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
 
@@ -154,7 +168,7 @@
 
 /* Uppercase mono label. Pair with a text-size and colour utility. */
 @utility label {
-  @apply font-mono uppercase tracking-wider;
+  @apply font-mono tracking-wider uppercase;
 }
 
 /* Muted body copy for lead paragraphs (about, experience, contact) */
@@ -215,7 +229,9 @@
   }
 
   @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    &:hover::after { transform: translateX(130%); }
+    &:hover::after {
+      transform: translateX(130%);
+    }
   }
 }
 
@@ -258,7 +274,9 @@
   @media (prefers-reduced-motion: no-preference) {
     opacity: 0;
     transform: translateY(1.5rem);
-    transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+    transition:
+      opacity 0.8s var(--ease-out-expo),
+      transform 0.8s var(--ease-out-expo);
 
     &[data-visible] {
       opacity: 1;
@@ -282,7 +300,11 @@
   overflow: hidden;
   pointer-events: none;
   background:
-    radial-gradient(120% 60% at 50% 42%, color-mix(in srgb, var(--color-accent) 6%, transparent), transparent 70%),
+    radial-gradient(
+      120% 60% at 50% 42%,
+      color-mix(in srgb, var(--color-accent) 6%, transparent),
+      transparent 70%
+    ),
     linear-gradient(180deg, #0a0a0a 0%, #080808 55%, #060606 100%);
 }
 
@@ -294,7 +316,11 @@
   width: min(1500px, 170vw);
   height: 44vh;
   transform: translate(-50%, -50%);
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-accent) 15%, transparent), transparent 72%);
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--color-accent) 15%, transparent),
+    transparent 72%
+  );
 
   @media (prefers-reduced-motion: no-preference) {
     animation: glow-breathe 8s ease-in-out infinite;
@@ -311,7 +337,13 @@
   perspective: 500px;
   perspective-origin: 50% 0%;
   mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 84%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 84%, transparent 100%);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 30%,
+    #000 84%,
+    transparent 100%
+  );
 }
 
 /* The grid plane: rotated flat, anchored above the top edge, scrolling toward you */
@@ -324,8 +356,16 @@
   transform-origin: 50% 0%;
   transform: translate3d(var(--bx, 0px), var(--by, 0px), 0) rotateX(60deg);
   background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--color-foreground) 5%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--color-foreground) 5%, transparent) 1px, transparent 1px);
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-foreground) 5%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-foreground) 5%, transparent) 1px,
+      transparent 1px
+    );
   background-size: 64px 64px;
 
   @media (prefers-reduced-motion: no-preference) {
@@ -340,13 +380,28 @@
 }
 
 @keyframes floor-approach {
-  from { background-position: 0 0, 0 0; }
-  to { background-position: 0 64px, 0 64px; }
+  from {
+    background-position:
+      0 0,
+      0 0;
+  }
+  to {
+    background-position:
+      0 64px,
+      0 64px;
+  }
 }
 
 @keyframes glow-breathe {
-  0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.06); }
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.06);
+  }
 }
 
 /* ── Word-by-word heading reveal ──────────────────────────────────────────────
@@ -396,8 +451,12 @@
 }
 
 @keyframes wordmark-sheen {
-  from { background-position: 130% 0; }
-  to { background-position: 0 0; }
+  from {
+    background-position: 130% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
 }
 
 /* ── Staggered children ───────────────────────────────────────────────────────
@@ -414,13 +473,27 @@
         transform 0.7s var(--ease-out-expo) var(--stagger, 0ms);
     }
 
-    & > *:nth-child(2) { --stagger: 90ms; }
-    & > *:nth-child(3) { --stagger: 180ms; }
-    & > *:nth-child(4) { --stagger: 270ms; }
-    & > *:nth-child(5) { --stagger: 360ms; }
-    & > *:nth-child(6) { --stagger: 450ms; }
-    & > *:nth-child(7) { --stagger: 540ms; }
-    & > *:nth-child(n + 8) { --stagger: 620ms; }
+    & > *:nth-child(2) {
+      --stagger: 90ms;
+    }
+    & > *:nth-child(3) {
+      --stagger: 180ms;
+    }
+    & > *:nth-child(4) {
+      --stagger: 270ms;
+    }
+    & > *:nth-child(5) {
+      --stagger: 360ms;
+    }
+    & > *:nth-child(6) {
+      --stagger: 450ms;
+    }
+    & > *:nth-child(7) {
+      --stagger: 540ms;
+    }
+    & > *:nth-child(n + 8) {
+      --stagger: 620ms;
+    }
 
     &[data-visible] > *,
     [data-visible] & > * {
@@ -455,7 +528,9 @@
   @media (prefers-reduced-motion: no-preference) {
     animation: ticker-scroll 55s linear infinite;
 
-    &:hover { animation-play-state: paused; }
+    &:hover {
+      animation-play-state: paused;
+    }
   }
 }
 
@@ -534,6 +609,7 @@
 }
 
 @keyframes ticker-scroll {
-  to { transform: translateX(-50%); }
+  to {
+    transform: translateX(-50%);
+  }
 }
-

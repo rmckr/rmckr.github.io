@@ -51,11 +51,11 @@ export function Backdrop() {
 
   return (
     <div ref={rootRef} className={'ambient'} aria-hidden={'true'}>
-      <div className={'ambient-glow'}/>
+      <div className={'ambient-glow'} />
       <div className={'ambient-floor'}>
-        <div className={'ambient-plane'}/>
+        <div className={'ambient-plane'} />
       </div>
-      <div className={'ambient-vignette'}/>
+      <div className={'ambient-vignette'} />
     </div>
   )
 }

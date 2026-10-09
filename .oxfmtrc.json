@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "tabWidth": 2,
+  "useTabs": false,
+  "singleQuote": true,
+  "jsxSingleQuote": true,
+  "semi": false,
+  "arrowParens": "always",
+  "quoteProps": "as-needed",
+  "trailingComma": "none",
+  "bracketSpacing": true,
+  "experimentalTailwindcss": {
+    "stylesheet": "./src/index.css",
+    "functions": ["clsx", "twMerge", "cn"]
+  },
+  "ignorePatterns": ["dist/"]
+}

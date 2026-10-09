@@ -3,10 +3,10 @@ import type { ReactNode } from 'react'
 import { useReveal } from '../hooks/useReveal'
 
 type SectionProps = {
-  id: string,
-  children: ReactNode,
+  id: string
+  children: ReactNode
   /** Extra classes for the full-bleed <section> */
-  className?: string,
+  className?: string
   /** Extra classes for the inner content wrapper (the element that fades in) */
   contentClassName?: string
 }

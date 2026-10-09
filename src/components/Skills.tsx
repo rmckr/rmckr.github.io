@@ -10,28 +10,24 @@ export function Skills() {
   const { t } = useTranslation()
   const [filter, setFilter] = useState<string | null>(null)
 
-  const tags = useMemo(
-    () => [...new Set(skills.map((skill) => skill.tag))],
-    []
-  )
+  const tags = useMemo(() => [...new Set(skills.map((skill) => skill.tag))], [])
 
   return (
     <Section id={'skills'}>
-      <SectionHeader
-        label={t('skills.label')}
-        heading={t('skills.heading')}
-      />
+      <SectionHeader label={t('skills.label')} heading={t('skills.heading')} />
 
-      <div className={'grid stagger grid-cols-1 gap-y-10 md:grid-cols-3 md:divide-x md:divide-subtle'}>
+      <div
+        className={'grid stagger grid-cols-1 gap-y-10 md:grid-cols-3 md:divide-x md:divide-subtle'}
+      >
         {[3, 2, 1].map((tier) => {
           const items = skills.filter((skill) => skill.tier === tier)
 
           const label =
-            tier === 3 ?
-              t('skills.tiers.advanced') :
-              tier === 2 ?
-                t('skills.tiers.proficient') :
-                t('skills.tiers.basic')
+            tier === 3
+              ? t('skills.tiers.advanced')
+              : tier === 2
+                ? t('skills.tiers.proficient')
+                : t('skills.tiers.basic')
 
           return (
             <div key={tier} className={'py-2 md:px-6 md:first:pl-0 md:last:pr-0'}>
@@ -46,22 +42,24 @@ export function Skills() {
 
               <ul>
                 {items.map((skill) => {
-                  const visible =
-                    filter === null || filter === skill.tag
+                  const visible = filter === null || filter === skill.tag
 
                   return (
                     <li
                       key={skill.name}
-                      className={cn('group transition-opacity duration-200', visible ? 'opacity-100' : 'opacity-20')}
+                      className={cn(
+                        'group transition-opacity duration-200',
+                        visible ? 'opacity-100' : 'opacity-20'
+                      )}
                     >
                       <div
-                        className={'flex items-center justify-between gap-4 py-3 transition-transform duration-300 ease-out group-hover:translate-x-1.5'}
+                        className={
+                          'flex items-center justify-between gap-4 py-3 transition-transform duration-300 ease-out group-hover:translate-x-1.5'
+                        }
                       >
                         <div className={'flex min-w-0 items-center gap-2.5'}>
-                          <skill.icon size={20}/>
-                          <span className={'text-sm text-foreground'}>
-                            {skill.name}
-                          </span>
+                          <skill.icon size={20} />
+                          <span className={'text-sm text-foreground'}>{skill.name}</span>
                         </div>
 
                         <span
@@ -101,7 +99,7 @@ export function Skills() {
             aria-pressed={filter === tag}
             className={'flex items-center gap-2 link-muted aria-pressed:text-foreground'}
           >
-            <span className={'size-1.5'} style={{ background: tagColors[tag] }}/>
+            <span className={'size-1.5'} style={{ background: tagColors[tag] }} />
             {tag}
           </button>
         ))}

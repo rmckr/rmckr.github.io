@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 
 type RevealOptions = {
   /** Fraction of the element that must be visible before firing. */
-  threshold?: number,
+  threshold?: number
   /** Shrinks the viewport box, e.g. '0px 0px -30% 0px' fires only once the
       element's top has passed 70% of the screen — later than any edge peek. */
   rootMargin?: string
