@@ -17,7 +17,7 @@ export function Ticker() {
           {/* eslint-disable-next-line @eslint-react/jsx-no-comment-textnodes */}
           <span className={'px-5 text-accent'}>//</span>
           <span className={'flex shrink-0 items-center justify-center gap-2.5 px-5'}>
-            <skill.icon size={20}/>
+            <skill.icon size={20} />
             {skill.name}
           </span>
         </Fragment>

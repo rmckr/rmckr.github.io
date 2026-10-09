@@ -16,20 +16,18 @@ function storedLang(): string | null {
   }
 }
 
-void i18n
-  .use(initReactI18next)
-  .init({
-    resources: {
-      en: { translation: en },
-      de: { translation: de }
-    },
-    lng: storedLang() ?? 'en',
-    fallbackLng: 'en',
-    interpolation: {
-      // React handles XSS escaping; Trans needs this off to render tags
-      escapeValue: false
-    }
-  })
+void i18n.use(initReactI18next).init({
+  resources: {
+    en: { translation: en },
+    de: { translation: de }
+  },
+  lng: storedLang() ?? 'en',
+  fallbackLng: 'en',
+  interpolation: {
+    // React handles XSS escaping; Trans needs this off to render tags
+    escapeValue: false
+  }
+})
 
 i18n.on('languageChanged', (lang) => {
   document.documentElement.lang = lang

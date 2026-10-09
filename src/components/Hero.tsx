@@ -32,10 +32,17 @@ export function Hero() {
   })
 
   return (
-    <section id={'hero'} className={'relative flex min-h-screen flex-col justify-center overflow-hidden'}>
+    <section
+      id={'hero'}
+      className={'relative flex min-h-screen flex-col justify-center overflow-hidden'}
+    >
       <div ref={contentRef} className={'relative container-page pt-32 pb-24'}>
         {/* Brand mark */}
-        <div className={'flex items-baseline font-display text-display font-black tracking-display select-none'}>
+        <div
+          className={
+            'flex items-baseline font-display text-display font-black tracking-display select-none'
+          }
+        >
           {/* Fixed first slash */}
           <span className={'inline-block text-accent'}>/</span>
 
@@ -45,36 +52,52 @@ export function Hero() {
             <span className={'invisible inline-block w-[0.45em]'}>/</span>
 
             {/* Wordmark */}
-            <span className={'inline-block whitespace-nowrap text-foreground motion-safe:animate-name-reveal'}>
+            <span
+              className={
+                'inline-block whitespace-nowrap text-foreground motion-safe:animate-name-reveal'
+              }
+            >
               <span className={'wordmark-sheen pr-1'}>RMCKR</span>
             </span>
 
             {/* Moving slash */}
-            <span className={'absolute inset-y-0 left-0 z-10 inline-block text-accent motion-safe:animate-slash-reveal'}>
+            <span
+              className={
+                'absolute inset-y-0 left-0 z-10 inline-block text-accent motion-safe:animate-slash-reveal'
+              }
+            >
               /
             </span>
           </span>
         </div>
 
         {/* Tagline */}
-        <p className={'mb-8 max-w-2xl text-lead text-muted [--delay:1.8s] motion-safe:animate-fade-up'}>
-          <Trans i18nKey={'hero.tagline'} components={highlightComponents}/>
+        <p
+          className={
+            'mb-8 max-w-2xl text-lead text-muted [--delay:1.8s] motion-safe:animate-fade-up'
+          }
+        >
+          <Trans i18nKey={'hero.tagline'} components={highlightComponents} />
         </p>
 
         {/* Meta row */}
-        <div className={'mb-12 flex min-h-10 max-w-2xl flex-wrap items-center gap-x-4 gap-y-2 meta [--delay:2.1s] motion-safe:animate-fade-up'}>
+        <div
+          className={
+            'mb-12 flex min-h-10 max-w-2xl flex-wrap items-center gap-x-4 gap-y-2 meta [--delay:2.1s] motion-safe:animate-fade-up'
+          }
+        >
           <span className={'flex items-start gap-2'}>
-            <LuMapPin className={'mt-0.5 shrink-0 text-accent'}/>
+            <LuMapPin className={'mt-0.5 shrink-0 text-accent'} />
             <span>{t('hero.location')}</span>
           </span>
 
           <span className={'flex items-start gap-2'}>
-            <LuBriefcase className={'mt-0.5 shrink-0 text-accent'}/>
+            <LuBriefcase className={'mt-0.5 shrink-0 text-accent'} />
             <span>{t('hero.status')}</span>
           </span>
 
           <span className={'flex items-start gap-2'}>
-            <LuContact className={'mt-0.5 shrink-0 text-accent'}/>
+            <LuContact className={'mt-0.5 shrink-0 text-accent'} />
             <span>{t('hero.avail')}</span>
           </span>
         </div>
@@ -90,9 +113,9 @@ export function Hero() {
             rel={'noreferrer'}
             className={'btn-secondary'}
           >
-            <FaGithub size={14}/>
+            <FaGithub size={14} />
             {t('hero.github')}
-            <LuExternalLink size={10}/>
+            <LuExternalLink size={10} />
           </a>
         </div>
       </div>
@@ -105,7 +128,7 @@ export function Hero() {
         )}
       >
         <span>{t('hero.scroll')}</span>
-        <div className={'h-12 w-px bg-linear-to-b from-muted to-transparent'}/>
+        <div className={'h-12 w-px bg-linear-to-b from-muted to-transparent'} />
       </div>
     </section>
   )

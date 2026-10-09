@@ -1,39 +1,10 @@
 import eslintReact from '@eslint-react/eslint-plugin'
 import eslint from '@eslint/js'
 import betterTailwind from 'eslint-plugin-better-tailwindcss'
-import stylistic from '@stylistic/eslint-plugin'
 import reactHooks from 'eslint-plugin-react-hooks'
 import { defineConfig } from 'eslint/config'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
-
-function stylisticWarnings(config) {
-  return {
-    ...config,
-    rules: Object.fromEntries(
-      Object.entries(config.rules).map(([rule, options]) => [
-        rule,
-        Array.isArray(options) ?
-          ['warn', ...options.slice(1)] :
-          'warn'
-      ])
-    )
-  }
-}
-
-const stylisticConfig = stylisticWarnings(
-  stylistic.configs.customize({
-    indent: 2,
-    quotes: 'single',
-    semi: false,
-    jsx: true,
-    arrowParens: true,
-    braceStyle: '1tbs',
-    blockSpacing: true,
-    quoteProps: 'as-needed',
-    commaDangle: 'never'
-  })
-)
 
 export default defineConfig(
   eslint.configs.recommended,
@@ -43,110 +14,9 @@ export default defineConfig(
 
   {
     rules: {
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { ignoreRestSiblings: true }
-      ],
+      '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],
       '@typescript-eslint/consistent-type-definitions': ['error', 'type']
     }
-  },
-
-  stylisticConfig,
-
-  {
-    rules: Object.fromEntries(
-      Object.entries({
-        'indent': ['warn', 2, { SwitchCase: 1 }],
-        'max-statements-per-line': ['warn', { max: 2 }],
-        'brace-style': ['warn', '1tbs', { allowSingleLine: true }],
-        'block-spacing': ['warn', 'always'],
-        'keyword-spacing': ['warn', { before: true, after: true }],
-        'key-spacing': ['warn', { beforeColon: false, afterColon: true }],
-        'no-multi-spaces': ['warn', { ignoreEOLComments: false }],
-        'object-curly-spacing': ['warn', 'always'],
-        'arrow-spacing': ['warn', { before: true, after: true }],
-        'comma-spacing': ['warn', { before: false, after: true }],
-        'switch-colon-spacing': ['warn', { before: false, after: true }],
-        'space-before-blocks': ['warn', 'always'],
-        'space-before-function-paren': [
-          'warn',
-          {
-            anonymous: 'never',
-            named: 'never',
-            asyncArrow: 'always'
-          }
-        ],
-        'no-trailing-spaces': [
-          'warn',
-          { skipBlankLines: false, ignoreComments: false }
-        ],
-        'no-whitespace-before-property': ['warn'],
-        'operator-linebreak': ['warn', 'after'],
-        'implicit-arrow-linebreak': ['warn', 'beside'],
-        'object-curly-newline': ['warn', { multiline: true }],
-        'array-bracket-newline': ['warn', { multiline: true }],
-        'function-call-argument-newline': ['warn', 'consistent'],
-        'multiline-ternary': ['warn', 'always-multiline'],
-        'comma-style': ['warn', 'last'],
-        'comma-dangle': ['warn', 'never'],
-        'dot-location': ['warn', 'property'],
-        'quote-props': ['warn', 'consistent-as-needed'],
-        'arrow-parens': ['warn', 'always'],
-        'no-extra-parens': ['warn', 'all', { ignoreJSX: 'multi-line' }],
-        'eol-last': ['warn', 'always'],
-        'no-multiple-empty-lines': ['warn', { max: 2, maxEOF: 0 }],
-        'member-delimiter-style': [
-          'warn',
-          {
-            singleline: {
-              delimiter: 'comma',
-              requireLast: false
-            },
-            multiline: {
-              delimiter: 'comma',
-              requireLast: false
-            }
-          }
-        ],
-        'jsx-indent': ['off'],
-        'jsx-curly-brace-presence': [
-          'warn',
-          {
-            props: 'always',
-            children: 'never',
-            propElementValues: 'always'
-          }
-        ],
-        'jsx-curly-newline': [
-          'warn',
-          {
-            singleline: 'forbid',
-            multiline: 'forbid'
-          }
-        ],
-        'jsx-wrap-multilines': [
-          'warn',
-          {
-            declaration: 'parens-new-line',
-            assignment: 'parens-new-line',
-            return: 'parens-new-line',
-            arrow: 'parens-new-line'
-          }
-        ],
-        'jsx-tag-spacing': ['warn', { beforeSelfClosing: 'never' }],
-        'jsx-one-expression-per-line': [
-          'warn',
-          { allow: 'single-line' }
-        ],
-        'jsx-self-closing-comp': [
-          'warn',
-          { component: true, html: false }
-        ]
-      }).map(([rule, options]) => [
-        `@stylistic/${rule}`,
-        options
-      ])
-    )
   },
 
   eslintReact.configs['recommended-typescript'],
@@ -184,8 +54,10 @@ export default defineConfig(
     rules: {
       ...betterTailwind.configs.recommended.rules,
       'better-tailwindcss/no-unknown-classes': 'error',
-      // Too noisy for single-line className strings
-      'better-tailwindcss/enforce-consistent-line-wrapping': 'off'
+      // Formatting is handled by oxfmt (class sorting, whitespace, wrapping)
+      'better-tailwindcss/enforce-consistent-line-wrapping': 'off',
+      'better-tailwindcss/enforce-consistent-class-order': 'off',
+      'better-tailwindcss/no-unnecessary-whitespace': 'off'
     }
   },
 

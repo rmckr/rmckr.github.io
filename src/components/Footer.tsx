@@ -7,22 +7,17 @@ export function Footer() {
   const { t } = useTranslation()
   return (
     <footer className={'border-t border-subtle bg-bg/92 py-8 backdrop-blur-md'}>
-      <div className={'container-page flex flex-col items-center justify-between gap-4 md:flex-row'}>
+      <div
+        className={'container-page flex flex-col items-center justify-between gap-4 md:flex-row'}
+      >
         <span className={'meta'}>
           {t('footer.copyright')}
           {' · '}
-          {t('footer.builtWith')}
-          {' '}
-          <LuHeart className={'inline-block fill-accent align-middle text-accent'}/>
-          {' '}
-          {t('footer.and')}
-          {' '}
-          <FaReact
-            className={'inline-block align-middle'}
-            color={'#61DAFB'}
-          />
+          {t('footer.builtWith')}{' '}
+          <LuHeart className={'inline-block fill-accent align-middle text-accent'} />{' '}
+          {t('footer.and')} <FaReact className={'inline-block align-middle'} color={'#61DAFB'} />
         </span>
-        <Logo className={'text-xs'}/>
+        <Logo className={'text-xs'} />
       </div>
     </footer>
   )

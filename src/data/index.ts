@@ -1,7 +1,25 @@
 import { IconType } from 'react-icons'
 import { FaGithub, FaJava, FaLinkedin } from 'react-icons/fa'
 import { LuDatabase } from 'react-icons/lu'
-import { SiC, SiDocker, SiExpress, SiGit, SiGithubactions, SiHtml5, SiJavascript, SiLinux, SiMongodb, SiNodedotjs, SiPython, SiReact, SiSocketdotio, SiTailwindcss, SiTypescript, SiVite, SiVuedotjs } from 'react-icons/si'
+import {
+  SiC,
+  SiDocker,
+  SiExpress,
+  SiGit,
+  SiGithubactions,
+  SiHtml5,
+  SiJavascript,
+  SiLinux,
+  SiMongodb,
+  SiNodedotjs,
+  SiPython,
+  SiReact,
+  SiSocketdotio,
+  SiTailwindcss,
+  SiTypescript,
+  SiVite,
+  SiVuedotjs
+} from 'react-icons/si'
 
 // ── Static data ───────────────────────────────────────────────────────────────
 // Non-translated, non-fetched data
@@ -20,10 +38,10 @@ export const socialLinks = [
 export type SkillTag = 'lang' | 'frontend' | 'backend' | 'tool' | 'db' | 'infra'
 
 export type Skill = {
-  name: string,
+  name: string
   /** Self-assessed proficiency 1-3 */
-  tier: 1 | 2 | 3,
-  tag: SkillTag,
+  tier: 1 | 2 | 3
+  tag: SkillTag
   icon: IconType
 }
 
