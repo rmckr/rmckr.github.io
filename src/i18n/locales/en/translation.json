@@ -23,18 +23,22 @@
     "desc": "A look at the different stages of my journey through computer science, shaped by a mix of academic study and practical experience. From my first steps in software development to my current studies, each stage has brought new perspectives, challenges, and things to explore.",
     "entries": [
       {
-        "title": "B.Sc. Computer Science",
-        "note": "(dual studies)",
+        "title": "Abitur",
+        "organisation": "Kolleg St. Blasien",
+        "period": "2012 — 2020",
+        "desc": "Although my Abitur is not directly related to my later career in computer science, I discovered and developed my interest in programming during my school years."
+      },
+      {
+        "title": "B.Eng. Telecommunication Computer Science",
         "organisation": "HTWK Leipzig",
         "period": "2022 — 2026",
         "desc": "Completed a dual-study degree combining academic coursework with practical software development at T-Systems International GmbH. Worked primarily on a large Vue frontend project as part of a larger development team."
       },
       {
         "title": "M.Sc. Computer Science",
-        "note": "(ongoing)",
         "organisation": "Ulm University",
         "period": "2026 — present",
-        "desc": "Currently studying Computer Science at Ulm University."
+        "desc": "Currently pursuing a Master's degree in Computer Science at Ulm University, where I am deepening my knowledge and continuing to develop my technical skills."
       }
     ]
   },

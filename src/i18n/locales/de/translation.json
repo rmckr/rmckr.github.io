@@ -23,18 +23,22 @@
     "desc": "Ein Einblick in meinen bisherigen Weg durch die Informatik, geprägt durch die Verbindung von Studium und praktischer Erfahrung. Von meinen ersten Erfahrungen in der Softwareentwicklung bis zu meinem aktuellen Studium hat jede Phase neue Perspektiven, Herausforderungen und Möglichkeiten zum Lernen mit sich gebracht.",
     "entries": [
       {
-        "title": "B.Sc. Informatik",
-        "note": "(duales Studium)",
+        "title": "Abitur",
+        "organisation": "Kolleg St. Blasien",
+        "period": "2012 — 2020",
+        "desc": "Auch wenn das Abitur nicht direkt mit meiner späteren Laufbahn in der Informatik zusammenhängt, habe ich während meiner Schulzeit mein Interesse am Programmieren entdeckt und weiterentwickelt."
+      },
+      {
+        "title": "B.Eng. Telekommunikationsinformatik",
         "organisation": "HTWK Leipzig",
         "period": "2022 — 2026",
         "desc": "Duales Studium mit einer Kombination aus Hochschulstudium und praktischer Softwareentwicklung bei der T-Systems International GmbH. Dabei habe ich hauptsächlich an einem großen Vue-Frontend in einem größeren Entwicklungsteam gearbeitet."
       },
       {
         "title": "M.Sc. Informatik",
-        "note": "(laufend)",
         "organisation": "Universität Ulm",
         "period": "2026 — heute",
-        "desc": "Aktuelles Masterstudium der Informatik an der Universität Ulm."
+        "desc": "Aktuelles Masterstudium der Informatik an der Universität Ulm, in dem ich meine Kenntnisse vertiefe und mich fachlich weiterentwickle."
       }
     ]
   },
