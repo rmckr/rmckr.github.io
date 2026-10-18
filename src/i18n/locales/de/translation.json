@@ -12,9 +12,8 @@
   "about": {
     "label": "Über mich",
     "heading": "Etwas über mich.",
-    "p1": "Ich bin Lukas und studiere Informatik in Ulm. 2026 habe ich meinen B.Sc. in Informatik an der HTWK Leipzig abgeschlossen. Im Rahmen meines dualen Studiums konnte ich mein Studium mit praktischer Softwareentwicklung bei der T-Systems International GmbH verbinden.",
-    "p2": "Dort habe ich unter anderem an einem großen Frontend-Projekt mit Vue in einem größeren Entwicklungsteam gearbeitet und daneben kleinere Projekte in verschiedenen Bereichen umgesetzt. Neben Studium und Arbeit entwickle ich vor allem Dinge, die ich interessant finde oder bei denen ich etwas Neues ausprobieren möchte.",
-    "p3": "Aktuell arbeite ich hauptsächlich mit TypeScript, JavaScript und Python. Besonders interessant finde ich Full-Stack-Entwicklung mit einem Schwerpunkt auf dem Frontend. Mit Node.js, Express und Datenbanken arbeite ich ebenfalls gerne.",
+    "p1": "Ich bin Lukas und studiere Informatik in Ulm. <highlight>Ich entwickle gerne Dinge</highlight>, probiere neue Ideen aus und finde heraus, wie Dinge funktionieren. Oft fange ich ein Projekt einfach an, weil ich es interessant finde oder etwas Neues ausprobieren möchte.",
+    "p2": "Ich arbeite hauptsächlich mit TypeScript, JavaScript und Python. Besonders interessiert mich <highlight>Full-Stack-Entwicklung mit Schwerpunkt auf Frontend</highlight>, aber ich beschäftige mich auch gerne mit anderen Bereichen der Softwareentwicklung.",
     "downloadCv": "Lebenslauf herunterladen"
   },
   "experience": {

@@ -12,9 +12,8 @@
   "about": {
     "label": "About",
     "heading": "A bit about me.",
-    "p1": "I'm Lukas, a computer science student based in Ulm. I completed my B.Sc. in Computer Science at HTWK Leipzig in 2026 as part of a dual-study programme, combining university coursework with practical software development at T-Systems International GmbH.",
-    "p2": "During my time there, I worked on a large frontend project with Vue alongside a larger development team, as well as on a few smaller projects in different areas. Outside of university and work, I mostly build things because I find them interesting or want to understand how they work.",
-    "p3": "These days, I mostly work with TypeScript, JavaScript and Python. I'm particularly interested in full-stack development, with a focus on the frontend, but I also enjoy working with Node.js, Express and databases.",
+    "p1": "I'm Lukas, a computer science student based in Ulm. <highlight>I enjoy building things</highlight>, exploring new ideas, and figuring out how things work. Often, I start a project simply because it seems interesting or because I want to try something new.",
+    "p2": "I mostly work with TypeScript, JavaScript and Python. I'm particularly interested in <highlight>full-stack development, with a focus on frontend</highlight>, but I enjoy exploring different areas of software development.",
     "downloadCv": "Download CV"
   },
   "experience": {
