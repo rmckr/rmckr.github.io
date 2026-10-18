@@ -1,4 +1,5 @@
 /* Self-hosted fonts (no third-party requests). Only the weights actually used. */
+@import '@fontsource/anton/latin-400.css';
 @import '@fontsource/barlow-condensed/latin-800.css';
 @import '@fontsource/barlow-condensed/latin-900.css';
 @import '@fontsource/outfit/latin-400.css';
@@ -8,19 +9,32 @@
 
 @import 'tailwindcss';
 
+/* Hover states only where a real pointer hovers: on touch, :hover sticks after
+   a tap until the next one. The same gate btn's hovers already use. */
+@custom-variant hover-fine {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
+  }
+}
+
 /* ── Design tokens ─────────────────────────────────────────────────────────────
    Every colour, typeface, type size and motion value lives here. Tailwind turns
    each token into utilities automatically (--color-accent → bg-accent / text-accent,
-   --text-heading → text-heading, --animate-fade-up → animate-fade-up, …).
+   --text-heading → text-heading, …).
 ─────────────────────────────────────────────────────────────────────────────── */
 @theme {
   /* Typefaces. --font-sans / --font-mono are also picked up by preflight. */
   --font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Barlow Condensed', 'Arial Narrow', ui-sans-serif, system-ui, sans-serif;
+  /* Hero wordmark only — Anton is heavier and taller than Barlow at the same size */
+  --font-wordmark: 'Anton', 'Arial Narrow', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Fira Code', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 
   /* Palette */
   --color-bg: #080808;
+  --color-surface-subtle: #0d0d0d;
   --color-surface: #111111;
   --color-foreground: #f0f0ee;
   --color-muted: #888888; /* 5.6:1 on bg, 5.3:1 on surface (was #6b6b6b → 3.8:1, below AA) */
@@ -41,44 +55,15 @@
 
   /* Motion */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-
-  --animate-name-reveal: name-reveal 1.4s var(--ease-out-expo) 0.35s both;
-  --animate-slash-reveal: slash-reveal 1.4s var(--ease-out-expo) 0.35s both;
-
-  @keyframes name-reveal {
-    from {
-      clip-path: polygon(100% 0%, 100% 0%, 100% 100%, 87% 100%);
-    }
-    to {
-      clip-path: polygon(0% 0%, 100% 0%, 100% 100%, -13% 100%);
-    }
-  }
-
-  @keyframes slash-reveal {
-    from {
-      left: calc(100% - 0.45em);
-    }
-    to {
-      left: 0;
-    }
-  }
-
-  @keyframes fade-up {
-    from {
-      opacity: 0;
-      transform: translateY(1.25rem);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 }
 
-/* `inline` so var(--delay) is resolved on the element using the animation, not on :root.
-   Usage: `motion-safe:animate-fade-up [--delay:1.8s]` */
-@theme inline {
-  --animate-fade-up: fade-up 0.8s ease var(--delay, 0s) both;
+/* Hero pin progress — written per frame by Hero.tsx — and the hand-off
+   phase derived from it (the next section crossfades in as the pin
+   dissolves over the last 15% of the track). */
+:root {
+  --p: 0;
+  /* Hand-off phase, the last 15% of the hero track */
+  --p3: clamp(0, (var(--p) - 0.85) / 0.15, 1);
 }
 
 /* ── Base ─────────────────────────────────────────────────────────────────────
@@ -102,26 +87,6 @@
 
     /* Numbers the section headers: 01 // ABOUT, 02 // … (see section-counter-title) */
     counter-reset: section;
-  }
-
-  /* Sections are positioned so their content can be layered normally. The
-     backdrop sits behind them; each section paints a nearly-solid tone on top
-     so the ambient grid only really reads through the hero and the
-     contact section, which stay fully transparent. */
-  section {
-    position: relative;
-    background-color: color-mix(in srgb, var(--color-bg) 85%, transparent);
-  }
-
-  /* Alternate section backgrounds (hero and contact override this below) */
-  section:nth-of-type(even) {
-    background-color: color-mix(in srgb, var(--color-surface) 75%, transparent);
-  }
-
-  /* The two sections that stay see-through to the ambient grid */
-  #hero,
-  #contact {
-    background-color: transparent;
   }
 
   h1,
@@ -151,14 +116,40 @@
    Only patterns that repeat across components live here.
 ─────────────────────────────────────────────────────────────────────────────── */
 
+@layer utilities {
+  section:nth-of-type(2) {
+    @apply bg-transparent bg-linear-to-b from-transparent to-bg to-[4rem];
+  }
+
+  section:nth-of-type(odd):not(#hero) {
+    @apply bg-surface-subtle;
+  }
+}
+
 /* Page-width wrapper: nav, hero, every section, footer */
 @utility container-page {
   @apply mx-auto max-w-6xl px-6;
 }
 
-/* Bordered panel on the page background */
+/* The one bevel: a 12px notch cut from the top-right and bottom-left corners.
+   Buttons, cards and the portrait frame all share it, so every notched
+   element on the site cuts identically. */
+@utility bevel-* {
+  --bevel-size: calc(var(--spacing) * --value(integer));
+  clip-path: polygon(
+    100% var(--bevel-size),
+    100% 100%,
+    var(--bevel-size) 100%,
+    0 calc(100% - var(--bevel-size)),
+    0 0,
+    calc(100% - var(--bevel-size)) 0
+  );
+}
+
+/* Bordered panel on the page background — notched corners, the same cut as
+   the buttons, so panels read as part of the same HUD */
 @utility card {
-  @apply border border-subtle bg-bg;
+  @apply border border-subtle bg-bg bevel-6;
 }
 
 /* Typography atoms */
@@ -198,63 +189,69 @@
 }
 
 /* ── Buttons ───────────────────────────────────────────────────────────────────
-   btn-primary   – the single most important action in a view (tinted accent fill)
-   btn-secondary – supporting actions (language toggle, profile links, retry)
+   Beveled HUD chips (the hero's original buttons, promoted to default):
+   mono, uppercase, notched corners. The accent fill wipes in from the left
+   behind the label on hover (primary) or the border brightens (secondary).
    btn-lg        – larger padding, combine with either variant
-   Padding comes from custom properties so sizes never fight over specificity.
 ─────────────────────────────────────────────────────────────────────────────── */
 @utility btn {
-  @apply inline-flex items-center gap-2 border text-sm transition-[color,background-color,border-color,box-shadow] duration-200;
-  padding: var(--btn-py, 0.5rem) var(--btn-px, 1rem);
-  position: relative;
-  overflow: hidden;
+  @apply relative inline-flex items-center gap-2 overflow-hidden border font-mono text-[0.7rem] font-medium tracking-[0.2em] uppercase bevel-3;
+  padding: var(--btn-py, 0.8rem) var(--btn-px, 1.4rem);
+  /* Isolate so the primary's fill wipe can sit behind the label
+     (z-index: -1) without leaving the button */
+  isolation: isolate;
+  transition:
+    color 180ms ease-out,
+    border-color 180ms ease-out,
+    transform 160ms ease-out;
 
-  /* Light sweeping across the button on hover — shared by both variants,
-     which tune the tint via --btn-sheen */
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      125deg,
-      transparent 30%,
-      color-mix(in srgb, var(--color-foreground) var(--btn-sheen, 30%), transparent) 50%,
-      transparent 70%
-    );
-    transform: translateX(-130%);
-
-    @media (prefers-reduced-motion: no-preference) {
-      transition: transform 0.6s var(--ease-out-expo);
-    }
-  }
-
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    &:hover::after {
-      transform: translateX(130%);
-    }
+  &:active {
+    transform: scale(0.97);
   }
 }
 
 @utility btn-lg {
   --btn-px: 2rem;
-  --btn-py: 0.75rem;
+  --btn-py: 0.95rem;
 }
 
 @utility btn-primary {
-  @apply btn border-accent bg-accent-dim font-semibold text-accent;
-  --btn-sheen: 32%;
+  @apply btn border-accent bg-accent-dim text-accent;
 
-  &:hover {
-    @apply bg-accent text-bg shadow-[0_0_20px] shadow-accent/75;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: transform 280ms var(--ease-out-expo);
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      color: var(--color-bg);
+      filter: drop-shadow(0 0 14px color-mix(in srgb, var(--color-accent) 55%, transparent));
+    }
+
+    &:hover::before {
+      transform: scaleX(1);
+    }
   }
 }
 
 @utility btn-secondary {
-  @apply btn border-subtle bg-transparent font-mono text-muted;
-  --btn-sheen: 26%;
+  @apply btn border-foreground/20 bg-transparent text-muted;
 
-  &:hover {
-    @apply border-foreground/40 text-foreground;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      border-color: color-mix(in srgb, var(--color-foreground) 55%, transparent);
+      color: var(--color-foreground);
+    }
   }
 }
 
@@ -267,29 +264,231 @@
 
 /* ── Section reveal ────────────────────────────────────────────────────────────
    useReveal() sets data-visible once the element enters the viewport.
+   Pure opacity — content appears in place, so every page transition reads as
+   a crossfade rather than a slide from below.
    Content is only hidden when motion is allowed, so reduced-motion users (and
    anyone whose JS fails after paint) never see an invisible page.
 ─────────────────────────────────────────────────────────────────────────────── */
 @utility reveal {
   @media (prefers-reduced-motion: no-preference) {
     opacity: 0;
-    transform: translateY(1.5rem);
-    transition:
-      opacity 0.8s var(--ease-out-expo),
-      transform 0.8s var(--ease-out-expo);
+    transition: opacity 0.8s var(--ease-out-expo);
 
     &[data-visible] {
       opacity: 1;
-      transform: none;
     }
+  }
+} /* ── Hero — static styling ──────────────────────────────────────────────────
+   "//RMCKR" reactor on a pinned scroll track. Animation lives in Hero.tsx
+   (Motion); layout, type and chrome live here. Glyph paint reads --lp,
+   written per frame from Hero.tsx; the hand-off reads --p / --p3 from :root.
+─────────────────────────────────────────────────────────────────────────────── */
+
+@utility hero {
+  background: none;
+  position: relative;
+  /* Stays above the content that arrives during the hand-off */
+  z-index: 1;
+  /* The track: two viewports of scroll play the sequence. The box ends
+     exactly where the next section begins — the pin is a fixed overlay,
+     so no negative margin is needed to overlap the layout. */
+  min-height: 200svh;
+
+  @media (max-width: 720px) {
+    min-height: 140svh;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    min-height: 100svh;
+  }
+}
+
+@utility hero-pin {
+  /* Fixed rather than sticky: a sticky pin releases a viewport before the
+     next section arrives (it would scroll away mid-dissolve) — and its box
+     needed the negative margin to sit over that section at all, which left
+     the hero overlapping the first screen of content below. Fixed never
+     scrolls, so the hero's box ends cleanly at the track's end;
+     data-hero-gone retires the overlay after the hand-off. */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  /* Dissolves over the last 15% of the track (hand-off) */
+  opacity: calc(1 - var(--p3));
+
+  @media (prefers-reduced-motion: reduce) {
+    position: static;
+    height: auto;
+    min-height: 100svh;
+  }
+}
+
+/* Hand-off complete (Hero.tsx sets data-hero-gone at ~full progress): the
+   fixed overlay must stop occupying the viewport — it is already at opacity
+   0, but without this it would keep swallowing clicks and selection over the
+   first screen of the next section. Reversible with scroll. */
+[data-hero-gone] .hero-pin {
+  visibility: hidden;
+}
+
+@utility hero-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(1.25rem, 3.5vh, 2.75rem);
+  /* Small padding: the nav is hidden while the hero owns the screen, so the
+     stage centres in the full viewport with no reserved strip */
+  padding: clamp(2rem, 5vh, 3rem) 4vw clamp(1.5rem, 4vh, 3rem);
+}
+
+@utility hero-word {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+  font-family: var(--font-wordmark);
+  font-weight: 400;
+  font-size: min(24vw, 28rem);
+  line-height: 0.78;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  color: var(--color-foreground);
+  user-select: none;
+  -webkit-user-select: none;
+  /* The glyph tips (rotateX) project through this */
+  perspective: 1100px;
+  perspective-origin: 50% 64%;
+  /* Tight lockup: glyphs sit almost touching and explode outward from there */
+  gap: 0.03em;
+}
+
+/* One glyph. Transform is Motion's; paint (colour heat + accent glow as it
+   separates) reads --lp, written per frame from Hero.tsx. */
+@utility glyph {
+  display: block;
+  --lp: 0;
+  color: color-mix(
+    in srgb,
+    var(--color-foreground) calc((1 - var(--lp)) * 100%),
+    var(--color-accent) calc(var(--lp) * 100%)
+  );
+  text-shadow:
+    0 0.02em 0 color-mix(in srgb, var(--color-accent) calc(var(--lp) * 45%), transparent),
+    0 0 calc(var(--lp) * 30px)
+      color-mix(in srgb, var(--color-accent) calc(var(--lp) * 65%), transparent);
+  will-change: transform;
+}
+
+/* Purely a visual affordance — not interactive */
+@utility hero-scroll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+@utility hero-scroll-line {
+  width: 1px;
+  height: clamp(2rem, 5vh, 3.25rem);
+  background: linear-gradient(to bottom, var(--color-accent), transparent);
+  transform-origin: top;
+  will-change: transform;
+}
+
+/* Scroll-lock meter across the top edge: how far through the sequence the
+   user has scrubbed */
+@utility hero-meter {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 3px;
+  pointer-events: none;
+
+  @media (prefers-reduced-motion: reduce) {
+    /* The meter measures a sequence that never runs */
+    display: none;
+  }
+}
+
+@utility hero-meter-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--color-accent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--color-accent) 70%, transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+@utility hero-hud {
+  position: relative;
+  padding: 0 4vw clamp(2.25rem, 6vh, 4rem);
+}
+
+@utility hero-hud-in {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: end;
+
+  @media (min-width: 1100px) {
+    grid-template-columns: minmax(0, 24rem) minmax(0, 1fr) auto;
+  }
+}
+
+@utility hero-tagline {
+  max-width: 34ch;
+  margin: 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--color-accent);
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--color-foreground) 74%, var(--color-bg));
+}
+
+/* ── Hero ↔ page hand-off ──────────────────────────────────────────────────
+   The hero pins the first ~2 viewports; the nav stays out of the way until
+   the sequence is essentially complete. Hero.tsx toggles `data-hero-done` on
+   <html> once scroll progress passes 0.95 — the nav then slides in as one
+   transition. Reversible: scrolling back into the hero hides it again. The
+   first section after the hero stays on the continuous --p3 fade.
+   Reduced motion never locks, so the nav simply always shows.
+─────────────────────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-hero-done]) nav {
+    opacity: 0;
+    transform: translateY(-0.75rem);
+    pointer-events: none;
+  }
+
+  /* The first section after the hero — structurally, whichever section
+     directly follows #hero — fades in continuously with the hero's own
+     dissolve: the same scroll-scrubbed value drives both, so there is no
+     threshold, no jump, no breakpoint anywhere in the hand-off. A tiny
+     rise during the fade is inherent to free scrolling and is the price
+     of continuity. */
+  #hero + section {
+    opacity: var(--p3);
   }
 }
 
 /* ── Ambient backdrop ────────────────────────────────────────────────────────
    A fixed layer behind the page: a perspective floor that fills the whole
    viewport (vanishing point hidden under the top fade, so there is no hard
-   horizon line), a breathing glow and a vignette. Solid sections cover it
-   everywhere except the hero and the contact section.
+   horizon line), a breathing glow and a vignette. The transparent page
+   sections let it show through everywhere.
    The only JS-driven piece is the floor's --bx / --by parallax offset
    (see Backdrop.tsx); everything else is pure CSS.
 ─────────────────────────────────────────────────────────────────────────────── */
@@ -431,46 +630,16 @@
   }
 }
 
-/* One-shot light passing over the hero wordmark */
-@utility wordmark-sheen {
-  background-image: linear-gradient(
-    105deg,
-    var(--color-foreground) 45%,
-    #ffffff 50%,
-    var(--color-foreground) 55%
-  );
-  background-size: 260% 100%;
-  background-position: 0 0;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-
-  @media (prefers-reduced-motion: no-preference) {
-    animation: wordmark-sheen 2.4s ease-in-out 3.6s both;
-  }
-}
-
-@keyframes wordmark-sheen {
-  from {
-    background-position: 130% 0;
-  }
-  to {
-    background-position: 0 0;
-  }
-}
-
 /* ── Staggered children ───────────────────────────────────────────────────────
-   Direct children fade up one after another as soon as any ancestor with
-   data-visible fires. Delays are capped so long lists don't drag on.
+   Direct children fade in one after another as soon as any ancestor with
+   data-visible fires. Pure opacity, so children keep their own transforms
+   (icon-nudge etc.). Delays are capped so long lists don't drag on.
 ─────────────────────────────────────────────────────────────────────────────── */
 @utility stagger {
   @media (prefers-reduced-motion: no-preference) {
     & > * {
       opacity: 0;
-      transform: translateY(1.25rem);
-      transition:
-        opacity 0.7s var(--ease-out-expo) var(--stagger, 0ms),
-        transform 0.7s var(--ease-out-expo) var(--stagger, 0ms);
+      transition: opacity 0.7s var(--ease-out-expo) var(--stagger, 0ms);
     }
 
     & > *:nth-child(2) {
@@ -498,42 +667,9 @@
     &[data-visible] > *,
     [data-visible] & > * {
       opacity: 1;
-      transform: none;
     }
   }
 }
-
-/* ── Ticker ────────────────────────────────────────────────────────────────────
-   Two identical groups inside a track that scrolls by exactly one group width.
-─────────────────────────────────────────────────────────────────────────────── */
-@utility ticker {
-  position: relative;
-  overflow: hidden;
-  border-top: 1px solid var(--color-subtle);
-  border-bottom: 1px solid var(--color-subtle);
-  background: color-mix(in srgb, var(--color-bg) 90%, transparent);
-}
-
-@utility ticker-track {
-  display: flex;
-  width: max-content;
-
-  /* the two identical groups */
-  & > div {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    animation: ticker-scroll 55s linear infinite;
-
-    &:hover {
-      animation-play-state: paused;
-    }
-  }
-}
-
 /* ── Timeline ─────────────────────────────────────────────────────────────────
    One observer per entry (useReveal sets data-visible on it): the rail draws
    a one-shot stretch, then the entry's dot ignites the moment the rail lands.
@@ -608,8 +744,3 @@
   }
 }
 
-@keyframes ticker-scroll {
-  to {
-    transform: translateX(-50%);
-  }
-}
