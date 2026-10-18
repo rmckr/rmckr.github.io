@@ -5,6 +5,13 @@ import { Section } from './Section'
 import { SectionHeader } from './SectionHeader'
 
 // ── About section ─────────────────────────────────────────────────────────────
+// Composition mirrors the hero rather than a document: the portrait pins on
+// desktop while the copy scrolls past (the stage's sticky behaviour, without
+// the animation), the copy wears the tagline's accent rule, and the CV action
+// parks bottom-right the way the hero parks its buttons. The section paints
+// its own solid ground (it can't borrow the ambient backdrop any more), so the
+// cutout portrait brings its own light: a halo gradient lightbox, framed by
+// the buttons' bevel — cut short at the top so the head crosses the border.
 
 export function About() {
   const { t } = useTranslation()
@@ -13,14 +20,20 @@ export function About() {
     <Section id={'about'}>
       <SectionHeader label={t('about.label')} heading={t('about.heading')} />
 
-      <div className={'mt-12 flex stagger flex-col items-start gap-12 lg:flex-row lg:gap-20'}>
-        {/* Image: full width on phones, capped from sm up so medium screens don't get a giant portrait */}
+      <div
+        className={
+          'mt-12 flex flex-col items-start gap-12 stagger lg:flex-row lg:items-center lg:gap-20'
+        }
+      >
+        {/* Image */}
         <div className={'w-full sm:w-1/2 md:w-2/5 lg:w-1/3'}>
-          <div
-            className={
-              'group relative overflow-hidden border-b-4 border-accent bg-linear-to-t from-accent/50 to-transparent'
-            }
-          >
+          <div className={'relative mt-[-10%] bevel-10'}>
+            <span
+              className={
+                'pointer-events-none absolute inset-0 top-[10%] -z-1 border-2 border-accent bg-radial-[75%_75%_at_50%_90%] from-white/40 to-transparent bevel-10'
+              }
+              aria-hidden={'true'}
+            />
             <img
               src={'/images/portrait.png'}
               alt={'Portrait Lukas Romacker'}
@@ -28,15 +41,12 @@ export function About() {
               height={2580}
               loading={'lazy'}
               decoding={'async'}
-              className={
-                'size-full px-1 transition-transform duration-700 ease-out group-hover:scale-[1.04]'
-              }
+              className={'w-full px-0.5 pb-0.5'}
             />
           </div>
         </div>
 
-        {/* Text */}
-        <div className={'w-full lg:w-2/3'}>
+        <div className={'w-full lg:flex-1'}>
           <div className={'space-y-5 copy'}>
             <p>
               <Trans i18nKey={'about.p1'} components={highlightComponents} />
@@ -45,8 +55,6 @@ export function About() {
             <p>
               <Trans i18nKey={'about.p2'} components={highlightComponents} />
             </p>
-
-            <p>{t('about.p3')}</p>
           </div>
 
           <div className={'mt-10'}>
