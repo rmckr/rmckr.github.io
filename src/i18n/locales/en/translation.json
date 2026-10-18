@@ -46,7 +46,8 @@
       "proficient": "Proficient",
       "advanced": "Advanced"
     },
-    "all": "All"
+    "orbits": "Orbits",
+    "groups": "Groups"
   },
   "github": {
     "label": "GitHub",

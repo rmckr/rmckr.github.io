@@ -46,7 +46,8 @@
       "proficient": "Gute Kenntnisse",
       "advanced": "Fortgeschritten"
     },
-    "all": "Alle"
+    "orbits": "Umlaufbahnen",
+    "groups": "Gruppen"
   },
   "github": {
     "label": "GitHub",
