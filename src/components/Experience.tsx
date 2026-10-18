@@ -1,18 +1,31 @@
-import { Trans } from 'react-i18next'
 import { highlightComponents } from '@/lib/trans'
-import { useReveal } from '../hooks/useReveal'
+import { cn } from '@/lib/utils'
+import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
+import { Trans } from 'react-i18next'
 import { useTranslation } from '../i18n/i18n'
 import { Section } from './Section'
 import { SectionHeader } from './SectionHeader'
 
-// ── Timeline entry ────────────────────────────────────────────────────────────
-// Each entry has its own observer: when it's reached, its rail draws a
-// one-shot stretch and the entry's dot ignites when the rail lands (delay in
-// index.css). No scroll listeners — the animation never replays or un-draws.
+// ── Experience section ────────────────────────────────────────────────────────
+// Pinned horizontal strip, identical at every viewport width. A sticky stage
+// inside a scroll runway: header and intro hold still while ONE flat row of
+// entry columns scrolls left as you scroll down. The row has exactly one
+// animated value, a composited transform: x = lead − progress × range, where
+// progress is scrollYProgress over the runway, range the row width minus one
+// card, and lead the inset that centres the first card at p = 0 and the last
+// at p = 1 (both measured by a ResizeObserver). Page scroll is the only input.
+// Each column is one entry — the year tick centred above its card, riding the
+// same transform, so tick and card can never drift apart. An overlay gradient
+// dissolves the strip's edges.
+//
+// The runway grows with the entry count (inline height below): more entries
+// means more scroll, not a faster swipe. Under reduced motion the
+// same strip renders un-pinned as a native horizontal scroller — no runway,
+// no sticky, no scrub.
 
 type ExperienceEntry = {
   title: string
-  note: string
   organisation: string
   period: string
   desc: string
@@ -20,81 +33,163 @@ type ExperienceEntry = {
 
 type TimelineEntryProps = {
   entry: ExperienceEntry
-  index: number
-  total: number
 }
 
-function TimelineEntry({ entry, index, total }: TimelineEntryProps) {
-  // Fires when the entry's top crosses ~50% of the screen.
-  const ref = useReveal({ threshold: 0, rootMargin: '0px 0px -50% 0px' })
-  const isLast = index === total - 1
-
+/** One card. Sizing lives on its column (below): the column pins the width,
+    the card fills it — flex-1 so every card stretches to the tallest. */
+function TimelineEntry({ entry }: TimelineEntryProps) {
   return (
-    <div ref={ref} className={'relative flex gap-6 timeline-entry'}>
-      {/* Rail */}
-      <div className={'flex w-5 shrink-0 flex-col items-center'}>
-        <span className={'relative z-10 mt-1 block size-2.5'}>
-          {/* bg-accent is the finished state, shown when motion is reduced */}
-          <span
-            className={'block size-full rounded-full border-2 border-accent timeline-dot bg-accent'}
-          />
-          <span className={'absolute inset-0 timeline-ping rounded-full bg-accent'} />
-        </span>
-
-        {!isLast && (
-          <div className={'relative mt-1 w-1 flex-1 overflow-hidden bg-subtle'}>
-            {/* draws itself downward once the entry is revealed */}
-            <div className={'absolute inset-0 timeline-fill bg-accent opacity-60'} />
-          </div>
-        )}
+    <article
+      className={
+        'w-full flex-1 card bg-surface p-6 transition-colors duration-200 hover-fine:border-accent'
+      }
+    >
+      <div className={'flex items-baseline justify-between gap-4'}>
+        <span className={'font-display text-muted'}>{entry.organisation}</span>
+        <span className={'label text-2xs text-accent'}>{entry.period}</span>
       </div>
 
-      {/* Content */}
-      <div className={'pb-6'}>
-        <p className={'mb-1 meta'}>{entry.period}</p>
-        <p className={'font-semibold text-foreground'}>
-          {entry.title} <span className={'text-sm font-normal text-muted'}>{entry.note}</span>
-        </p>
-        <p className={'mt-0.5 text-sm text-accent'}>{entry.organisation}</p>
-        <p className={'mt-1.5 text-sm/relaxed text-muted'}>{entry.desc}</p>
-      </div>
-    </div>
+      <h3 className={'mt-2 text-2xl'}>{entry.title}</h3>
+
+      <p className={'mt-2 text-sm/relaxed text-muted'}>{entry.desc}</p>
+    </article>
   )
 }
 
-// ── Experience section ────────────────────────────────────────────────────────
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export function Experience() {
   const { t } = useTranslation()
+  const reduce = useReducedMotion()
+  const trackRef = useRef<HTMLDivElement>(null)
+  const viewportRef = useRef<HTMLDivElement>(null)
+  const rowRef = useRef<HTMLDivElement>(null)
+
+  // Scrub through the runway: 0 the moment the stage tops out, 1 when the
+  // track's end reaches the viewport's end — i.e. the sticky range exactly.
+  const { scrollYProgress: p } = useScroll({
+    target: trackRef,
+    offset: ['start start', 'end end']
+  })
+
+  // Strip geometry: range = row width minus one card (the full travel), lead =
+  // the half-viewport inset that centres a card at both ends. Deliberately
+  // React state, not MotionValues: a MotionValue set inside a layout effect
+  // can be missed (same-value no-op or a cancelled frame update), which left
+  // x stuck at 0 until the first scroll.
+  const [geo, setGeo] = useState({ lead: 0, range: 0 })
+
+  // The strip's only animation: one composited transform, scrubbed by scroll.
+  // Under reduced motion nothing ever measures, so x stays 0.
+  const x = useTransform(p, [0, 1], [geo.lead, geo.lead - geo.range])
+
+  useLayoutEffect(() => {
+    if (reduce) return
+    const viewport = viewportRef.current
+    const row = rowRef.current
+    if (!viewport || !row) return
+
+    const measure = () => {
+      // getBoundingClientRect, not scrollWidth: a transformed row still
+      // reports its true width, so measurement can't feed back into x. One
+      // column is exactly one card wide, so travel is row width minus one card.
+      const columns = row.firstElementChild
+      const column = columns?.firstElementChild
+      const cardWidth = column instanceof HTMLElement ? column.getBoundingClientRect().width : 0
+      const rowWidth = columns instanceof HTMLElement ? columns.getBoundingClientRect().width : 0
+      const next = {
+        lead: Math.max(0, (viewport.clientWidth - cardWidth) / 2),
+        range: Math.max(0, rowWidth - cardWidth)
+      }
+      // Skip identical re-measures so the ResizeObserver can't loop React.
+      setGeo((prev) => (prev.lead === next.lead && prev.range === next.range ? prev : next))
+    }
+
+    // No synchronous measure() here: the ResizeObserver's initial observation
+    // lands before the first paint, so the opening frame is already centred.
+    const observer = new ResizeObserver(measure)
+    observer.observe(viewport)
+    observer.observe(row)
+    return () => observer.disconnect()
+  }, [reduce])
 
   // A bad translation edit must not crash the whole page — fall back to an empty list.
   const raw = t('experience.entries', { returnObjects: true })
   const entries = Array.isArray(raw) ? (raw as ExperienceEntry[]) : []
+  const total = Math.max(entries.length, 1)
+
+  // Runway: one viewport for the stage plus 40svh of scrub per entry. Inline
+  // height, not a class: Tailwind can't build a dynamic value at runtime.
+  const runway = { height: `${100 + 40 * total}svh` }
+
+  // The strip's edges dissolve instead of clipping cards mid-card.
+  const edgeFade = {
+    maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
+    WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
+  } satisfies CSSProperties
 
   return (
-    <Section
-      id={'experience'}
-      contentClassName={'grid grid-cols-1 lg:grid-cols-5 gap-16 items-start stagger'}
-    >
-      {/* Left — text */}
-      <div className={'lg:col-span-3'}>
-        <SectionHeader label={t('experience.label')} heading={t('experience.heading')} />
+    <Section id={'experience'}>
+      <div ref={trackRef} style={!reduce ? runway : undefined}>
+        {/* Stage — sticks for the whole runway: header and intro stay static
+            while the strip scrolls left through the viewport */}
+        <div
+          className={cn(
+            'stagger',
+            !reduce ? 'sticky top-0 flex min-h-svh flex-col justify-center py-16' : ''
+          )}
+        >
+          <SectionHeader label={t('experience.label')} heading={t('experience.heading')} />
 
-        <p className={'copy'}>
-          <Trans i18nKey={'experience.desc'} components={highlightComponents} />
-        </p>
-      </div>
+          <p className={'max-w-3xl copy'}>
+            <Trans i18nKey={'experience.desc'} components={highlightComponents} />
+          </p>
 
-      {/* Right — education timeline */}
-      <div className={'lg:col-span-2'}>
-        {entries.map((entry, i, arr) => (
-          <TimelineEntry
-            key={entry.period + entry.title}
-            entry={entry}
-            index={i}
-            total={arr.length}
-          />
-        ))}
+          <div className={'relative mt-10'} style={edgeFade}>
+            {/* Strip viewport: pinned + overflow-hidden under scroll (page
+                scroll scrubs the row); the same strip as a native horizontal
+                scroller under reduced motion. Focusable only when it scrolls. */}
+            <div
+              ref={viewportRef}
+              className={!reduce ? 'overflow-hidden' : 'overflow-x-auto'}
+              role={'region'}
+              aria-label={t('experience.label')}
+              tabIndex={reduce ? 0 : undefined}
+            >
+              {/* No lead-in padding: centring is `lead` inside the pipeline,
+                  so the row's measured width minus one card IS the travel. */}
+              <motion.div ref={rowRef} style={{ x }}>
+                {/* One column per entry. The tick sits centred in the gap
+                    BEFORE the card — the boundary where that entry starts —
+                    half a gap (1rem of gap-8) left of the column. Labels are
+                    absolute so the column keeps exactly the card's width. */}
+                <div className={'flex w-max gap-8'}>
+                  {entries.map((entry) => (
+                    <div
+                      key={entry.period + entry.title}
+                      className={'flex w-[85vw] max-w-xl shrink-0 flex-col lg:min-w-xl'}
+                    >
+                      <div className={'relative mb-6 h-7'}>
+                        <div className={'absolute top-0 left-0 -translate-x-4'}>
+                          <span className={'absolute top-0 left-0 h-4 w-px bg-foreground'} />
+                          <span className={'absolute top-4 left-0 -translate-x-1/2 label text-2xs'}>
+                            {entry.period.slice(0, 4)}
+                          </span>
+                        </div>
+                      </div>
+                      <TimelineEntry entry={entry} />
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Accent rule and edge fade overlay the strip but must not scroll
+                with it, so they sit outside the scroller. */}
+            <div className={'pointer-events-none absolute inset-x-0 top-0 h-2 bg-accent'} />
+            {/* <div className={'pointer-events-none absolute inset-0'} style={edgeFade} /> */}
+          </div>
+        </div>
       </div>
     </Section>
   )
