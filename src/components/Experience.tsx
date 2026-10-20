@@ -1,8 +1,9 @@
 import { highlightComponents } from '@/lib/trans'
 import { cn } from '@/lib/utils'
-import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import { motion, useReducedMotion, useTransform } from 'motion/react'
 import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 import { Trans } from 'react-i18next'
+import { usePinStage } from '../hooks/usePinStage'
 import { useTranslation } from '../i18n/i18n'
 import { Section } from './Section'
 import { SectionHeader } from './SectionHeader'
@@ -61,16 +62,12 @@ function TimelineEntry({ entry }: TimelineEntryProps) {
 export function Experience() {
   const { t } = useTranslation()
   const reduce = useReducedMotion()
-  const trackRef = useRef<HTMLDivElement>(null)
   const viewportRef = useRef<HTMLDivElement>(null)
   const rowRef = useRef<HTMLDivElement>(null)
 
-  // Scrub through the runway: 0 the moment the stage tops out, 1 when the
-  // track's end reaches the viewport's end — i.e. the sticky range exactly.
-  const { scrollYProgress: p } = useScroll({
-    target: trackRef,
-    offset: ['start start', 'end end']
-  })
+  // Pin recipe (measurement, phase-matched offsets, runway height) is
+  // shared with GitHubSection's stage — see usePinStage.
+  const { runwayRef, stageRef, scrollYProgress: p, runwayHeight } = usePinStage(!reduce)
 
   // Strip geometry: range = row width minus one card (the full travel), lead =
   // the half-viewport inset that centres a card at both ends. Deliberately
@@ -118,10 +115,6 @@ export function Experience() {
   const entries = Array.isArray(raw) ? (raw as ExperienceEntry[]) : []
   const total = Math.max(entries.length, 1)
 
-  // Runway: one viewport for the stage plus 40svh of scrub per entry. Inline
-  // height, not a class: Tailwind can't build a dynamic value at runtime.
-  const runway = { height: `${100 + 40 * total}svh` }
-
   // The strip's edges dissolve instead of clipping cards mid-card.
   const edgeFade = {
     maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
@@ -130,13 +123,14 @@ export function Experience() {
 
   return (
     <Section id={'experience'}>
-      <div ref={trackRef} style={!reduce ? runway : undefined}>
+      <div ref={runwayRef} style={!reduce ? { height: runwayHeight(total) } : undefined}>
         {/* Stage — sticks for the whole runway: header and intro stay static
             while the strip scrolls left through the viewport */}
         <div
+          ref={stageRef}
           className={cn(
             'stagger',
-            !reduce ? 'sticky top-0 flex min-h-svh flex-col justify-center py-16' : ''
+            !reduce ? 'sticky top-32 flex flex-col' : ''
           )}
         >
           <SectionHeader label={t('experience.label')} heading={t('experience.heading')} />
@@ -184,10 +178,8 @@ export function Experience() {
               </motion.div>
             </div>
 
-            {/* Accent rule and edge fade overlay the strip but must not scroll
-                with it, so they sit outside the scroller. */}
+            {/* Accent rule overlays the strip but must not scroll with it */}
             <div className={'pointer-events-none absolute inset-x-0 top-0 h-2 bg-accent'} />
-            {/* <div className={'pointer-events-none absolute inset-0'} style={edgeFade} /> */}
           </div>
         </div>
       </div>
