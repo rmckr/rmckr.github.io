@@ -60,15 +60,6 @@
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Hero pin progress — written per frame by Hero.tsx — and the hand-off
-   phase derived from it (the next section crossfades in as the pin
-   dissolves over the last 15% of the track). */
-:root {
-  --p: 0;
-  /* Hand-off phase, the last 15% of the hero track */
-  --p3: clamp(0, (var(--p) - 0.85) / 0.15, 1);
-}
-
 /* ── Base ─────────────────────────────────────────────────────────────────────
    Everything here is in @layer base so utilities can always override it.
 ─────────────────────────────────────────────────────────────────────────────── */
@@ -308,8 +299,9 @@
   }
 } /* ── Hero — static styling ──────────────────────────────────────────────────
    "//RMCKR" reactor on a pinned scroll track. Animation lives in Hero.tsx
-   (Motion); layout, type and chrome live here. Glyph paint reads --lp,
-   written per frame from Hero.tsx; the hand-off reads --p / --p3 from :root.
+   (Motion); layout, type and chrome live here. Glyph heat is a pre-painted
+   accent copy cross-faded by opacity; the hand-off writes --p3 straight onto
+   the section that follows the hero (scoped, never :root).
 ─────────────────────────────────────────────────────────────────────────────── */
 
 @utility hero {
@@ -347,8 +339,9 @@
   height: 100svh;
   overflow: hidden;
   isolation: isolate;
-  /* Dissolves over the last 15% of the track (hand-off) */
-  opacity: calc(1 - var(--p3));
+  /* Dissolves over the last 15% of the track (hand-off) — the opacity is an
+     inline Motion value set in Hero.tsx, written on this element only, so the
+     per-frame update never invalidates the rest of the document */
 
   @media (prefers-reduced-motion: reduce) {
     position: static;
@@ -399,21 +392,22 @@
   gap: 0.03em;
 }
 
-/* One glyph. Transform is Motion's; paint (colour heat + accent glow as it
-   separates) reads --lp, written per frame from Hero.tsx. */
+/* One glyph. Transform is Motion's. Paint never changes per frame: the cold
+   copy is plain foreground text; the hot copy (see .glyph-hot) is painted
+   once at full accent + glow and cross-faded over it by opacity —
+   composite-only, so the scroll scrub no longer repaints seven viewport-wide
+   glyphs with a growing blur every frame. */
 @utility glyph {
   display: block;
-  --lp: 0;
-  color: color-mix(
-    in srgb,
-    var(--color-foreground) calc((1 - var(--lp)) * 100%),
-    var(--color-accent) calc(var(--lp) * 100%)
-  );
+}
+
+/* The heat state, painted once. Hero.tsx scrubs its opacity with the scrub
+   (and skips it entirely under reduced motion). */
+@utility glyph-hot {
+  color: var(--color-accent);
   text-shadow:
-    0 0.02em 0 color-mix(in srgb, var(--color-accent) calc(var(--lp) * 45%), transparent),
-    0 0 calc(var(--lp) * 30px)
-      color-mix(in srgb, var(--color-accent) calc(var(--lp) * 65%), transparent);
-  will-change: transform;
+    0 0.02em 0 color-mix(in srgb, var(--color-accent) 45%, transparent),
+    0 0 30px color-mix(in srgb, var(--color-accent) 65%, transparent);
 }
 
 /* Purely a visual affordance — not interactive */
@@ -429,12 +423,18 @@
   color: var(--color-muted);
 }
 
+/* A plain CSS loop: it runs off the main thread (Motion's rAF version
+   ticked forever, even once data-hero-gone hides the hero) and pauses itself
+   under reduced motion. Per-segment ease matches the original Motion timing. */
 @utility hero-scroll-line {
   width: 1px;
   height: clamp(2rem, 5vh, 3.25rem);
   background: linear-gradient(to bottom, var(--color-accent), transparent);
   transform-origin: top;
-  will-change: transform;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: scroll-line 2.4s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+  }
 }
 
 /* Scroll-lock meter across the top edge: how far through the sequence the
@@ -507,8 +507,11 @@
      threshold, no jump, no breakpoint anywhere in the hand-off. A tiny
      rise during the fade is inherent to free scrolling and is the price
      of continuity. */
+  /* --p3 is written directly onto this element by Hero.tsx, so the
+     per-frame update invalidates only this section instead of the whole
+     document; the fallback holds it invisible before the first write. */
   #hero + section {
-    opacity: var(--p3);
+    opacity: var(--p3, 0);
   }
 }
 
@@ -628,6 +631,21 @@
   50% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1.06);
+  }
+}
+
+@keyframes scroll-line {
+  0% {
+    transform: scaleY(0.15);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
   }
 }
 

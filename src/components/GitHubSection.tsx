@@ -51,11 +51,12 @@ const DRIFT = 36
 /** Scale the front card gains across its segment as it lifts off its stack. */
 const GROW = 0.03
 /** Upcoming cards waiting behind the front one — peek px, scale and opacity
-    steps per stack layer. */
+    steps per stack layer. The dim stays shallow: at 0.3 the fourth card's 40%
+    peek over the third's 70% read as a hole through the pile, not a layer. */
 const STACK_LAYERS = 2
 const STACK_PEEK = 14
 const STACK_SCALE = 0.03
-const STACK_DIM = 0.3
+const STACK_DIM = 0.15
 /** Px a passed card rises as it fades out of the front slot. */
 const EXIT_RISE = 24
 
@@ -498,7 +499,7 @@ export function GitHubSection() {
                     <motion.div
                       key={repo.id}
                       className={'absolute inset-0'}
-                      style={{ zIndex: k === 0 ? 3 : behind ? 2 : 1 }}
+                      style={{ zIndex: k === 0 ? 3 : behind ? 3 - k : 1 }}
                       animate={stack}
                       transition={{ duration: reduce ? 0 : 0.5, ease: EASE }}
                     >

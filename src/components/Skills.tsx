@@ -60,10 +60,12 @@ const TIER_COUNT = RINGS.map((ring) => skills.filter((s) => ringOf(s) === ring).
 /** The radial chart only lays out at md and up; below that the rings stack. */
 const WIDE_MQ = '(min-width: 768px)'
 
-/** The disc shared by nodes and legend samples: size-4, blooming to size-10
-    on hover; the legend layers its own size on top. */
+/** The disc shared by nodes and legend samples: size-4, scaling to size-10's
+    footprint on hover — `transform`, not width/height, so the bloom can never
+    re-lay-out anything (the icon counter-scales to stay 16px). The shadow
+    and outline scale with it; the legend layers its own size on top. */
 const DISC_CLASS =
-  'flex size-4 items-center justify-center rounded-full transition-[width,height,box-shadow,outline] duration-200 ease-out group-hover:size-10'
+  'flex size-4 items-center justify-center rounded-full transition-[transform,box-shadow,outline] duration-200 ease-out group-hover:scale-[2.5]'
 
 /** Tier treatment for a disc (accent = the skill's tag colour): advanced =
     solid dot with a separated ring, proficient = solid dot, basic = hollow
@@ -88,9 +90,9 @@ const iconColor = (ring: 0 | 1 | 2, color: string) => (ring === 2 ? color : 'var
 
 /** The map's measured width, plus each node's real box (wrapper/disc top,
     label bottom, half-width) read off the rendered markup — the collision
-    math uses these, so it can't drift from the DOM. shortcut: the node box
-    re-reads after every render, but the width only on resize/layout flip. */
-function useMapMetrics(ref: RefObject<HTMLElement | null>) {
+    math uses these, so it can't drift from the DOM. shortcut: the width
+    re-reads on resize, the node box on the wide/stacked layout flip. */
+function useMapMetrics(ref: RefObject<HTMLElement | null>, wide: boolean) {
   const [boxPx, setBoxPx] = useState(0)
   const [nodeBox, setNodeBox] = useState<NodeBox | null>(null)
 
@@ -107,36 +109,50 @@ function useMapMetrics(ref: RefObject<HTMLElement | null>) {
     return () => obs.disconnect()
   }, [ref])
 
-  // Node box: re-read after every render so a class or content edit is
-  // picked up. offset* reads, not rects — immune to the ring's mid-scroll
-  // rotation; values are compared so it settles instead of looping.
+  // Node box: re-measured when the layout mode flips (wide ↔ stacked changes
+  // the node width classes) — NOT after every render. The box can't change on
+  // a hover-only re-render, and reading offset* across every node after each
+  // of those was a forced synchronous layout per pointerenter/leave.
+  // offset* reads, not rects — immune to the ring's mid-scroll rotation;
+  // values are compared so it settles instead of looping.
   useLayoutEffect(() => {
     const el = ref.current
     if (!el) return
 
-    let top = 0
-    let bottom = 0
-    let halfW = 0
-    for (const n of el.querySelectorAll<HTMLElement>('[data-node]')) {
-      // The wrapper is the bloomed disc's box (Node's no-reflow invariant).
-      const h = n.offsetHeight / 2
-      top = Math.min(top, -h)
-      bottom = Math.max(bottom, h)
-      halfW = Math.max(halfW, n.offsetWidth / 2)
-      const label = n.querySelector<HTMLElement>('[data-label]')
-      if (label) {
-        top = Math.min(top, label.offsetTop - h)
-        bottom = Math.max(bottom, label.offsetTop + label.offsetHeight - h)
+    const measureBox = (): NodeBox | null => {
+      let top = 0
+      let bottom = 0
+      let halfW = 0
+      for (const n of el.querySelectorAll<HTMLElement>('[data-node]')) {
+        // The wrapper is the bloomed disc's box (Node's no-reflow invariant).
+        const h = n.offsetHeight / 2
+        top = Math.min(top, -h)
+        bottom = Math.max(bottom, h)
+        halfW = Math.max(halfW, n.offsetWidth / 2)
+        const label = n.querySelector<HTMLElement>('[data-label]')
+        if (label) {
+          top = Math.min(top, label.offsetTop - h)
+          bottom = Math.max(bottom, label.offsetTop + label.offsetHeight - h)
+        }
       }
+      return halfW > 0 ? { top, bottom, halfW } : null
     }
 
-    const next: NodeBox | null = halfW > 0 ? { top, bottom, halfW } : null
-    setNodeBox((prev) =>
-      prev && prev.top === next?.top && prev.bottom === next.bottom && prev.halfW === next.halfW
-        ? prev
-        : next
-    )
-  })
+    const commit = () => {
+      const next = measureBox()
+      setNodeBox((prev) =>
+        prev && prev.top === next?.top && prev.bottom === next.bottom && prev.halfW === next.halfW
+          ? prev
+          : next
+      )
+    }
+
+    commit()
+    // Self-hosted fonts swap in after mount and move offsetTop without any
+    // re-render — the one correction the old every-render re-read caught for
+    // free.
+    void document.fonts?.ready.then(commit)
+  }, [ref, wide])
 
   return { boxPx, nodeBox }
 }
@@ -191,7 +207,7 @@ function Node({
   const { skill, ring, angle } = placement
   const color = tagColors[skill.tag]
   const reduce = useReducedMotion()
-  const counter = useTransform(spin, (v) => -v)
+  const counter = useTransform(spin, (v) => `rotate(${-v}deg)`)
 
   const ringPct = wide ? RING_PCT : STACKED_RING_PCT
   const rad = ((angle - 90) * Math.PI) / 180
@@ -222,7 +238,7 @@ function Node({
           'relative flex h-10 items-center justify-center transition-opacity duration-200',
           wide ? 'w-24' : 'w-16'
         )}
-        style={{ opacity: active ? 1 : 0.3, rotate: reduce ? 0 : counter }}
+        style={{ opacity: active ? 1 : 0.3, transform: reduce ? undefined : counter }}
       >
         {/* Fixed-size wrapper: the dot blooms to size-10 on hover WITHOUT
             reflowing the node — the label used to move down as the dot grew,
@@ -231,7 +247,9 @@ function Node({
           <skill.icon
             aria-hidden={'true'}
             className={
-              'opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100'
+              /* Counter-scale matches the disc's bloom, so the icon stays
+                 16px inside the 2.5×-scaled disc */
+              'opacity-0 transition-[opacity,transform] duration-150 group-hover:opacity-100 group-hover:scale-[0.4] group-focus-visible:opacity-100'
             }
             size={16}
             style={{ color: iconColor(ring, color) }}
@@ -275,8 +293,17 @@ export function Skills() {
     useTransform(cross, (v) => (v - 0.5) * SPIN[1]),
     useTransform(cross, (v) => (v - 0.5) * SPIN[2])
   ]
+  // The same offsets as full transform strings for the rotating wrappers:
+  // Motion's `rotate` shorthand goes through CSS variables, which the
+  // compositor won't take off the main thread — a transform string can be
+  // hardware-accelerated. The nodes keep the numeric spin to counter-rotate.
+  const spinT = [
+    useTransform(spin[0], (v) => `rotate(${v}deg)`),
+    useTransform(spin[1], (v) => `rotate(${v}deg)`),
+    useTransform(spin[2], (v) => `rotate(${v}deg)`)
+  ]
 
-  const { boxPx, nodeBox } = useMapMetrics(mapRef)
+  const { boxPx, nodeBox } = useMapMetrics(mapRef, wide)
 
   const placements = useMemo(() => {
     if (wide) return computePlacements(skills, tags, boxPx, nodeBox, 'wide')
@@ -313,7 +340,7 @@ export function Skills() {
     <motion.div
       key={ring}
       className={'pointer-events-none absolute inset-0'}
-      style={{ rotate: reduce ? 0 : spin[ring] }}
+      style={reduce ? undefined : { transform: spinT[ring] }}
     >
       {placements
         .filter((placement) => placement.ring === ring)
