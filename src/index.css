@@ -51,6 +51,9 @@
   --text-heading--line-height: 1;
   --text-display: clamp(5rem, 15vw, 13rem);
   --text-display--line-height: 1;
+  /* Contact band email — no line-height companion on purpose: the band keeps
+     the inherited line box, not a tightened one */
+  --text-giant: clamp(2.75rem, 8vw, 6rem);
   --tracking-display: -0.02em;
 
   /* Motion */
@@ -123,6 +126,13 @@
 
   section:nth-of-type(odd):not(#hero) {
     @apply bg-surface-subtle;
+  }
+
+  /* Contact is see-through by design (the id beats Section's bg-bg): the
+     ambient backdrop — grid, glow, vignette — runs right through it, and the
+     wipe band's giant email sits directly on the moving floor. */
+  #contact {
+    @apply bg-transparent;
   }
 }
 
@@ -252,6 +262,24 @@
       border-color: color-mix(in srgb, var(--color-foreground) 55%, transparent);
       color: var(--color-foreground);
     }
+  }
+}
+
+/* ── Contact — the wipe band ──────────────────────────────────────────────────
+   The band's hairlines draw themselves in once the section reveals. The hover
+   inversion is plain utilities (translate-x + group-hover-fine); only this
+   reveal-driven draw needs a rule of its own.
+─────────────────────────────────────────────────────────────────────────────── */
+@utility wipe-edge {
+  transform: scaleX(0);
+  transform-origin: left;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: transform 900ms var(--ease-out-expo);
+  }
+
+  [data-visible] & {
+    transform: none;
   }
 }
 
