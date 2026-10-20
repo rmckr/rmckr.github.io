@@ -58,7 +58,12 @@
     "error": "Repositories konnten nicht geladen werden.",
     "retry": "Erneut versuchen",
     "viewProfile": "Profil ansehen",
+    "viewRepo": "Repository ansehen",
     "noDescription": "Keine Beschreibung",
+    "noScreenshot": "Noch kein Screenshot.",
+    "prevImage": "Vorheriges Bild",
+    "nextImage": "Nächstes Bild",
+    "image": "Bild",
     "followers": "Follower",
     "stats": {
       "stars": "Sterne",
