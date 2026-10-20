@@ -1,9 +1,7 @@
-import { GITHUB_USERNAME } from './index'
+import { featuredRepos, GITHUB_USERNAME } from './index'
 import type { GHRepo, GHUser } from './github'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
-
-type LangColors = Record<string, { color: string | null }>
 
 export type GitHubData = {
   user: GHUser
@@ -12,7 +10,6 @@ export type GitHubData = {
   totalForks: number
   prCount: number
   issueCount: number
-  langColors: LangColors
 }
 
 type CachedGitHubData = {
@@ -21,11 +18,11 @@ type CachedGitHubData = {
 }
 
 /** The slice of `Storage` the cache needs. */
-type CacheStore = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>
+type CacheStore = Pick<Storage, 'getItem' | 'setItem'>
 
 // ── Cache ─────────────────────────────────────────────────────────────────────
 
-const CACHE_KEY = `github-section:${GITHUB_USERNAME}`
+const CACHE_KEY = `github-section:${GITHUB_USERNAME}:v2`
 const CACHE_TTL = 10 * 60 * 1000 // 10 minutes
 
 /**
@@ -57,8 +54,7 @@ function writeCache(store: CacheStore, data: GitHubData): void {
 /** Degrades to a no-op cache when `localStorage` is blocked (e.g. cookies disabled). */
 const noStore: CacheStore = {
   getItem: () => null,
-  setItem: () => undefined,
-  removeItem: () => undefined
+  setItem: () => undefined
 }
 
 function defaultStore(): CacheStore {
@@ -82,7 +78,7 @@ async function fetchJson<T>(url: string): Promise<T> {
 }
 
 async function requestGitHubData(): Promise<GitHubData> {
-  const [user, allRepos, prResult, issueResult, langColors] = await Promise.all([
+  const [user, allRepos, prResult, issueResult] = await Promise.all([
     fetchJson<GHUser>(`https://api.github.com/users/${GITHUB_USERNAME}`),
 
     fetchJson<GHRepo[]>(`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100`),
@@ -93,17 +89,24 @@ async function requestGitHubData(): Promise<GitHubData> {
 
     fetchJson<{ total_count: number }>(
       `https://api.github.com/search/issues?q=author:${GITHUB_USERNAME}+type:issue&per_page=1`
-    ),
-
-    // Language colours are decoration — never let this optional source sink the section.
-    fetchJson<LangColors>(
-      'https://raw.githubusercontent.com/ozh/github-colors/master/colors.json'
-    ).catch((): LangColors => ({}))
+    )
   ])
 
   const ownRepos = allRepos.filter((repo) => !repo.fork)
 
-  const repos = [...ownRepos].sort((a, b) => b.stargazers_count - a.stargazers_count).slice(0, 4)
+  // Hand-picked repos first, in curated order; the most-starred of the rest
+  // fill in, so the flap row always renders featuredRepos.length panels even
+  // if one of them is renamed or deleted.
+  const featured = featuredRepos
+    .map((pick) => ownRepos.find((repo) => repo.name === pick.name))
+    .filter((repo): repo is GHRepo => repo !== undefined)
+
+  const fill = [...ownRepos]
+    .sort((a, b) => b.stargazers_count - a.stargazers_count)
+    .filter((repo) => !featured.includes(repo))
+    .slice(0, featuredRepos.length - featured.length)
+
+  const repos = [...featured, ...fill]
 
   return {
     user,
@@ -111,8 +114,7 @@ async function requestGitHubData(): Promise<GitHubData> {
     totalStars: ownRepos.reduce((sum, repo) => sum + repo.stargazers_count, 0),
     totalForks: ownRepos.reduce((sum, repo) => sum + repo.forks_count, 0),
     prCount: prResult.total_count,
-    issueCount: issueResult.total_count,
-    langColors
+    issueCount: issueResult.total_count
   }
 }
 

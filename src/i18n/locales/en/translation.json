@@ -58,7 +58,12 @@
     "error": "Could not load repositories.",
     "retry": "Retry",
     "viewProfile": "View profile",
+    "viewRepo": "View repository",
     "noDescription": "No description",
+    "noScreenshot": "No screenshot yet.",
+    "prevImage": "Previous image",
+    "nextImage": "Next image",
+    "image": "Image",
     "followers": "followers",
     "stats": {
       "stars": "Stars",

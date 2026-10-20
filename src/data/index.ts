@@ -79,3 +79,47 @@ export const tagColors: Record<SkillTag, string> = {
   db: '#FACC15', // yellow
   infra: '#D8B4FE' // lavender
 }
+
+// ── Featured GitHub repos ─────────────────────────────────────────────────────
+
+type FeaturedRepo = {
+  name: string
+  /** Screenshots served from public/ — a missing file renders as a placeholder. */
+  images: string[]
+}
+
+/** The hand-picked repos behind the GitHub flaps, in display order. */
+export const featuredRepos: FeaturedRepo[] = [
+  {
+    name: 'kalliope',
+    images: [
+      '/images/repos/kalliope-1.png',
+      '/images/repos/kalliope-2.png',
+      '/images/repos/kalliope-3.png'
+    ]
+  },
+  {
+    name: 'suitbot',
+    images: [
+      '/images/repos/suitbot-1.png',
+      '/images/repos/suitbot-2.png',
+      '/images/repos/suitbot-3.png'
+    ]
+  },
+  {
+    name: 'rasputin',
+    images: [
+      '/images/repos/rasputin-1.png',
+      '/images/repos/rasputin-2.png',
+      '/images/repos/rasputin-3.png'
+    ]
+  },
+  {
+    name: 'rmckr.github.io',
+    images: [
+      '/images/repos/rmckr.github.io-1.png',
+      '/images/repos/rmckr.github.io-2.png',
+      '/images/repos/rmckr.github.io-3.png'
+    ]
+  }
+]
