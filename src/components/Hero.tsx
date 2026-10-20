@@ -155,7 +155,10 @@ export function Hero() {
             release, so the hero's box can end where the next section begins */}
         {/* Dissolves over the last 15% — an inline Motion opacity on this
             one element: no inherited variable, no document-wide invalidation */}
-        <div className={'hero-pin'} style={reduce ? undefined : { opacity: pinOpacity }}>
+        <motion.div
+          className={'hero-pin'}
+          style={reduce ? undefined : { opacity: pinOpacity }}
+        >
           <div className={'hero-stage'}>
             <motion.h1
               className={'hero-word'}
@@ -253,7 +256,7 @@ export function Hero() {
               }
             />
           </span>
-        </div>
+        </motion.div>
       </section>
     </MotionConfig>
   )
