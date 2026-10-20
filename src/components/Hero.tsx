@@ -1,4 +1,5 @@
 import { highlightComponents } from '@/lib/trans'
+import { EASE } from '@/lib/motion'
 import {
   motion,
   MotionConfig,
@@ -16,7 +17,6 @@ import { LuBriefcase, LuContact, LuExternalLink, LuMapPin } from 'react-icons/lu
 import { GITHUB_USERNAME } from '../data'
 import { useTranslation } from '../i18n/i18n'
 
-const EASE = [0.16, 1, 0.3, 1] as const
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v))
 
 // "//RMCKR" — two accent slashes followed by the name.
