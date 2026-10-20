@@ -44,9 +44,7 @@ export function usePinStage(enabled: boolean) {
   const { scrollYProgress } = useScroll({
     target: runwayRef,
     offset:
-      stageH > 0
-        ? [`start ${PIN_PX}px`, `end ${PIN_PX + stageH}px`]
-        : ['start start', 'end end']
+      stageH > 0 ? [`start ${PIN_PX}px`, `end ${PIN_PX + stageH}px`] : ['start start', 'end end']
   })
 
   // The measured stage plus SVH_PER_ITEM of scrub per item, so the scrub

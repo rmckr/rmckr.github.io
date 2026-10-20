@@ -126,13 +126,7 @@ export function Experience() {
       <div ref={runwayRef} style={!reduce ? { height: runwayHeight(total) } : undefined}>
         {/* Stage — sticks for the whole runway: header and intro stay static
             while the strip scrolls left through the viewport */}
-        <div
-          ref={stageRef}
-          className={cn(
-            'stagger',
-            !reduce ? 'sticky top-32 flex flex-col' : ''
-          )}
-        >
+        <div ref={stageRef} className={cn('stagger', !reduce ? 'sticky top-32 flex flex-col' : '')}>
           <SectionHeader label={t('experience.label')} heading={t('experience.heading')} />
 
           <p className={'max-w-3xl copy'}>

@@ -147,11 +147,17 @@ function useMapMetrics(ref: RefObject<HTMLElement | null>, wide: boolean) {
       )
     }
 
-    commit()
+    // No synchronous commit(): the ResizeObserver's initial observation
+    // lands before first paint (same pattern as the width observer above),
+    // and it also catches container resizes — hover's transform-only bloom
+    // never moves the layout box, so it can't loop.
+    const obs = new ResizeObserver(commit)
+    obs.observe(el)
     // Self-hosted fonts swap in after mount and move offsetTop without any
     // re-render — the one correction the old every-render re-read caught for
     // free.
     void document.fonts?.ready.then(commit)
+    return () => obs.disconnect()
   }, [ref, wide])
 
   return { boxPx, nodeBox }
@@ -249,7 +255,7 @@ function Node({
             className={
               /* Counter-scale matches the disc's bloom, so the icon stays
                  16px inside the 2.5×-scaled disc */
-              'opacity-0 transition-[opacity,transform] duration-150 group-hover:opacity-100 group-hover:scale-[0.4] group-focus-visible:opacity-100'
+              'opacity-0 transition-[opacity,transform] duration-150 group-hover:scale-[0.4] group-hover:opacity-100 group-focus-visible:opacity-100'
             }
             size={16}
             style={{ color: iconColor(ring, color) }}
