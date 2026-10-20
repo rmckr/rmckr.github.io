@@ -150,7 +150,7 @@ export function Hero() {
                   className={'hero-scroll-line'}
                   aria-hidden={'true'}
                   animate={reduce ? undefined : { scaleY: [0.15, 1, 1], opacity: [0.4, 1, 0] }}
-                  transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+                  transition={{ duration: 2.4, repeat: Infinity, ease: [0.77, 0, 0.175, 1] }}
                 />
               </motion.div>
             </motion.div>
