@@ -7,10 +7,9 @@ import {
   useReducedMotion,
   useScroll,
   useTransform,
-  type MotionStyle,
   type MotionValue
 } from 'motion/react'
-import { useMemo, useRef } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useRef } from 'react'
 import { Trans } from 'react-i18next'
 import { FaGithub } from 'react-icons/fa'
 import { LuBriefcase, LuContact, LuExternalLink, LuMapPin } from 'react-icons/lu'
@@ -35,7 +34,8 @@ const CENTRE = (GLYPHS.length - 1) / 2
 /**
  * One glyph. Scroll-scrubbed separation: local progress runs ahead of the
  * global one, outer glyphs lead, each glyph spreads outward, rises and tips
- * back while heating toward the accent (paint via --lp, see index.css).
+ * back while heating toward the accent — a pre-painted hot copy cross-faded
+ * in by opacity (see .glyph-hot in index.css).
  * On top sits the one-shot staggered load-in rise.
  */
 function Glyph({
@@ -59,19 +59,30 @@ function Glyph({
 
   return (
     <motion.span
-      /* '!' beats .glyph's unlayered colour rule — the '//' stays accent */
+      /* '!' keeps the '//' accent — .glyph itself no longer paints colour */
       className={slash ? 'glyph text-accent!' : 'glyph'}
-      /* Cast: MotionStyle's types lag its runtime — the '--lp' custom
-         property backed by a MotionValue works, it's just not declared. */
-      style={reduce ? undefined : ({ x, y, rotateX, '--lp': lp } as MotionStyle)}
+      style={reduce ? undefined : { x, y, rotateX }}
     >
       <motion.span
-        className={'block'}
+        /* Both copies share one grid cell, so the hot copy overlays the cold
+           one exactly without growing the glyph's box */
+        className={'grid [&>*]:[grid-area:1_/_1]'}
         initial={{ y: '116%' }}
         animate={{ y: 0 }}
         transition={{ duration: 1.25, delay: c * 0.09 + 0.1, ease: EASE }}
       >
-        {char}
+        <span>{char}</span>
+        {/* Painted once at full heat; scrubbing its opacity is
+            composite-only, so scrolling never repaints the glyph */}
+        {!reduce && (
+          <motion.span
+            aria-hidden={'true'}
+            className={'glyph-hot'}
+            style={{ opacity: lp }}
+          >
+            {char}
+          </motion.span>
+        )}
       </motion.span>
     </motion.span>
   )
@@ -91,21 +102,41 @@ export function Hero() {
   // moment the next section fills the screen, so the dissolve hands off there
   // with nothing left to overlap. ('end end' finished one viewport early;
   // the old negative margin existed to cover that gap.) The travel is still
-  // two viewports, so every --p-driven beat keeps its pacing.
+  // two viewports, so every scrub-driven beat keeps its pacing.
   const { scrollYProgress: p } = useScroll({
     target: trackRef,
     offset: ['start start', 'end start']
   })
 
-  // --p on :root feeds the hand-off fade outside the hero (#hero + section);
-  // the nav threshold rides on the same value, and data-hero-gone retires the
-  // fixed pin overlay once the hand-off completes (else it would keep
-  // swallowing clicks over the next section). Reduced motion sets none of them.
-  useMotionValueEvent(p, 'change', (v) => {
-    if (!motionOk) return
-    document.documentElement.style.setProperty('--p', v.toFixed(4))
+  // Hand-off phase (the pin's dissolve over the last 15% of the track):
+  // also the next section's fade-in value, see applyHandoff below.
+  const pinOpacity = useTransform(p, (v) => 1 - clamp01((v - 0.85) / 0.15))
+
+  // Hand-off wiring. --p3 is written directly onto the section that follows
+  // the hero (scoped next to the pin) — never as an inherited variable on
+  // <html>, which would re-run style recalc for the whole document every
+  // scroll frame. The nav threshold rides on the same value, and
+  // data-hero-gone retires the fixed pin overlay once the hand-off completes
+  // (else it would keep swallowing clicks over the next section). Reduced
+  // motion sets none of them.
+  const applyHandoff = useCallback((v: number) => {
+    const p3 = clamp01((v - 0.85) / 0.15)
+    trackRef.current?.nextElementSibling?.style.setProperty('--p3', p3.toFixed(4))
     document.documentElement.toggleAttribute('data-hero-done', v >= 0.95)
     document.documentElement.toggleAttribute('data-hero-gone', v >= 0.999)
+  }, [])
+
+  // The change event only fires when the value moves, so the mount write
+  // settles the initial value before first paint (the CSS fallback holds the
+  // next section invisible until then); it also covers a page restored
+  // mid-track where the first measured value is already non-zero.
+  useLayoutEffect(() => {
+    if (motionOk) applyHandoff(p.get())
+  }, [motionOk, applyHandoff])
+
+  useMotionValueEvent(p, 'change', (v) => {
+    if (!motionOk) return
+    applyHandoff(v)
   })
 
   // Pass-through: the wordmark flies through the camera over the last 45%
@@ -124,7 +155,9 @@ export function Hero() {
       <section id={'hero'} ref={trackRef} className={'hero'}>
         {/* Fixed stage: overlays the viewport for the whole track — no sticky
             release, so the hero's box can end where the next section begins */}
-        <div className={'hero-pin'}>
+        {/* Dissolves over the last 15% — an inline Motion opacity on this
+            one element: no inherited variable, no document-wide invalidation */}
+        <div className={'hero-pin'} style={reduce ? undefined : { opacity: pinOpacity }}>
           <div className={'hero-stage'}>
             <motion.h1
               className={'hero-word'}
@@ -146,12 +179,9 @@ export function Hero() {
                 style={reduce ? undefined : { opacity: promptOpacity }}
               >
                 <span>{t('hero.scroll')}</span>
-                <motion.span
-                  className={'hero-scroll-line'}
-                  aria-hidden={'true'}
-                  animate={reduce ? undefined : { scaleY: [0.15, 1, 1], opacity: [0.4, 1, 0] }}
-                  transition={{ duration: 2.4, repeat: Infinity, ease: [0.77, 0, 0.175, 1] }}
-                />
+                {/* Plain CSS loop (index.css): off the main thread, and it
+                    pauses itself under reduced motion */}
+                <span className={'hero-scroll-line'} aria-hidden={'true'} />
               </motion.div>
             </motion.div>
           </div>
