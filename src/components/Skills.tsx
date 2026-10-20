@@ -1,7 +1,6 @@
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'motion/react'
 import { LuOrbit } from 'react-icons/lu'
 import {
-  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -9,6 +8,7 @@ import {
   type CSSProperties,
   type RefObject
 } from 'react'
+import { useWide } from '../hooks/useWide'
 import {
   computePlacements,
   RING_PCT,
@@ -85,22 +85,6 @@ function discStyle(ring: 0 | 1 | 2, color: string, active: boolean): CSSProperti
 /** Icon colour inside a disc: dark on the solid discs, tag colour in the
     hollow one (its interior is the page surface). */
 const iconColor = (ring: 0 | 1 | 2, color: string) => (ring === 2 ? color : 'var(--color-bg)')
-
-/** True on viewports where the radial map is laid out (>= md). */
-function useWide() {
-  const [wide, setWide] = useState(
-    () => typeof window !== 'undefined' && window.matchMedia(WIDE_MQ).matches
-  )
-
-  useEffect(() => {
-    const mq = window.matchMedia(WIDE_MQ)
-    const onChange = () => setWide(mq.matches)
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
-
-  return wide
-}
 
 /** The map's measured width, plus each node's real box (wrapper/disc top,
     label bottom, half-width) read off the rendered markup — the collision
@@ -271,7 +255,7 @@ function Node({
 
 export function Skills() {
   const { t } = useTranslation()
-  const wide = useWide()
+  const wide = useWide(WIDE_MQ)
   const [hovered, setHovered] = useState<Skill | null>(null)
   const [group, setGroup] = useState<SkillTag | null>(null)
   const [orbit, setOrbit] = useState<0 | 1 | 2 | null>(null)
