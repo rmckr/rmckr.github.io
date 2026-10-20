@@ -70,7 +70,9 @@
   "contact": {
     "label": "Contact",
     "heading": "Say hello.",
-    "desc": "I'm currently looking for a working student position where I can get more experience in software development and contribute to a real project. If you're looking for someone who enjoys learning, building things and getting into the details, feel free to get in touch."
+    "desc": "I'm currently looking for a working student position where I can get more experience in software development and contribute to a real project. If you're looking for someone who enjoys learning, building things and getting into the details, feel free to get in touch.",
+    "copyHint": "or copy it:",
+    "copied": "copied"
   },
   "footer": {
     "copyright": "© 2026 Lukas Romacker",

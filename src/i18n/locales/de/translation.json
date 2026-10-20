@@ -70,7 +70,9 @@
   "contact": {
     "label": "Kontakt",
     "heading": "Sag hallo.",
-    "desc": "Ich suche derzeit eine Werkstudentenstelle, in der ich mehr Erfahrung in der Softwareentwicklung sammeln und an einem echten Projekt mitarbeiten kann. Wenn Sie jemanden suchen, der gerne dazulernt, Dinge entwickelt und sich mit den Details beschäftigt, freue ich mich über Ihre Kontaktaufnahme."
+    "desc": "Ich suche derzeit eine Werkstudentenstelle, in der ich mehr Erfahrung in der Softwareentwicklung sammeln und an einem echten Projekt mitarbeiten kann. Wenn Sie jemanden suchen, der gerne dazulernt, Dinge entwickelt und sich mit den Details beschäftigt, freue ich mich über Ihre Kontaktaufnahme.",
+    "copyHint": "oder kopieren:",
+    "copied": "kopiert"
   },
   "footer": {
     "copyright": "© 2026 Lukas Romacker",
