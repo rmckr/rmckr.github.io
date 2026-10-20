@@ -94,7 +94,7 @@ function Carousel({ images, alt }: CarouselProps) {
     return (
       <div className={'absolute inset-0 flex flex-col items-center justify-center gap-3 p-6'}>
         <LuImageOff size={22} aria-hidden={'true'} className={'text-muted'} />
-        <p className={'meta text-center'}>{t('github.noScreenshot')}</p>
+        <p className={'text-center meta'}>{t('github.noScreenshot')}</p>
       </div>
     )
   }
@@ -111,9 +111,7 @@ function Carousel({ images, alt }: CarouselProps) {
           alt={alt}
           draggable={false}
           onError={() =>
-            setBroken((prev) =>
-              prev.includes(slides[at]) ? prev : [...prev, slides[at]]
-            )
+            setBroken((prev) => (prev.includes(slides[at]) ? prev : [...prev, slides[at]]))
           }
           initial={{ opacity: 0, scale: reduce ? 1 : 1.04 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -189,11 +187,11 @@ function ProjectCard({ repo, images }: ProjectCardProps) {
   const { t } = useTranslation()
 
   return (
-    <article className={'card flex h-full flex-col bg-surface sm:flex-row'}>
+    <article className={'flex h-full flex-col card bg-surface sm:flex-row'}>
       {/* Fixed 16:10 frame when stacked; stretches to the card's height at sm+ */}
       <div
         className={
-          'relative aspect-[16/10] w-full overflow-hidden sm:aspect-auto sm:min-h-52 sm:flex-1'
+          'relative aspect-16/10 w-full overflow-hidden sm:aspect-auto sm:min-h-52 sm:flex-1'
         }
       >
         <Carousel images={images} alt={repo.name} />
@@ -212,7 +210,7 @@ function ProjectCard({ repo, images }: ProjectCardProps) {
 
         <div className={'mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 meta'}>
           {repo.language && (
-            <span className={'label border border-subtle px-2 py-0.5 text-2xs'}>
+            <span className={'border border-subtle px-2 py-0.5 label text-2xs'}>
               {repo.language}
             </span>
           )}
@@ -260,9 +258,7 @@ type SegmentBuildProps = {
 function SegmentBuild({ index, count, progress, children }: SegmentBuildProps) {
   // Segment-local progress, 0 → 1 across exactly this card's segment —
   // the same floor() mapping the active index and switch use.
-  const build = useTransform(progress, (v) =>
-    Math.min(1, Math.max(0, v * count - index))
-  )
+  const build = useTransform(progress, (v) => Math.min(1, Math.max(0, v * count - index)))
   const y = useTransform(build, [0, 1], [0, -DRIFT])
   const scale = useTransform(build, [0, 1], [1, 1 + GROW])
 
@@ -310,7 +306,7 @@ function IndexRail({ repos, active, onSelect }: IndexRailProps) {
 
             <span
               className={
-                'min-w-0 truncate font-display text-xl/tight font-extrabold uppercase tracking-wide'
+                'min-w-0 truncate font-display text-xl/tight font-extrabold tracking-wide uppercase'
               }
             >
               {repo.name}
@@ -336,7 +332,7 @@ function Stat({ label, value, icon: Icon }: StatProps) {
     <div className={'flex flex-col items-center gap-3'}>
       <p
         className={
-          'font-display text-6xl leading-none font-extrabold tracking-display tabular-nums text-accent lg:text-7xl'
+          'font-display text-6xl leading-none font-extrabold tracking-display text-accent tabular-nums lg:text-7xl'
         }
       >
         <Counter value={value} />
@@ -344,7 +340,7 @@ function Stat({ label, value, icon: Icon }: StatProps) {
 
       <span className={'h-px w-16 bg-accent'} aria-hidden={'true'} />
 
-      <p className={'meta label flex items-center gap-1.5 text-2xs'}>
+      <p className={'flex items-center gap-1.5 meta label text-2xs'}>
         <Icon size={13} aria-hidden={'true'} />
         {label}
       </p>
@@ -390,10 +386,7 @@ export function GitHubSection() {
   // SegmentBuild scrubs from, so card, rail and switch can't disagree.
   useMotionValueEvent(scrollYProgress, 'change', (p) => {
     if (!scrub || !data || data.repos.length === 0) return
-    const idx = Math.min(
-      data.repos.length - 1,
-      Math.max(0, Math.floor(p * data.repos.length))
-    )
+    const idx = Math.min(data.repos.length - 1, Math.max(0, Math.floor(p * data.repos.length)))
     setActive((cur) => (cur === idx ? cur : idx))
   })
 
@@ -412,7 +405,7 @@ export function GitHubSection() {
       const top = el.getBoundingClientRect().top + window.scrollY - PIN_PX
       window.scrollTo({ top: top + ((i + 0.5) / data.repos.length) * range })
     },
-    [data, stageH]
+    [runwayRef, data, stageH]
   )
 
   // marginBottom holds the stats below the fold for the whole pin: at release
@@ -422,8 +415,7 @@ export function GitHubSection() {
   // release point.
   const runway = {
     height: runwayHeight(data?.repos.length ?? 0),
-    marginBottom:
-      stageH > 0 ? `max(0px, calc(100svh - ${PIN_PX}px - ${stageH}px))` : undefined
+    marginBottom: stageH > 0 ? `max(0px, calc(100svh - ${PIN_PX}px - ${stageH}px))` : undefined
   }
 
   return (
@@ -443,14 +435,18 @@ export function GitHubSection() {
           {loading && (
             <div className={'flex justify-center py-20'}>
               <div
-                className={'size-5 animate-spin rounded-full border-2 border-subtle border-t-accent'}
+                className={
+                  'size-5 animate-spin rounded-full border-2 border-subtle border-t-accent'
+                }
               />
             </div>
           )}
 
           {error && (
             <div
-              className={'flex items-center justify-between gap-4 border-y border-subtle p-4 font-mono text-accent'}
+              className={
+                'flex items-center justify-between gap-4 border-y border-subtle p-4 font-mono text-accent'
+              }
             >
               <span>{t('github.error')}</span>
 
@@ -470,17 +466,13 @@ export function GitHubSection() {
 
           {data && scrub && data.repos.length > 0 && (
             <div className={'mt-16 grid gap-8 lg:grid-cols-[12rem_minmax(0,1fr)]'}>
-              <IndexRail
-                repos={data.repos}
-                active={openAt}
-                onSelect={goToProject}
-              />
+              <IndexRail repos={data.repos} active={openAt} onSelect={goToProject} />
 
               {/* The card stack: every repo mounted, positioned by its
                   distance k from the open one — front (k = 0) builds, the
                   next STACK_LAYERS wait behind, passed cards rise and fade.
                   The switch is just openAt moving. */}
-              <div className={'relative h-[20rem]'}>
+              <div className={'relative h-80'}>
                 {data.repos.map((repo, i) => {
                   const k = i - openAt
                   const behind = k > 0 && k <= STACK_LAYERS
@@ -503,11 +495,7 @@ export function GitHubSection() {
                       animate={stack}
                       transition={{ duration: reduce ? 0 : 0.5, ease: EASE }}
                     >
-                      <SegmentBuild
-                        index={i}
-                        count={data.repos.length}
-                        progress={scrollYProgress}
-                      >
+                      <SegmentBuild index={i} count={data.repos.length} progress={scrollYProgress}>
                         <ProjectCard
                           repo={repo}
                           images={featuredByName.get(repo.name)?.images ?? []}
@@ -548,14 +536,10 @@ export function GitHubSection() {
               value={data.prCount}
               icon={LuGitPullRequest}
             />
-            <Stat
-              label={t('github.stats.issues')}
-              value={data.issueCount}
-              icon={LuFileWarning}
-            />
+            <Stat label={t('github.stats.issues')} value={data.issueCount} icon={LuFileWarning} />
           </div>
 
-          <div className={'card flex flex-col gap-5 bg-surface p-6 sm:p-8'}>
+          <div className={'flex flex-col gap-5 card bg-surface p-6 sm:p-8'}>
             <div className={'flex flex-wrap items-center gap-x-6 gap-y-4'}>
               <div className={'flex items-center gap-4'}>
                 <img
@@ -566,7 +550,9 @@ export function GitHubSection() {
 
                 <div className={'min-w-0'}>
                   <p
-                    className={'truncate font-display text-2xl/tight font-extrabold text-foreground'}
+                    className={
+                      'truncate font-display text-2xl/tight font-extrabold text-foreground'
+                    }
                   >
                     {data.user.name ?? GITHUB_USERNAME}
                   </p>
@@ -592,7 +578,11 @@ export function GitHubSection() {
             )}
 
             {(data.user.followers > 0 || data.user.location) && (
-              <div className={'flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-subtle pt-5 meta'}>
+              <div
+                className={
+                  'flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-subtle pt-5 meta'
+                }
+              >
                 {data.user.followers > 0 && (
                   <span className={'flex items-center gap-1.5'}>
                     <LuUsersRound size={14} aria-hidden={'true'} />

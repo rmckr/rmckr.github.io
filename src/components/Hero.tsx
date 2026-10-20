@@ -18,15 +18,16 @@ import { useTranslation } from '../i18n/i18n'
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v))
 
-// "//RMCKR" — two accent slashes followed by the name.
-const GLYPHS: readonly { char: string; slash?: boolean }[] = [
-  { char: '/', slash: true },
-  { char: '/', slash: true },
-  { char: 'R' },
-  { char: 'M' },
-  { char: 'C' },
-  { char: 'K' },
-  { char: 'R' }
+// "//RMCKR" — two accent slashes followed by the name. id: stable list key
+// (chars repeat: two slashes, two R's).
+const GLYPHS: readonly { id: string; char: string; slash?: boolean }[] = [
+  { id: 'slash-1', char: '/', slash: true },
+  { id: 'slash-2', char: '/', slash: true },
+  { id: 'R-1', char: 'R' },
+  { id: 'M', char: 'M' },
+  { id: 'C', char: 'C' },
+  { id: 'K', char: 'K' },
+  { id: 'R-2', char: 'R' }
 ]
 
 const CENTRE = (GLYPHS.length - 1) / 2
@@ -66,7 +67,7 @@ function Glyph({
       <motion.span
         /* Both copies share one grid cell, so the hot copy overlays the cold
            one exactly without growing the glyph's box */
-        className={'grid [&>*]:[grid-area:1_/_1]'}
+        className={'grid *:[grid-area:1/1]'}
         initial={{ y: '116%' }}
         animate={{ y: 0 }}
         transition={{ duration: 1.25, delay: c * 0.09 + 0.1, ease: EASE }}
@@ -75,11 +76,7 @@ function Glyph({
         {/* Painted once at full heat; scrubbing its opacity is
             composite-only, so scrolling never repaints the glyph */}
         {!reduce && (
-          <motion.span
-            aria-hidden={'true'}
-            className={'glyph-hot'}
-            style={{ opacity: lp }}
-          >
+          <motion.span aria-hidden={'true'} className={'glyph-hot'} style={{ opacity: lp }}>
             {char}
           </motion.span>
         )}
@@ -121,7 +118,8 @@ export function Hero() {
   // motion sets none of them.
   const applyHandoff = useCallback((v: number) => {
     const p3 = clamp01((v - 0.85) / 0.15)
-    trackRef.current?.nextElementSibling?.style.setProperty('--p3', p3.toFixed(4))
+    const next = trackRef.current?.nextElementSibling
+    if (next instanceof HTMLElement) next.style.setProperty('--p3', p3.toFixed(4))
     document.documentElement.toggleAttribute('data-hero-done', v >= 0.95)
     document.documentElement.toggleAttribute('data-hero-gone', v >= 0.999)
   }, [])
@@ -132,7 +130,7 @@ export function Hero() {
   // mid-track where the first measured value is already non-zero.
   useLayoutEffect(() => {
     if (motionOk) applyHandoff(p.get())
-  }, [motionOk, applyHandoff])
+  }, [motionOk, applyHandoff, p])
 
   useMotionValueEvent(p, 'change', (v) => {
     if (!motionOk) return
@@ -165,7 +163,7 @@ export function Hero() {
               style={reduce ? undefined : { scale: wordScale, y: wordY, opacity: wordOpacity }}
             >
               {GLYPHS.map((glyph, i) => (
-                <Glyph key={i} char={glyph.char} slash={glyph.slash} i={i} p={p} />
+                <Glyph key={glyph.id} char={glyph.char} slash={glyph.slash} i={i} p={p} />
               ))}
             </motion.h1>{' '}
             <motion.div

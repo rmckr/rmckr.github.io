@@ -18,10 +18,7 @@ function GiantRow({ invert = false }: { invert?: boolean }) {
   // does the same). The sweep copy has no mask, so it needs no delay.
   const email = (
     <span
-      className={cn(
-        'font-wordmark text-giant whitespace-nowrap font-normal tracking-tight',
-        tone
-      )}
+      className={cn('font-wordmark text-giant font-normal tracking-tight whitespace-nowrap', tone)}
       style={invert ? undefined : { transitionDelay: '150ms' }}
     >
       {CONTACT_EMAIL}
@@ -35,7 +32,11 @@ function GiantRow({ invert = false }: { invert?: boolean }) {
         {/* Baseline-aligned: a 1em square sits on the baseline, its centre
             above the text's optical centre */}
         <span aria-hidden={'true'} className={cn('inline-block text-giant', tone)}>
-          <LuArrowUpRight className={'transition-transform duration-200 group-hover:translate-x-2 group-hover:-translate-y-2'} />
+          <LuArrowUpRight
+            className={
+              'transition-transform duration-200 group-hover:translate-x-2 group-hover:-translate-y-2'
+            }
+          />
         </span>
       </div>
     </div>
@@ -77,18 +78,18 @@ export function Contact() {
       <SectionHeader label={t('contact.label')} heading={t('contact.heading')} />
 
       <div className={'flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between'}>
-        <p className={'copy max-w-xl'}>
+        <p className={'max-w-xl copy'}>
           <Trans i18nKey={'contact.desc'} components={highlightComponents} />
         </p>
 
-        <div className={'stagger flex flex-wrap items-center gap-4'}>
+        <div className={'flex flex-wrap items-center gap-4 stagger'}>
           {socialLinks.map((link) => (
             <a
               key={link.label}
               href={link.href}
               target={'_blank'}
               rel={'noreferrer'}
-              className={'btn-secondary group'}
+              className={'group btn-secondary'}
             >
               <link.icon size={14} className={'icon-nudge'} />
               {link.label}
@@ -105,10 +106,13 @@ export function Contact() {
         href={`mailto:${CONTACT_EMAIL}`}
         className={'group relative mx-[calc(50%-50svw)] mt-16 block overflow-hidden'}
       >
-        <span aria-hidden={'true'} className={'wipe-edge absolute inset-x-0 top-0 h-px bg-accent'} />
         <span
           aria-hidden={'true'}
-          className={'wipe-edge absolute inset-x-0 bottom-0 h-px bg-accent'}
+          className={'absolute inset-x-0 top-0 h-px wipe-edge bg-accent'}
+        />
+        <span
+          aria-hidden={'true'}
+          className={'absolute inset-x-0 bottom-0 h-px wipe-edge bg-accent'}
           style={{ transitionDelay: '120ms' }}
         />
 
@@ -137,7 +141,7 @@ export function Contact() {
         type={'button'}
         onClick={() => void copyEmail()}
         className={
-          'mt-8 inline-flex select-text items-baseline gap-2 font-mono text-sm text-muted transition-colors duration-200 hover:text-foreground'
+          'mt-8 inline-flex items-baseline gap-2 font-mono text-sm text-muted transition-colors duration-200 select-text hover:text-foreground'
         }
       >
         {copied ? t('contact.copied') : t('contact.copyHint')}
