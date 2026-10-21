@@ -436,7 +436,7 @@ export function GitHubSection() {
             <div className={'flex justify-center py-20'}>
               <div
                 className={
-                  'size-5 animate-spin rounded-full border-2 border-subtle border-t-accent'
+                  'size-5 animate-spin rounded-full border-2 border-subtle border-t-accent motion-reduce:animate-none'
                 }
               />
             </div>
@@ -510,7 +510,10 @@ export function GitHubSection() {
 
           {data && !scrub && (
             // Same cards, static grid — no pin, no scrub, everything readable.
-            <div className={'grid items-stretch gap-6 md:grid-cols-2'}>
+            // lg, not md: below 1024 the cards are in the static grid (scrub
+            // needs ≥1024), and at md two columns leave only ~60px for the
+            // screenshot next to the fixed 72-width readout column.
+            <div className={'grid items-stretch gap-6 lg:grid-cols-2'}>
               {data.repos.map((repo) => (
                 <ProjectCard
                   key={repo.id}
