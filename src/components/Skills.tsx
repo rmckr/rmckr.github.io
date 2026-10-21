@@ -65,7 +65,7 @@ const WIDE_MQ = '(min-width: 768px)'
     re-lay-out anything (the icon counter-scales to stay 16px). The shadow
     and outline scale with it; the legend layers its own size on top. */
 const DISC_CLASS =
-  'flex size-4 items-center justify-center rounded-full transition-[transform,box-shadow,outline] duration-200 ease-out group-hover:scale-[2.5]'
+  'flex size-4 items-center justify-center rounded-full transition-[transform,box-shadow,outline] duration-200 ease-out group-hover-fine:scale-[2.5]'
 
 /** Tier treatment for a disc (accent = the skill's tag colour): advanced =
     solid dot with a separated ring, proficient = solid dot, basic = hollow
@@ -255,7 +255,7 @@ function Node({
             className={
               /* Counter-scale matches the disc's bloom, so the icon stays
                  16px inside the 2.5×-scaled disc */
-              'opacity-0 transition-[opacity,transform] duration-150 group-hover:scale-[0.4] group-hover:opacity-100 group-focus-visible:opacity-100'
+              'opacity-0 transition-[opacity,transform] duration-150 group-hover-fine:scale-[0.4] group-hover-fine:opacity-100 group-focus-visible:opacity-100'
             }
             size={16}
             style={{ color: iconColor(ring, color) }}
@@ -267,7 +267,7 @@ function Node({
         <span
           data-label={'true'}
           className={
-            'absolute inset-x-0 top-1/2 mt-3.5 text-center meta text-2xs/tight transition-opacity duration-200 group-hover:opacity-0 group-focus-visible:opacity-0'
+            'absolute inset-x-0 top-1/2 mt-3.5 text-center meta text-2xs/tight transition-opacity duration-200 group-hover-fine:opacity-0 group-focus-visible:opacity-0'
           }
         >
           {skill.name}
@@ -378,7 +378,10 @@ export function Skills() {
           <div
             ref={mapRef}
             className={cn(
-              'relative mx-auto flex w-[min(86vw,24rem)] flex-col',
+              // max-w-full: min(72svh,48rem) overflows the container on
+              // portrait tablets (72svh > viewport − 2×1.5rem) and on phones
+              // where 86vw > 100vw − 2×1.5rem — it must cap at the page column.
+              'relative mx-auto flex w-[min(86vw,24rem)] max-w-full flex-col',
               wide ? 'aspect-square w-[min(72svh,48rem)]' : 'gap-6'
             )}
           >

@@ -1,5 +1,6 @@
 import { highlightComponents } from '@/lib/trans'
 import { EASE } from '@/lib/motion'
+import { useWide } from '@/hooks/useWide'
 import {
   motion,
   MotionConfig,
@@ -17,6 +18,10 @@ import { GITHUB_USERNAME } from '../data'
 import { useTranslation } from '../i18n/i18n'
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v))
+
+/** Static-hero breakpoint (in sync with the ≤768px gates in index.css):
+    below this the scroll scrub gives way to a plain one-screen hero. */
+const NARROW_MQ = '(max-width: 768px)'
 
 // "//RMCKR" — two accent slashes followed by the name. id: stable list key
 // (chars repeat: two slashes, two R's).
@@ -43,15 +48,17 @@ function Glyph({
   char,
   slash,
   i,
-  p
+  p,
+  staticMode
 }: {
   char: string
   slash?: boolean
   i: number
   p: MotionValue<number>
+  /** Phones / reduced motion: no scrub transforms, no pre-painted hot copy */
+  staticMode: boolean
 }) {
   const c = Math.abs(i - CENTRE)
-  const reduce = useReducedMotion()
 
   const lp = useTransform(p, (v) => clamp01(v * 1.45 - (3 - c) * 0.07))
   const x = useTransform(lp, (v) => `${(v * (i - CENTRE) * 5.2).toFixed(3)}vw`)
@@ -62,7 +69,7 @@ function Glyph({
     <motion.span
       /* '!' keeps the '//' accent — .glyph itself no longer paints colour */
       className={slash ? 'glyph text-accent!' : 'glyph'}
-      style={reduce ? undefined : { x, y, rotateX }}
+      style={staticMode ? undefined : { x, y, rotateX }}
     >
       <motion.span
         /* Both copies share one grid cell, so the hot copy overlays the cold
@@ -75,7 +82,7 @@ function Glyph({
         <span>{char}</span>
         {/* Painted once at full heat; scrubbing its opacity is
             composite-only, so scrolling never repaints the glyph */}
-        {!reduce && (
+        {!staticMode && (
           <motion.span aria-hidden={'true'} className={'glyph-hot'} style={{ opacity: lp }}>
             {char}
           </motion.span>
@@ -89,9 +96,14 @@ export function Hero() {
   const { t } = useTranslation()
   const trackRef = useRef<HTMLElement>(null)
   const reduce = useReducedMotion()
+  // Static hero on phones (≤768px): scrub styles dropped (same as reduced
+  // motion), and the hand-off wiring stays off — its CSS gates live at
+  // min-width 769px, so no attributes or --p3 are needed there.
+  const narrow = useWide(NARROW_MQ)
+  const staticMode = Boolean(reduce) || narrow
   const motionOk = useMemo(
-    () => window.matchMedia('(prefers-reduced-motion: no-preference)').matches,
-    []
+    () => !narrow && window.matchMedia('(prefers-reduced-motion: no-preference)').matches,
+    [narrow]
   )
 
   // Scroll progress through the pinned track (0 → 1): from the hero's top
@@ -157,16 +169,23 @@ export function Hero() {
             one element: no inherited variable, no document-wide invalidation */}
         <motion.div
           className={'hero-pin'}
-          style={reduce ? undefined : { opacity: pinOpacity }}
+          style={staticMode ? undefined : { opacity: pinOpacity }}
         >
           <div className={'hero-stage'}>
             <motion.h1
               className={'hero-word'}
               aria-label={'RMCKR'}
-              style={reduce ? undefined : { scale: wordScale, y: wordY, opacity: wordOpacity }}
+              style={staticMode ? undefined : { scale: wordScale, y: wordY, opacity: wordOpacity }}
             >
               {GLYPHS.map((glyph, i) => (
-                <Glyph key={glyph.id} char={glyph.char} slash={glyph.slash} i={i} p={p} />
+                <Glyph
+                  key={glyph.id}
+                  char={glyph.char}
+                  slash={glyph.slash}
+                  i={i}
+                  p={p}
+                  staticMode={staticMode}
+                />
               ))}
             </motion.h1>{' '}
             <motion.div
@@ -177,7 +196,7 @@ export function Hero() {
             >
               <motion.div
                 className={'hero-scroll'}
-                style={reduce ? undefined : { opacity: promptOpacity }}
+                style={staticMode ? undefined : { opacity: promptOpacity }}
               >
                 <span>{t('hero.scroll')}</span>
                 {/* Plain CSS loop (index.css): off the main thread, and it
@@ -189,12 +208,12 @@ export function Hero() {
 
           {/* Scroll-lock meter: how far through the sequence the user has scrubbed */}
           <div className={'hero-meter'} aria-hidden={'true'}>
-            <motion.div className={'hero-meter-fill'} style={reduce ? undefined : { scaleX: p }} />
+            <motion.div className={'hero-meter-fill'} style={staticMode ? undefined : { scaleX: p }} />
           </div>
 
           <motion.div
             className={'hero-hud'}
-            style={reduce ? undefined : { opacity: hudOpacity, y: hudY }}
+            style={staticMode ? undefined : { opacity: hudOpacity, y: hudY }}
           >
             <motion.div
               className={'hero-hud-in'}
@@ -221,7 +240,13 @@ export function Hero() {
                 </li>
               </ul>
 
-              <div className={'flex flex-wrap gap-3 min-[1100px]:justify-end'}>
+              {/* Stacked at ≤768px: side by side the two CTAs ran the full
+                  width of the mobile HUD */}
+              <div
+                className={
+                  'flex flex-wrap gap-3 max-[768px]:flex-col max-[768px]:items-start min-[1100px]:justify-end'
+                }
+              >
                 {/* data-scroll-duration hands this click to useSmoothScroll:
                     a paced 2.5s ride through the scrub, not the browser's jump */}
                 <a href={'#about'} className={'btn-primary'} data-scroll-duration={'2.5'}>
@@ -241,8 +266,12 @@ export function Hero() {
             </motion.div>
           </motion.div>
 
-          {/* Corner framing */}
-          <span aria-hidden={'true'} className={'pointer-events-none absolute inset-0'}>
+          {/* Corner framing — desktop only: at ≤768px the nav is always
+              visible (static hero) and the top ticks sat underneath it */}
+          <span
+            aria-hidden={'true'}
+            className={'pointer-events-none absolute inset-0 max-[768px]:hidden'}
+          >
             <span className={'absolute top-4 left-5 size-3.5 border-t border-l border-accent/70'} />
             <span
               className={'absolute top-4 right-5 size-3.5 border-t border-r border-foreground/35'}

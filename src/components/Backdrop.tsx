@@ -8,7 +8,10 @@ import { useEffect, useRef } from 'react'
  * everything except the hero and the contact section.
  *
  * The only JS part is the floor's parallax offset, written at most once per
- * frame. Reduced-motion and touch devices get a completely static backdrop.
+ * frame, gated to fine pointers. Reduced motion gets a completely static
+ * backdrop; touch devices keep the (composited) glow but skip the floor's
+ * background-position loop — that one repaints every frame, and it should not
+ * run forever on a phone (see floor-approach in index.css).
  */
 export function Backdrop() {
   const rootRef = useRef<HTMLDivElement>(null)

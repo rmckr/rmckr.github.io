@@ -37,10 +37,12 @@
   --color-surface-subtle: #0d0d0d;
   --color-surface: #111111;
   --color-foreground: #f0f0ee;
-  --color-muted: #888888; /* 5.6:1 on bg, 5.3:1 on surface (was #6b6b6b → 3.8:1, below AA) */
+  --color-muted: #888888;
+  /* 5.6:1 on bg, 5.3:1 on surface (was #6b6b6b → 3.8:1, below AA) */
   --color-accent: #e53535;
   --color-accent-dim: color-mix(in srgb, var(--color-accent) 12%, transparent);
-  --color-subtle: rgb(255 255 255 / 0.08); /* hairline borders and dividers */
+  --color-subtle: rgb(255 255 255 / 0.08);
+  /* hairline borders and dividers */
 
   /* Type scale additions (Tailwind's own scale covers the rest) */
   --text-2xs: 0.625rem;
@@ -52,8 +54,10 @@
   --text-display: clamp(5rem, 15vw, 13rem);
   --text-display--line-height: 1;
   /* Contact band email — no line-height companion on purpose: the band keeps
-     the inherited line box, not a tightened one */
-  --text-giant: clamp(2.75rem, 8vw, 6rem);
+     the inherited line box, not a tightened one. Floor is 2.25rem, not 2.75rem:
+     the line is whitespace-nowrap, so below ~360px the larger floor clipped
+     "hello@rmckr.com" against the arrow inside the band's overflow. */
+  --text-giant: clamp(2.25rem, 8vw, 6rem);
   --tracking-display: -0.02em;
 
   /* Motion */
@@ -68,6 +72,37 @@
     color-scheme: dark;
     scrollbar-width: thin;
     scrollbar-color: color-mix(in srgb, var(--color-foreground) 14%, transparent) transparent;
+    /* No gray/blue flash on tap — it fought the designed press states */
+    -webkit-tap-highlight-color: transparent;
+    /* No font inflation when a phone rotates to landscape */
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Lenis owns the scroll; rubber-banding or pulling to refresh would
+     desync the pinned stages (or reload the page out of a scrub).
+     overflow-x: clip: the document can never pan sideways — the net under
+     the hero's fixed full-bleed layers, which measure against the layout
+     viewport rather than the content box. */
+  html,
+  body {
+    overscroll-behavior: none;
+    overflow-x: clip;
+  }
+
+  /* The styled thin scrollbar below is a desktop treatment. On a phone the
+     root scrollbar-width/color opt-in forced a reserved classic strip
+     (measured: innerWidth 396 vs clientWidth 360 = 36px), and every fixed
+     layer — hero pin, ambient, noise — still spanned the full 396: 36px of
+     horizontal pan, and the hero's right corner ticks rendered at 362–380,
+     past the 360px screen edge. Touch keeps no reserved strip at all. */
+  @media (pointer: coarse) {
+    html {
+      scrollbar-width: none;
+    }
+
+    html::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -104,6 +139,29 @@
     outline: 2px solid var(--color-accent);
     outline-offset: 4px;
   }
+
+  /* Native-feeling taps: no double-tap-zoom delay on controls, and no
+     long-press selection of button/link labels. Content (paragraphs) stays
+     selectable — only controls are listed here, and the copy-email button's
+     address keeps `select-text`, so drag-then-copy still works. */
+  button,
+  a,
+  [role='button'] {
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  a {
+    -webkit-touch-callout: none;
+  }
+
+  /* Press feedback while held, replacing the tap highlight we just removed.
+     btn / carousel arrows add their own scale on top. */
+  button:not(:disabled):active,
+  a:active {
+    opacity: 0.75;
+  }
 }
 
 /* ── Utilities ─────────────────────────────────────────────────────────────────
@@ -124,6 +182,10 @@
      wipe band's giant email sits directly on the moving floor. */
   #contact {
     @apply bg-transparent;
+    /* The full-bleed band is 100svw wide — svw still counts a classic
+       scrollbar, so it overhangs the section by half of one and would
+       otherwise turn into a horizontal scrollbar. */
+    overflow-x: clip;
   }
 }
 
@@ -137,14 +199,12 @@
    element on the site cuts identically. */
 @utility bevel-* {
   --bevel-size: calc(var(--spacing) * --value(integer));
-  clip-path: polygon(
-    100% var(--bevel-size),
-    100% 100%,
-    var(--bevel-size) 100%,
-    0 calc(100% - var(--bevel-size)),
-    0 0,
-    calc(100% - var(--bevel-size)) 0
-  );
+  clip-path: polygon(100% var(--bevel-size),
+      100% 100%,
+      var(--bevel-size) 100%,
+      0 calc(100% - var(--bevel-size)),
+      0 0,
+      calc(100% - var(--bevel-size)) 0);
 }
 
 /* Bordered panel on the page background — notched corners, the same cut as
@@ -170,12 +230,12 @@
 
 /* Muted text that brightens on hover (nav links, socials, filters) */
 @utility link-muted {
-  @apply text-muted transition-colors duration-200 hover:text-foreground;
+  @apply text-muted transition-colors duration-200 hover-fine:text-foreground;
 }
 
 /* Arrow icon that nudges up-right when its parent `group` is hovered */
 @utility icon-nudge {
-  @apply transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5;
+  @apply transition-transform duration-200 group-hover-fine:translate-x-0.5 group-hover-fine:-translate-y-0.5;
 }
 
 /* "01 // ABOUT" eyebrow above each section heading */
@@ -297,7 +357,9 @@
       opacity: 1;
     }
   }
-} /* ── Hero — static styling ──────────────────────────────────────────────────
+}
+
+/* ── Hero — static styling ──────────────────────────────────────────────────
    "//RMCKR" reactor on a pinned scroll track. Animation lives in Hero.tsx
    (Motion); layout, type and chrome live here. Glyph heat is a pre-painted
    accent copy cross-faded by opacity; the hand-off writes --p3 straight onto
@@ -314,8 +376,10 @@
      so no negative margin is needed to overlap the layout. */
   min-height: 200svh;
 
-  @media (max-width: 720px) {
-    min-height: 140svh;
+  /* Phones (≤768px): the scrub gives way to a plain one-screen hero —
+     Hero.tsx mirrors this with NARROW_MQ (no scrub, no hand-off wiring). */
+  @media (max-width: 768px) {
+    min-height: 100svh;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -343,6 +407,14 @@
      inline Motion value set in Hero.tsx, written on this element only, so the
      per-frame update never invalidates the rest of the document */
 
+  /* Phones: the in-flow hero, same as reduced motion — with no sequence
+     to play, a fixed overlay would only swallow the hand-off. */
+  @media (max-width: 768px) {
+    position: static;
+    height: auto;
+    min-height: 100svh;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     position: static;
     height: auto;
@@ -360,6 +432,13 @@
 
 @utility hero-stage {
   position: relative;
+  /* Grid items floor at min-content (min-width: auto). The wordmark's
+     intrinsic width + this padding would force the pin's implicit column
+     wider than the viewport, stretching both rows right until they clip at
+     the pin edge. Opt out: the column tracks the viewport, and the wordmark
+     overflows symmetrically (width:100% + justify-content: center) under the
+     pin's overflow clip. */
+  min-width: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -446,8 +525,8 @@
   height: 3px;
   pointer-events: none;
 
-  @media (prefers-reduced-motion: reduce) {
-    /* The meter measures a sequence that never runs */
+  /* The meter measures a sequence that never runs (phones never scrub) */
+  @media (prefers-reduced-motion: reduce), (max-width: 768px) {
     display: none;
   }
 }
@@ -463,6 +542,9 @@
 
 @utility hero-hud {
   position: relative;
+  /* Same min-content floor opt-out as .hero-stage — it shares the pin's
+     implicit column, so the HUD row must not widen it either. */
+  min-width: 0;
   padding: 0 4vw clamp(2.25rem, 6vh, 4rem);
 }
 
@@ -494,7 +576,10 @@
    first section after the hero stays on the continuous --p3 fade.
    Reduced motion never locks, so the nav simply always shows.
 ─────────────────────────────────────────────────────────────────────────────── */
-@media (prefers-reduced-motion: no-preference) {
+/* Desktop-only: on phones (≤768px) the hero is static, so Hero.tsx never
+   toggles data-hero-done or writes --p3 — the nav shows from the first
+   frame and the next section keeps its natural opacity. */
+@media (prefers-reduced-motion: no-preference) and (min-width: 769px) {
   html:not([data-hero-done]) nav {
     opacity: 0;
     transform: translateY(-0.75rem);
@@ -510,7 +595,7 @@
   /* --p3 is written directly onto this element by Hero.tsx, so the
      per-frame update invalidates only this section instead of the whole
      document; the fallback holds it invisible before the first write. */
-  #hero + section {
+  #hero+section {
     opacity: var(--p3, 0);
   }
 }
@@ -530,11 +615,9 @@
   overflow: hidden;
   pointer-events: none;
   background:
-    radial-gradient(
-      120% 60% at 50% 42%,
+    radial-gradient(120% 60% at 50% 42%,
       color-mix(in srgb, var(--color-accent) 6%, transparent),
-      transparent 70%
-    ),
+      transparent 70%),
     linear-gradient(180deg, #0a0a0a 0%, #080808 55%, #060606 100%);
 }
 
@@ -546,11 +629,9 @@
   width: min(1500px, 170vw);
   height: 44vh;
   transform: translate(-50%, -50%);
-  background: radial-gradient(
-    closest-side,
-    color-mix(in srgb, var(--color-accent) 15%, transparent),
-    transparent 72%
-  );
+  background: radial-gradient(closest-side,
+      color-mix(in srgb, var(--color-accent) 15%, transparent),
+      transparent 72%);
 
   @media (prefers-reduced-motion: no-preference) {
     animation: glow-breathe 8s ease-in-out infinite;
@@ -567,13 +648,11 @@
   perspective: 500px;
   perspective-origin: 50% 0%;
   mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 84%, transparent 100%);
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    #000 30%,
-    #000 84%,
-    transparent 100%
-  );
+  -webkit-mask-image: linear-gradient(to bottom,
+      transparent 0%,
+      #000 30%,
+      #000 84%,
+      transparent 100%);
 }
 
 /* The grid plane: rotated flat, anchored above the top edge, scrolling toward you */
@@ -586,19 +665,17 @@
   transform-origin: 50% 0%;
   transform: translate3d(var(--bx, 0px), var(--by, 0px), 0) rotateX(60deg);
   background-image:
-    linear-gradient(
-      to right,
+    linear-gradient(to right,
       color-mix(in srgb, var(--color-foreground) 5%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
+      transparent 1px),
+    linear-gradient(to bottom,
       color-mix(in srgb, var(--color-foreground) 5%, transparent) 1px,
-      transparent 1px
-    );
+      transparent 1px);
   background-size: 64px 64px;
 
-  @media (prefers-reduced-motion: no-preference) {
+  /* Gated on a fine pointer too: background-position isn't compositor-friendly,
+     so this is a per-frame repaint that should not run forever on a phone. */
+  @media (prefers-reduced-motion: no-preference) and (pointer: fine) {
     animation: floor-approach 5.5s linear infinite;
   }
 }
@@ -615,6 +692,7 @@
       0 0,
       0 0;
   }
+
   to {
     background-position:
       0 64px,
@@ -623,11 +701,13 @@
 }
 
 @keyframes glow-breathe {
+
   0%,
   100% {
     opacity: 0.5;
     transform: translate(-50%, -50%) scale(1);
   }
+
   50% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1.06);
@@ -639,10 +719,12 @@
     transform: scaleY(0.15);
     opacity: 0.4;
   }
+
   50% {
     transform: scaleY(1);
     opacity: 1;
   }
+
   100% {
     transform: scaleY(1);
     opacity: 0;
@@ -662,7 +744,7 @@
   padding-bottom: 0.16em;
   margin-bottom: -0.16em;
 
-  & > span {
+  &>span {
     display: inline-block;
 
     @media (prefers-reduced-motion: no-preference) {
@@ -671,7 +753,7 @@
     }
   }
 
-  [data-visible] & > span {
+  [data-visible] &>span {
     transform: none;
   }
 }
@@ -683,36 +765,62 @@
 ─────────────────────────────────────────────────────────────────────────────── */
 @utility stagger {
   @media (prefers-reduced-motion: no-preference) {
-    & > * {
+    &>* {
       opacity: 0;
       transition: opacity 0.7s var(--ease-out-expo) var(--stagger, 0ms);
     }
 
-    & > *:nth-child(2) {
+    &>*:nth-child(2) {
       --stagger: 90ms;
     }
-    & > *:nth-child(3) {
+
+    &>*:nth-child(3) {
       --stagger: 180ms;
     }
-    & > *:nth-child(4) {
+
+    &>*:nth-child(4) {
       --stagger: 270ms;
     }
-    & > *:nth-child(5) {
+
+    &>*:nth-child(5) {
       --stagger: 360ms;
     }
-    & > *:nth-child(6) {
+
+    &>*:nth-child(6) {
       --stagger: 450ms;
     }
-    & > *:nth-child(7) {
+
+    &>*:nth-child(7) {
       --stagger: 540ms;
     }
-    & > *:nth-child(n + 8) {
+
+    &>*:nth-child(n + 8) {
       --stagger: 620ms;
     }
 
-    &[data-visible] > *,
-    [data-visible] & > * {
+    &[data-visible]>*,
+    [data-visible] &>* {
       opacity: 1;
     }
+  }
+}
+
+/* Horizontal-scroll affordance on the timeline's first card (Experience):
+   a soft nudge in the swipe direction, off the main thread — paused under
+   reduced motion, where the static arrow alone carries the affordance. */
+@utility swipe-hint {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: swipe-hint 1.8s ease-in-out infinite;
+  }
+}
+
+@keyframes swipe-hint {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(3px);
   }
 }

@@ -34,7 +34,7 @@ function GiantRow({ invert = false }: { invert?: boolean }) {
         <span aria-hidden={'true'} className={cn('inline-block text-giant', tone)}>
           <LuArrowUpRight
             className={
-              'transition-transform duration-200 group-hover:translate-x-2 group-hover:-translate-y-2'
+              'transition-transform duration-200 group-hover-fine:translate-x-2 group-hover-fine:-translate-y-2'
             }
           />
         </span>
@@ -141,7 +141,7 @@ export function Contact() {
         type={'button'}
         onClick={() => void copyEmail()}
         className={
-          'mt-8 inline-flex items-baseline gap-2 font-mono text-sm text-muted transition-colors duration-200 select-text hover:text-foreground'
+          'mt-8 inline-flex items-baseline gap-2 font-mono text-sm text-muted transition-colors duration-200 select-text hover-fine:text-foreground'
         }
       >
         {copied ? t('contact.copied') : t('contact.copyHint')}
