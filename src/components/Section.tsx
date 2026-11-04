@@ -1,20 +1,19 @@
 import type { ReactNode } from 'react'
-import { useReveal } from '../hooks/useReveal'
+import type { SectionId } from '@/data/sections'
+import { cn } from '@/lib/utils'
 
 type SectionProps = {
-  id: string
+  id: SectionId
+  /** Landmark name; each section is its own region. */
+  label: string
   children: ReactNode
+  className?: string
 }
 
-export function Section({ id, children }: SectionProps) {
-  const ref = useReveal()
+export function Section({ id, label, children, className }: SectionProps) {
   return (
-    <section id={id} className={'relative min-h-svh bg-bg py-32'}>
-      <div className={'container-page'}>
-        <div ref={ref} className={'reveal'}>
-          {children}
-        </div>
-      </div>
+    <section id={id} aria-label={label} className={cn('relative', className)}>
+      {children}
     </section>
   )
 }

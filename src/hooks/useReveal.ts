@@ -10,9 +10,8 @@ type RevealOptions = {
 
 /**
  * Returns a ref to attach to a container element.
- * Once the element intersects the (adjusted) viewport, `data-visible` is set,
- * triggering the `reveal` utility's transition defined in index.css.
- * Fires once, then disconnects.
+ * Once the element intersects the (adjusted) viewport, `data-visible` is set
+ * on it — the UI layer styles that attribute. Fires once, then disconnects.
  */
 export function useReveal(options: RevealOptions = {}) {
   const ref = useRef<HTMLDivElement>(null)

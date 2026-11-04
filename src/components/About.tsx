@@ -1,72 +1,49 @@
 import { Trans } from 'react-i18next'
+import { LuArrowDown } from 'react-icons/lu'
+import { CONTACT_EMAIL } from '@/data/index'
+import { useTranslation } from '@/i18n/i18n'
 import { highlightComponents } from '@/lib/trans'
-import { useTranslation } from '../i18n/i18n'
 import { Section } from './Section'
 import { SectionHeader } from './SectionHeader'
-
-// ── About section ─────────────────────────────────────────────────────────────
-// Composition mirrors the hero rather than a document: the portrait pins on
-// desktop while the copy scrolls past (the stage's sticky behaviour, without
-// the animation), the copy wears the tagline's accent rule, and the CV action
-// parks bottom-right the way the hero parks its buttons. The section paints
-// its own solid ground (it can't borrow the ambient backdrop any more), so the
-// cutout portrait brings its own light: a halo gradient lightbox, framed by
-// the buttons' bevel — cut short at the top so the head crosses the border.
 
 export function About() {
   const { t } = useTranslation()
 
   return (
-    <Section id={'about'}>
-      <SectionHeader label={t('about.label')} heading={t('about.heading')} />
+    <Section id="about" label={t('about.label')}>
+      <div className="container-page py-16 md:py-24">
+        <SectionHeader index="01" label={t('about.label')} heading={t('about.heading')} />
 
-      <div
-        className={
-          'mt-12 flex flex-col items-start gap-12 stagger lg:flex-row lg:items-center lg:gap-20'
-        }
-      >
-        {/* Image */}
-        <div className={'w-full sm:w-1/2 md:w-2/5 lg:w-1/3'}>
-          <div className={'relative mt-[-10%] bevel-10'}>
-            <span
-              className={
-                'pointer-events-none absolute inset-0 top-[10%] -z-1 border-2 border-accent bg-radial-[75%_75%_at_50%_90%] from-white/40 to-transparent bevel-10'
-              }
-              aria-hidden={'true'}
-            />
-            <img
-              src={'/images/portrait.png'}
-              alt={'Portrait Lukas Romacker'}
-              width={2775}
-              height={2580}
-              loading={'lazy'}
-              decoding={'async'}
-              className={'w-full px-0.5 pb-0.5'}
-            />
-          </div>
-        </div>
-
-        <div className={'w-full lg:flex-1'}>
-          <div className={'space-y-5 copy'}>
-            <p>
-              <Trans i18nKey={'about.p1'} components={highlightComponents} />
+        <div className="mt-10 grid grid-cols-12 gap-x-8 gap-y-10 md:mt-14">
+          <div className="col-span-12 md:col-span-7">
+            <p className="text-[1.2rem] leading-[1.6] tracking-[-0.01em] text-muted md:text-[1.3rem]">
+              <Trans i18nKey="about.p1" components={highlightComponents} />
             </p>
-
-            <p>
-              <Trans i18nKey={'about.p2'} components={highlightComponents} />
+            <p className="mt-6 max-w-[58ch] text-[1rem] leading-[1.7] text-muted">
+              <Trans i18nKey="about.p2" components={highlightComponents} />
             </p>
           </div>
 
-          <div className={'mt-10'}>
-            <a
-              href={'/Lukas-Romacker-Resume.pdf'}
-              target={'_blank'}
-              rel={'noopener noreferrer'}
-              className={'btn-primary btn-lg'}
-            >
-              {t('about.downloadCv')}
-            </a>
-          </div>
+          <aside className="col-span-12 md:col-span-4 md:col-start-9">
+            <div className="card p-6">
+              <p className="label-mono flex items-center gap-2.5 text-ink">
+                <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-accent" />
+                {t('hero.avail')}
+              </p>
+
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="mt-5 block font-mono text-[0.9rem] break-all text-ink underline decoration-line underline-offset-[5px] hover-fine:decoration-ink/40"
+              >
+                {CONTACT_EMAIL}
+              </a>
+
+              <a href="/Lukas-Romacker-Resume.pdf" download className="btn mt-6 w-full">
+                {t('about.downloadCv')}
+                <LuArrowDown aria-hidden="true" className="size-4" />
+              </a>
+            </div>
+          </aside>
         </div>
       </div>
     </Section>

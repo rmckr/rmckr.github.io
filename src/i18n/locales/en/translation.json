@@ -1,5 +1,14 @@
 {
   "navCta": "Get in touch",
+  "ui": {
+    "skip": "Skip to content",
+    "menu": "Menu",
+    "close": "Close",
+    "sections": "Sections",
+    "language": "Language",
+    "backToTop": "Back to top",
+    "copyEmail": "Copy email address"
+  },
   "hero": {
     "tagline": "Computer science student with experience in software development. I like building things, figuring out how they work, and learning along the way.",
     "location": "Ulm, Germany",
@@ -48,6 +57,14 @@
       "basic": "Basic",
       "proficient": "Proficient",
       "advanced": "Advanced"
+    },
+    "tags": {
+      "lang": "Languages",
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "tool": "Tooling",
+      "db": "Data",
+      "infra": "Infra"
     },
     "orbits": "Orbits",
     "groups": "Groups"

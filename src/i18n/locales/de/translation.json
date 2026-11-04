@@ -1,5 +1,14 @@
 {
   "navCta": "Kontakt",
+  "ui": {
+    "skip": "Zum Inhalt springen",
+    "menu": "Menü",
+    "close": "Schließen",
+    "sections": "Abschnitte",
+    "language": "Sprache",
+    "backToTop": "Nach oben",
+    "copyEmail": "E-Mail-Adresse kopieren"
+  },
   "hero": {
     "tagline": "Informatikstudent mit Erfahrung in der Softwareentwicklung. Ich entwickle gerne Dinge, finde heraus, wie sie funktionieren, und lerne dabei Neues.",
     "location": "Ulm, Deutschland",
@@ -48,6 +57,14 @@
       "basic": "Grundkenntnisse",
       "proficient": "Gute Kenntnisse",
       "advanced": "Fortgeschritten"
+    },
+    "tags": {
+      "lang": "Sprachen",
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "tool": "Werkzeuge",
+      "db": "Daten",
+      "infra": "Infrastruktur"
     },
     "orbits": "Umlaufbahnen",
     "groups": "Gruppen"

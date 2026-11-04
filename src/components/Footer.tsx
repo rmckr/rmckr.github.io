@@ -1,23 +1,22 @@
-import { LuHeart } from 'react-icons/lu'
-import { useTranslation } from '../i18n/i18n'
-import { FaReact } from 'react-icons/fa'
-import { Logo } from './Logo'
+import { useTranslation } from '@/i18n/i18n'
 
 export function Footer() {
   const { t } = useTranslation()
+
   return (
-    <footer className={'border-t border-subtle bg-surface py-8 backdrop-blur-md'}>
-      <div
-        className={'container-page flex flex-col items-center justify-between gap-4 md:flex-row'}
-      >
-        <span className={'meta'}>
-          {t('footer.copyright')}
-          {' · '}
-          {t('footer.builtWith')}{' '}
-          <LuHeart className={'inline-block fill-accent align-middle text-accent'} />{' '}
-          {t('footer.and')} <FaReact className={'inline-block align-middle'} color={'#61DAFB'} />
+    <footer className="border-t border-line">
+      <div className="container-page flex flex-col gap-3 py-8 md:flex-row md:items-center md:justify-between md:gap-6">
+        <span className="label-mono text-muted">{t('footer.copyright')}</span>
+        <span className="label-mono text-faint">
+          {t('footer.builtWith')} React {t('footer.and')} Tailwind CSS
         </span>
-        <Logo className={'text-xs'} />
+        <a
+          href="#top"
+          className="label-mono inline-flex items-center gap-2 self-start text-muted hover-fine:text-ink md:self-auto"
+        >
+          {t('ui.backToTop')}
+          <span aria-hidden="true">↑</span>
+        </a>
       </div>
     </footer>
   )

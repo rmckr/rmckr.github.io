@@ -1,31 +1,33 @@
+import { About } from './components/About'
 import { Backdrop } from './components/Backdrop'
+import { Contact } from './components/Contact'
+import { Experience } from './components/Experience'
 import { Footer } from './components/Footer'
 import { Hero } from './components/Hero'
 import { NavBar } from './components/NavBar'
-import { sections } from './data/sections'
-import { useSmoothScroll } from './hooks/useSmoothScroll'
+import { Skills } from './components/Skills'
+import { useTranslation } from './i18n/i18n'
 
 export default function App() {
-  // Lenis wheel smoothing + proximity snap on every section except the hero
-  useSmoothScroll()
+  const { t } = useTranslation()
 
   return (
     <>
-      {/* Fixed ambient layer (horizon grid, glow, cursor spotlight) */}
+      <a href="#main" className="skip-link">
+        {t('ui.skip')}
+      </a>
       <Backdrop />
+      <NavBar />
 
-      {/* Everything above it, so the transparent pages let it show through */}
-      <div className={'relative z-10'}>
-        <div className={'noise'} aria-hidden={'true'} />
-        <NavBar />
+      <main id="main" tabIndex={-1} className="relative outline-none">
         <Hero />
-        {/* Plain sections; the hero's dissolve hands off into the first one
-            via #hero + section in index.css */}
-        {sections.map((item) => (
-          <item.Section key={item.id} />
-        ))}
-        <Footer />
-      </div>
+        <About />
+        <Experience />
+        <Skills />
+        <Contact />
+      </main>
+
+      <Footer />
     </>
   )
 }

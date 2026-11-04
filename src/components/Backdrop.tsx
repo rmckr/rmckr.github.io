@@ -1,64 +1,9 @@
-import { useEffect, useRef } from 'react'
-
-/**
- * Fixed layer behind the page. All motion is CSS-driven (see the `ambient-*`
- * utilities in index.css): the perspective floor fills the whole viewport —
- * its vanishing point is hidden under the top fade, so there is no hard
- * horizon line — plus a breathing glow and a vignette. Solid sections cover
- * everything except the hero and the contact section.
- *
- * The only JS part is the floor's parallax offset, written at most once per
- * frame, gated to fine pointers. Reduced motion gets a completely static
- * backdrop; touch devices keep the (composited) glow but skip the floor's
- * background-position loop — that one repaints every frame, and it should not
- * run forever on a phone (see floor-approach in index.css).
- */
+/** Fixed ground plus a single soft light source at the top of the page. */
 export function Backdrop() {
-  const rootRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches
-    const finePointer = window.matchMedia('(pointer: fine)').matches
-    if (!motionOk || !finePointer) return
-
-    let frame = 0
-    let x = window.innerWidth * 0.5
-    let y = window.innerHeight * 0.42
-
-    const paint = () => {
-      frame = 0
-
-      const root = rootRef.current
-      if (!root) return
-
-      const nx = x / window.innerWidth - 0.5 // -0.5 … 0.5
-      const ny = y / window.innerHeight - 0.5
-
-      root.style.setProperty('--bx', `${(nx * 18).toFixed(2)}px`)
-      root.style.setProperty('--by', `${(ny * 12).toFixed(2)}px`)
-    }
-
-    const onPointerMove = (event: PointerEvent) => {
-      x = event.clientX
-      y = event.clientY
-      if (!frame) frame = requestAnimationFrame(paint)
-    }
-
-    window.addEventListener('pointermove', onPointerMove, { passive: true })
-
-    return () => {
-      window.removeEventListener('pointermove', onPointerMove)
-      if (frame) cancelAnimationFrame(frame)
-    }
-  }, [])
-
   return (
-    <div ref={rootRef} className={'ambient'} aria-hidden={'true'}>
-      <div className={'ambient-glow'} />
-      <div className={'ambient-floor'}>
-        <div className={'ambient-plane'} />
-      </div>
-      <div className={'ambient-vignette'} />
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
+      <div className="absolute inset-0 bg-ground" />
+      <div className="absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(62%_100%_at_50%_0%,rgba(205,203,202,0.07),transparent_75%)]" />
     </div>
   )
 }

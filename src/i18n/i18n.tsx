@@ -29,6 +29,10 @@ void i18n.use(initReactI18next).init({
   }
 })
 
+// The markup starts as English; a stored preference must correct <html lang>
+// before the first paint, not only when the language changes again.
+document.documentElement.lang = i18n.language.startsWith('de') ? 'de' : 'en'
+
 i18n.on('languageChanged', (lang) => {
   document.documentElement.lang = lang
   try {
