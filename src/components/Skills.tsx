@@ -56,7 +56,7 @@ const LogoRail = memo(function LogoRail({
       <ul className="sr-only">
         {items.map((skill) => (
           <li key={skill.name}>
-            {skill.name} — {t(`skills.tiers.${TIER_KEY[skill.tier]}`)}
+            {skill.name}, {t(`skills.tiers.${TIER_KEY[skill.tier]}`)}
           </li>
         ))}
       </ul>

@@ -85,12 +85,21 @@ type FeaturedRepo = {
   id: string
   /** Cover in public/ — without one the slot is a typographic cover. */
   image?: string
+  /** The cover's own pixel size, so the card reserves its box before it loads. */
+  width: number
+  height: number
 }
 
 /** The hand-picked repos on the Projects ring, in display order. */
 export const featuredRepos: FeaturedRepo[] = [
-  { name: 'kalliope', id: 'kalliope', image: '/images/repos/kalliope.webp' },
-  { name: 'suitbot', id: 'suitbot', image: '/images/repos/suitbot.webp' },
-  { name: 'rasputin', id: 'rasputin', image: '/images/repos/rasputin.webp' },
-  { name: 'rmckr.github.io', id: 'portfolio', image: '/images/repos/rmckr.github.io.webp' }
+  { name: 'kalliope', id: 'kalliope', image: '/images/repos/kalliope.webp', width: 1280, height: 640 },
+  { name: 'suitbot', id: 'suitbot', image: '/images/repos/suitbot.webp', width: 1280, height: 640 },
+  { name: 'rasputin', id: 'rasputin', image: '/images/repos/rasputin.webp', width: 1280, height: 718 },
+  {
+    name: 'rmckr.github.io',
+    id: 'portfolio',
+    image: '/images/repos/rmckr.github.io.webp',
+    width: 1280,
+    height: 718
+  }
 ]

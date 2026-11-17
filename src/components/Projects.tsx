@@ -116,6 +116,8 @@ function ProjectCard({
                 <img
                   src={repo.image}
                   alt=""
+                  width={repo.width}
+                  height={repo.height}
                   loading="lazy"
                   decoding="async"
                   className="size-full object-contain"
@@ -490,7 +492,7 @@ export function Projects() {
                         data-project-row
                         onClick={() => go(index)}
                         aria-current={index === entry ? 'true' : undefined}
-                        className={`grid w-full cursor-pointer grid-cols-[2rem_1fr] items-baseline gap-3 py-2 pl-5 text-left transition-[color,background-color,border-color] duration-200 lg:py-3 ${
+                        className={`grid w-full cursor-pointer grid-cols-[2rem_1fr] items-baseline gap-3 py-2 pl-5 text-left transition-[color,translate] duration-200 ease-out motion-reduce:transition-none hover-fine:translate-x-0.5 lg:py-3 ${
                           index === entry ? 'text-foreground' : 'text-muted hover-fine:text-foreground'
                         }`}
                       >

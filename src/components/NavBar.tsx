@@ -129,16 +129,15 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
         className="container-page flex flex-1 flex-col justify-center gap-2"
         aria-label={t('ui.sections')}
       >
-        {sections.map((section, index) => (
+        {sections.map((section) => (
           <a
             key={section.id}
             href={`#${section.id}`}
             onClick={onClose}
             data-scroll-duration="1.1"
-            className="flex items-baseline justify-between gap-4 rounded-lg border border-line bg-surface px-5 py-4"
+            className="flex items-baseline rounded-lg border border-line bg-surface px-5 py-4"
           >
             <span className="text-display text-foreground">{t(section.labelKey)}</span>
-            <span className="label text-muted">{String(index + 1).padStart(2, '0')}</span>
           </a>
         ))}
       </nav>

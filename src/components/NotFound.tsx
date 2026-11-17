@@ -15,7 +15,11 @@ export function NotFound() {
     <div className="flex min-h-svh flex-col">
       <header className="border-b border-line bg-surface">
         <div className="container-page flex h-16 items-center">
-          <a href="/" aria-label={`RMCKR, ${NAME}`}>
+          <a
+            href="/"
+            aria-label={`RMCKR, ${NAME}`}
+            className="transition-opacity duration-200 ease-out hover-fine:opacity-80 motion-reduce:transition-none"
+          >
             <Logo />
           </a>
         </div>

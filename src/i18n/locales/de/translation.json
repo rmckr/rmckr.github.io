@@ -17,7 +17,7 @@
   "projects": {
     "label": "Projekte",
     "heading": "Ein paar Projekte.",
-    "lead": "Vier Projekte, zu denen ich immer wieder zurückkomme.",
+    "lead": "Vier Projekte und was jedes davon macht.",
     "repoLink": "{{name}} auf GitHub",
     "items": {
       "kalliope": "Discord-Musikbot mit Web-Dashboard und Lavalink-Wiedergabe.",
@@ -36,24 +36,24 @@
   "experience": {
     "label": "Erfahrung",
     "heading": "Eine Reise zurück in die Zeit.",
-    "desc": "Ein Einblick in meinen bisherigen Weg durch die Informatik, geprägt durch die Verbindung von Studium und praktischer Erfahrung.",
+    "desc": "Ein Einblick in meinen bisherigen Weg durch die Informatik.",
     "entries": [
       {
         "title": "Abitur",
         "organisation": "Kolleg St. Blasien",
-        "period": "09/2012 - 07/2020",
+        "period": "09/2012 – 07/2020",
         "desc": "Auch wenn das Abitur nicht direkt mit meiner späteren Laufbahn in der Informatik zusammenhängt, habe ich während meiner Schulzeit mein Interesse am Programmieren entdeckt und weiterentwickelt."
       },
       {
         "title": "B.Eng. Telekommunikationsinformatik",
         "organisation": "HTWK Leipzig",
-        "period": "10/2022 - 03/2026",
+        "period": "10/2022 – 03/2026",
         "desc": "Duales Studium mit einer Kombination aus Hochschulstudium und praktischer Softwareentwicklung bei der T-Systems International GmbH. Dabei habe ich hauptsächlich an einem großen Vue-Frontend in einem größeren Entwicklungsteam gearbeitet."
       },
       {
         "title": "M.Sc. Informatik",
         "organisation": "Universität Ulm",
-        "period": "10/2026 - heute",
+        "period": "10/2026 – heute",
         "desc": "Aktuelles Masterstudium der Informatik an der Universität Ulm, in dem ich meine Kenntnisse vertiefe und mich fachlich weiterentwickle."
       }
     ]
@@ -61,7 +61,7 @@
   "skills": {
     "label": "Skills",
     "heading": "Technischer Stack.",
-    "lead": "Die Sprachen, Werkzeuge und Systeme, mit denen ich arbeite — gruppiert nach den vier Bereichen, in denen ich sie einsetze.",
+    "lead": "Womit ich arbeite und wie gut ich es kenne.",
     "tiers": {
       "basic": "Grundkenntnisse",
       "proficient": "Gute Kenntnisse",
@@ -77,8 +77,9 @@
   "github": {
     "label": "GitHub",
     "heading": "Woran ich gerade arbeite.",
-    "lead": "Das Konto hinter diesen Projekten, und was dabei zusammenkommt.",
+    "lead": "Das Konto hinter diesen Projekten und seine Zahlen.",
     "error": "Die Zahlen von GitHub konnten nicht geladen werden.",
+    "unavailable": "Nicht verfügbar",
     "retry": "Erneut versuchen",
     "viewProfile": "Profil ansehen",
     "stats": {
@@ -93,7 +94,7 @@
     "avail": "Offen für Werkstudentenstellen",
     "heading": "Schreiben Sie mir.",
     "desc": "Ich suche derzeit eine Werkstudentenstelle, in der ich mehr Erfahrung in der Softwareentwicklung sammeln und an einem echten Projekt mitarbeiten kann. Wenn Sie jemanden suchen, der gerne dazulernt, Dinge entwickelt und sich mit den Details beschäftigt, freue ich mich über Ihre Kontaktaufnahme.",
-    "copied": "Kopiert!"
+    "copied": "Kopiert."
   },
   "notFound": {
     "heading": "Seite nicht gefunden.",

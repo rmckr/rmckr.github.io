@@ -17,7 +17,7 @@
   "projects": {
     "label": "Projects",
     "heading": "A few projects.",
-    "lead": "Four projects I keep coming back to.",
+    "lead": "Four projects, and what each one does.",
     "repoLink": "{{name}} on GitHub",
     "items": {
       "kalliope": "Discord music bot with a web dashboard and Lavalink playback.",
@@ -36,24 +36,24 @@
   "experience": {
     "label": "Experience",
     "heading": "A trip back in time.",
-    "desc": "A look at the different stages of my journey through computer science, shaped by a mix of academic study and practical experience.",
+    "desc": "A look at the different stages of my journey through computer science.",
     "entries": [
       {
         "title": "Abitur",
         "organisation": "Kolleg St. Blasien",
-        "period": "09/2012 - 07/2020",
+        "period": "09/2012 – 07/2020",
         "desc": "Although my Abitur is not directly related to my later career in computer science, I discovered and developed my interest in programming during my school years."
       },
       {
         "title": "B.Eng. Telecommunication Computer Science",
         "organisation": "HTWK Leipzig",
-        "period": "10/2022 - 03/2026",
+        "period": "10/2022 – 03/2026",
         "desc": "Completed a dual-study degree combining academic coursework with practical software development at T-Systems International GmbH. Worked primarily on a large Vue frontend project as part of a larger development team."
       },
       {
         "title": "M.Sc. Computer Science",
         "organisation": "Ulm University",
-        "period": "10/2026 - present",
+        "period": "10/2026 – present",
         "desc": "Currently pursuing a Master's degree in Computer Science at Ulm University, where I am deepening my knowledge and continuing to develop my technical skills."
       }
     ]
@@ -61,7 +61,7 @@
   "skills": {
     "label": "Skills",
     "heading": "Technical stack.",
-    "lead": "The languages, tools and systems I work in, grouped by the four things I do with them.",
+    "lead": "What I work with, and how well I know it.",
     "tiers": {
       "basic": "Basic",
       "proficient": "Proficient",
@@ -77,8 +77,9 @@
   "github": {
     "label": "GitHub",
     "heading": "What I've been working on.",
-    "lead": "The account behind these projects, and what it adds up to.",
+    "lead": "The account behind these projects, and its totals.",
     "error": "Could not load the GitHub figures.",
+    "unavailable": "Unavailable",
     "retry": "Retry",
     "viewProfile": "View profile",
     "stats": {
@@ -93,7 +94,7 @@
     "avail": "Open to working student positions",
     "heading": "Say hello.",
     "desc": "I'm currently looking for a working student position where I can get more experience in software development and contribute to a real project. If you're looking for someone who enjoys learning, building things and getting into the details, feel free to get in touch.",
-    "copied": "Copied!"
+    "copied": "Copied."
   },
   "notFound": {
     "heading": "Page not found.",

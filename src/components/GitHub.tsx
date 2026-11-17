@@ -27,23 +27,30 @@ const ROWS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 function StatFigure({
   value,
   locale,
-  landed
+  landed,
+  failed
 }: {
   value: number | null
   locale: string
   landed: boolean
+  failed: boolean
 }) {
+  const { t } = useTranslation()
   const digits = value === null ? [] : String(value).split('').map(Number)
 
   return (
     <>
-      <span className="sr-only">{value === null ? '' : value.toLocaleString(locale)}</span>
+      <span className="sr-only">
+        {value === null ? (failed ? t('github.unavailable') : '') : value.toLocaleString(locale)}
+      </span>
       <span
         aria-hidden="true"
-        className="text-display-lg flex leading-[1.1] tracking-normal tabular-nums"
+        className="text-display-lg flex h-[1lh] items-center leading-[1.1] tracking-normal tabular-nums"
       >
         {value === null
-          ? '\u00a0'
+          ? failed
+            ? <span className="label text-muted">{t('github.unavailable')}</span>
+            : '\u00a0'
           : digits.map((digit, index) => (
               <span key={index} className="dial block">
                 <span
@@ -175,7 +182,11 @@ export function GitHub() {
         </div>
 
         <div className="lg:w-1/2 lg:border-l lg:border-line lg:pl-(--gutter)">
-          <dl ref={gridRef} aria-busy={!data} className="grid grid-cols-2 gap-x-4 gap-y-8">
+          <dl
+            ref={gridRef}
+            aria-busy={!data && !failed}
+            className="grid grid-cols-2 gap-x-4 gap-y-8"
+          >
             {STAT_KEYS.map((key) => (
               <div key={key}>
                 {/* The name starts on the figure's own left edge — the window's
@@ -186,6 +197,7 @@ export function GitHub() {
                     value={totals ? totals[key] : null}
                     locale={i18n.language}
                     landed={counted}
+                    failed={failed && !data}
                   />
                 </dd>
               </div>
