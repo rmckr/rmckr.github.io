@@ -1,5 +1,5 @@
 import type { PointerEvent as ReactPointerEvent } from 'react'
-import { memo, useLayoutEffect, useRef, useState } from 'react'
+import { memo, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import type { Skill } from '@/data/index'
 import { skillGroups, skills } from '@/data/index'
 import { useTranslation } from '@/i18n/i18n'
@@ -22,6 +22,20 @@ const RAILS = new Map<string, Skill[]>(
     })
   ])
 )
+
+/** The pointer the card answers: a mouse, not a finger. */
+const FINE_POINTER = '(hover: hover) and (pointer: fine)'
+
+/** Module-level, so the store's subscribe is the same function on every render. */
+function subscribeFinePointer(onChange: () => void) {
+  const query = window.matchMedia(FINE_POINTER)
+  query.addEventListener('change', onChange)
+  return () => query.removeEventListener('change', onChange)
+}
+
+function finePointer() {
+  return window.matchMedia(FINE_POINTER).matches
+}
 
 /**
  * The group's tools as a still row. The marks sit back at `muted`; the row that
@@ -78,20 +92,19 @@ export function Skills() {
   const rowsRef = useRef<(HTMLLIElement | null)[]>([])
   const [active, setActive] = useState<Skill | null>(null)
   // Desktop opens on the first row; a touch device opens neutral, because a
-  // card with no pointer behind it would read as a selected filter. The first
-  // render is always the first row, so the prerendered markup and the client
-  // agree; a coarse pointer drops the card before the browser paints.
-  const [current, setCurrent] = useState<number | null>(0)
-  useLayoutEffect(() => {
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) setCurrent(null)
-  }, [])
+  // card with no pointer behind it would read as a selected filter. The pointer
+  // is read from the browser's own query, so the prerendered markup and the
+  // client agree on the first paint.
+  const hasPointer = useSyncExternalStore(subscribeFinePointer, finePointer, () => true)
+  const [row, setRow] = useState(0)
+  const current = hasPointer ? row : null
 
   // The card answers the pointer rather than the scroll: a row takes it as the
   // pointer enters and keeps it once the pointer has left, so exactly one row
   // is in focus and moving the page never changes which one.
   function focusRow(event: ReactPointerEvent<HTMLElement>, index: number) {
     if (event.pointerType !== 'mouse') return
-    setCurrent((current) => (current === index ? current : index))
+    setRow((row) => (row === index ? row : index))
   }
 
   // The tooltip rides the pointer rather than the rail, so it never has to

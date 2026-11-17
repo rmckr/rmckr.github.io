@@ -3,6 +3,10 @@ import { SiReact } from 'react-icons/si'
 import { sections } from '@/data/sections'
 import { useTranslation } from '@/i18n/i18n'
 
+/** The build's year: read once, so the footer is a pure render and the client
+ *  agrees with the prerendered markup. */
+const YEAR = new Date().getFullYear()
+
 export function Footer() {
   const { t } = useTranslation()
 
@@ -18,7 +22,7 @@ export function Footer() {
               className="wordmark flex items-center py-2 text-lead leading-none text-foreground"
             >
               <span aria-hidden="true" className="text-accent">
-                //
+                {'//'}
               </span>
               <span aria-hidden="true">RMCKR</span>
             </a>
@@ -41,7 +45,7 @@ export function Footer() {
           same line the footer's own top edge is drawn with. */}
       <div className="border-t border-line">
         <div className="label container-page grid grid-cols-1 gap-2 py-5 text-muted sm:grid-cols-3 sm:items-center sm:gap-6">
-          <span>{t('footer.copyright', { year: new Date().getFullYear() })}</span>
+          <span>{t('footer.copyright', { year: YEAR })}</span>
           <span className="inline-flex items-center gap-1.5 sm:justify-self-center">
             {t('footer.builtWith')}
             <LuHeart aria-hidden="true" className="size-3.5 fill-accent text-accent" />

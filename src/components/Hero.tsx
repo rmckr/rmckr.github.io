@@ -16,7 +16,7 @@ export function Hero() {
           never ends on a rule. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
         <Blueprint />
-        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-background via-background/70 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-linear-to-t from-background via-background/70 to-transparent" />
       </div>
 
       <div className="container-page flex min-h-0 flex-1 flex-col">
@@ -31,7 +31,7 @@ export function Hero() {
               aria-hidden="true"
               className="wordmark text-[clamp(4rem,12vw,9.5rem)] leading-[0.8]"
             >
-              <span className="text-accent">//</span>
+              <span className="text-accent">{'//'}</span>
               RMCKR
             </p>
 

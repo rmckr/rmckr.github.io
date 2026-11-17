@@ -45,7 +45,7 @@ function StatFigure({
       </span>
       <span
         aria-hidden="true"
-        className="text-display-lg flex h-[1lh] items-center leading-[1.1] tracking-normal tabular-nums"
+        className="text-display-lg flex h-lh items-center leading-[1.1] tracking-normal tabular-nums"
       >
         {value === null
           ? failed
@@ -82,7 +82,6 @@ export function GitHub() {
   // and the link are static, so the chapter is complete before the request is.
   useEffect(() => {
     let live = true
-    setFailed(false)
 
     loadGitHub(attempt > 0)
       .then((next) => {
@@ -97,16 +96,11 @@ export function GitHub() {
     }
   }, [attempt])
 
-  // The four figures land once, the first time the grid is half on screen.
-  // Reduced motion has nothing to wait for, so nothing is observed at all.
+  // The four figures land once, the first time the grid is half on screen. Under
+  // reduced motion the reels drop their spring, so the figures simply arrive.
   useEffect(() => {
     const grid = gridRef.current
     if (!grid) return
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setCounted(true)
-      return
-    }
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -209,7 +203,14 @@ export function GitHub() {
           {failed && !data && (
             <div className="mt-6 flex flex-col items-start gap-4">
               <p className="text-body text-muted">{t('github.error')}</p>
-              <button type="button" onClick={() => setAttempt((count) => count + 1)} className="btn">
+              <button
+                type="button"
+                onClick={() => {
+                  setFailed(false)
+                  setAttempt((count) => count + 1)
+                }}
+                className="btn"
+              >
                 {t('github.retry')}
               </button>
             </div>

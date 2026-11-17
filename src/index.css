@@ -353,9 +353,11 @@
 /* On the card the rail has no page under it: the row that owns the card takes
    its marks to the page's own ink at full strength, and the mark's own colour
    transition carries them. */
-.rail-lit .rail-item .rail-mark {
-  color: var(--color-foreground);
-  opacity: 1;
+@utility rail-lit {
+  & .rail-item .rail-mark {
+    color: var(--color-foreground);
+    opacity: 1;
+  }
 }
 
 /* The rail's tooltip: the name and level of the mark under the pointer, carried
@@ -580,12 +582,16 @@
 }
 
 /* One press answer, 1px into the page: the button and the compact controls that are
-   not sized like one move under the same thumb. Declared once, and outside
-   `@utility`, because `@apply` inlines declarations only and would drop the nested
-   `:active`. */
-.btn:active,
-.press:active {
+   not sized like one move under the same thumb. The button's press rides its own
+   utility; the compact controls take `press`, declared here so the linter knows it. */
+.btn:active {
   translate: 0 1px;
+}
+
+@utility press {
+  &:active {
+    translate: 0 1px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

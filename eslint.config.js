@@ -64,7 +64,7 @@ export default defineConfig(
   { ignores: ['dist/', '.agents/'] },
 
   {
-    files: ['**/*.js'],
+    files: ['**/*.{js,mjs}'],
     extends: [tseslint.configs.disableTypeChecked]
   }
 )

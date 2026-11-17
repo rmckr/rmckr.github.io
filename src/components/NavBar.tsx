@@ -39,27 +39,10 @@ function LangToggle({ className }: { className?: string }) {
   )
 }
 
-/** One beat, both ways: the surface stays mounted for its own exit. */
-const MENU_MS = 220
-
 function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t } = useTranslation()
   const closeRef = useRef<HTMLButtonElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
-  const [mounted, setMounted] = useState(false)
-
-  // The surface outlives `open` by one exit beat, so the menu leaves the edge
-  // it arrived from instead of vanishing in a frame.
-  useEffect(() => {
-    if (open) {
-      setMounted(true)
-      return
-    }
-    if (!mounted) return
-
-    const timer = window.setTimeout(() => setMounted(false), MENU_MS)
-    return () => window.clearTimeout(timer)
-  }, [open, mounted])
 
   useEffect(() => {
     if (!open) return
@@ -100,8 +83,6 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
     return () => document.removeEventListener('keydown', onKey)
   }, [open, onClose])
 
-  if (!mounted) return null
-
   return (
     <div
       ref={panelRef}
@@ -109,8 +90,8 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
       role="dialog"
       aria-modal="true"
       aria-label={t('ui.sections')}
-      // Closed, it is still on screen for the exit: `inert` and no pointer
-      // events keep the page behind it reachable while it fades.
+      // Closed, it stays on screen for the exit: `inert` and no pointer events
+      // keep the page behind it reachable while it fades.
       inert={!open}
       className={cn(
         'fixed inset-0 z-60 flex touch-none flex-col overscroll-contain bg-background transition-[opacity,translate] duration-220 ease-out motion-reduce:transition-none md:hidden',
@@ -156,10 +137,11 @@ export function NavBar() {
   const { t, i18n } = useTranslation()
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState('')
-  const [mark, setMark] = useState<{ x: number; scale: number } | null>(null)
 
   const navRef = useRef<HTMLElement>(null)
   const labelsRef = useRef<(HTMLSpanElement | null)[]>([])
+  const markRef = useRef<HTMLSpanElement>(null)
+  const markBarRef = useRef<HTMLSpanElement>(null)
 
   // The current section is the one holding the middle of the viewport, read
   // from the page rather than remembered: at the hero no section reaches the
@@ -188,9 +170,11 @@ export function NavBar() {
       if (frame === 0) frame = requestAnimationFrame(measure)
     }
 
-    measure()
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll)
+
+    // The first read is scheduled like every scroll, so the bar paints once.
+    onScroll()
 
     return () => {
       cancelAnimationFrame(frame)
@@ -207,14 +191,21 @@ export function NavBar() {
 
     let cancelled = false
 
+    // The rule is written straight onto its two elements: the measurement is
+    // layout, not state, so nothing has to render again before it is in place.
     const measure = () => {
       if (cancelled) return
+
+      const mark = markRef.current
+      const bar = markBarRef.current
+      if (!mark || !bar) return
 
       const index = sections.findIndex((section) => section.id === active)
       const label = labelsRef.current[index]
 
       if (!label || nav.offsetWidth === 0) {
-        setMark(null)
+        mark.style.opacity = '0'
+        bar.style.transform = 'scaleX(0)'
         return
       }
 
@@ -223,10 +214,9 @@ export function NavBar() {
       // The rule's box is `w-32`, so its base is 8rem in the root's own pixels
       // rather than a fixed 128: a larger default font grows the box too.
       const base = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) * 8
-      setMark({
-        x: labelRect.left - navRect.left,
-        scale: base > 0 ? labelRect.width / base : 0
-      })
+      mark.style.transform = `translateX(${labelRect.left - navRect.left}px)`
+      bar.style.transform = `scaleX(${base > 0 ? labelRect.width / base : 0})`
+      mark.style.opacity = '1'
     }
 
     measure()
@@ -277,20 +267,18 @@ export function NavBar() {
               className="relative hidden h-full items-stretch gap-1 md:flex"
               aria-label={t('ui.sections')}
             >
-              {mark && (
+              <span
+                ref={markRef}
+                aria-hidden="true"
+                className="pointer-events-none absolute bottom-0 left-0 h-0.5 w-32 origin-left opacity-0 transition-transform duration-200 ease-out motion-reduce:transition-none"
+              >
+                {/* The width rides its own transition on the same curve, so
+                    the rule stretches on its way and settles under the word. */}
                 <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute bottom-0 left-0 h-0.5 w-32 origin-left transition-transform duration-200 ease-out motion-reduce:transition-none"
-                  style={{ transform: `translateX(${mark.x}px)` }}
-                >
-                  {/* The width rides its own transition on the same curve, so
-                      the rule stretches on its way and settles under the word. */}
-                  <span
-                    className="block size-full origin-left bg-accent transition-transform duration-200 ease-out motion-reduce:transition-none"
-                    style={{ transform: `scaleX(${mark.scale})` }}
-                  />
-                </span>
-              )}
+                  ref={markBarRef}
+                  className="block size-full origin-left bg-accent transition-transform duration-200 ease-out motion-reduce:transition-none"
+                />
+              </span>
 
               {sections.map((section, index) => {
                 const isActive = active === section.id

@@ -159,8 +159,8 @@ export function Experience() {
                   {digits.map((_, index) => (
                     <div key={index} className="dial">
                       <div className="dial-reel">
-                        {DIAL.map((value, row) => (
-                          <span key={row} className="block">
+                        {DIAL.map((value) => (
+                          <span key={value} className="block">
                             {value}
                           </span>
                         ))}
@@ -176,7 +176,7 @@ export function Experience() {
         {/* The track: one entry every half screen, with the air above the first
             tick and below the last that puts the first on the read line as the
             scene pins and lets go only once the last has been read. */}
-        <ol ref={listRef} className="relative mt-[-100svh] sm:pt-[25svh] sm:pb-[25svh]">
+        <ol ref={listRef} className="relative mt-[-100svh] sm:py-[25svh] ">
           {ordered.map((entry, index) => (
             <li
               key={entry.title}

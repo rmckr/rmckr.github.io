@@ -138,7 +138,7 @@ function ProjectCard({
                 tabIndex={current ? undefined : -1}
                 className="underline-offset-4 hover-fine:underline"
               >
-                <p className="text-lead font-medium ink-accent break-words">{repo.name}</p>
+                <p className="text-lead font-medium ink-accent wrap-break-word">{repo.name}</p>
               </a>
               <p className="mt-1.5 text-body text-pretty ink-accent-soft">
                 {t(`projects.items.${repo.id}`)}
@@ -178,7 +178,7 @@ function useCubeScroll(
   onHeroChange: (inHero: boolean) => void,
   onEntryChange: (entry: number) => void
 ) {
-  const goRef = useRef<(index: number) => void>(() => {})
+  const goRef = useRef<(index: number) => void>(() => undefined)
 
   useEffect(() => {
     const root = rootRef.current
@@ -422,7 +422,7 @@ function useCubeScroll(
     measure()
     paint()
 
-    if (document.fonts) document.fonts.ready.then(relayout)
+    if (document.fonts) void document.fonts.ready.then(relayout)
     window.addEventListener('scroll', request, { passive: true })
     window.addEventListener('resize', relayout, { passive: true })
     reduce.addEventListener('change', request)
@@ -482,7 +482,7 @@ export function Projects() {
                   <li aria-hidden="true" className="pointer-events-none absolute top-0 left-0">
                     <span
                       data-project-marker
-                      className="block h-[1lh] w-0.5 bg-accent text-body motion-reduce:hidden"
+                      className="block h-lh w-0.5 bg-accent text-body motion-reduce:hidden"
                     />
                   </li>
                   {featuredRepos.map((repo, index) => (
@@ -512,7 +512,7 @@ export function Projects() {
                   its column's left edge, the body axis the heading sits on. */}
               <div
                 data-cube-slot
-                className="relative flex min-h-0 flex-1 items-center justify-center max-lg:mt-8 [container-type:inline-size] lg:justify-start"
+                className="relative flex min-h-0 flex-1 items-center justify-center max-lg:mt-8 @container lg:justify-start"
               >
                 <div data-cube-lift className="cube-lift">
                   <div
