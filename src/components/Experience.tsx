@@ -118,7 +118,7 @@ export function Experience() {
         <div className="pointer-events-none sticky top-0 h-svh">
           <div
             aria-hidden="true"
-            className="absolute inset-y-0 left-2.5 w-0.5 -translate-x-1/2 bg-accent sm:left-1/2"
+            className="absolute inset-y-0 left-2.5 hidden w-0.5 -translate-x-1/2 bg-accent sm:left-1/2 sm:block"
           />
         </div>
 
@@ -129,9 +129,11 @@ export function Experience() {
             tick reaches the centre, so the track ends where its content does. */}
         <div ref={stageRef} className="pointer-events-none sticky top-0 mt-[-100svh] z-10 h-svh">
           <div className="relative h-full">
+            {/* Below `sm` there is no pinned scene to fade into: the band would
+                be an opaque sheet rising over the page's own content. */}
             <div
               aria-hidden="true"
-              className="absolute inset-0 bg-[linear-gradient(to_bottom,var(--color-background),transparent_14%,transparent_86%,var(--color-background))]"
+              className="absolute inset-0 hidden bg-[linear-gradient(to_bottom,var(--color-background),transparent_14%,transparent_86%,var(--color-background))] sm:block"
             />
 
             <div className="pointer-events-auto relative hidden w-1/2 pt-20 pr-(--gutter) sm:block md:pt-24">
@@ -176,7 +178,16 @@ export function Experience() {
         {/* The track: one entry every half screen, with the air above the first
             tick and below the last that puts the first on the read line as the
             scene pins and lets go only once the last has been read. */}
-        <ol ref={listRef} className="relative mt-[-100svh] sm:py-[25svh] ">
+        <ol ref={listRef} className="relative mt-[-100svh] sm:py-[25svh]">
+          {/* Below `sm` there is no sticky scene to carry the spine, so the
+              track is the timeline: the rule runs the entries end to end instead
+              of one screen, and ends with the last entry rather than at the
+              fold. */}
+          <li
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 left-2.5 w-0.5 -translate-x-1/2 bg-accent sm:hidden"
+          />
+
           {ordered.map((entry, index) => (
             <li
               key={entry.title}

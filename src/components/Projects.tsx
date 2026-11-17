@@ -465,19 +465,23 @@ export function Projects() {
           data-cube-stage
           className="sticky top-0 flex h-svh flex-col motion-reduce:static motion-reduce:h-auto max-lg:static max-lg:h-auto"
         >
-          <div className="container-page flex min-h-0 flex-1 flex-col pt-24 pb-10 md:pt-28">
-            <div className="flex min-h-0 flex-1 flex-col lg:grid lg:grid-cols-2 lg:gap-x-(--seam)">
+          {/* Below `lg` the stage is not pinned, so nothing fills a screen: the
+              flex weights keep their `auto` size and the chapter is as tall as
+              its own content. */}
+          <div className="container-page flex min-h-0 flex-1 flex-col pt-24 pb-10 max-lg:flex-none md:pt-28">
+            <div className="flex min-h-0 flex-1 flex-col max-lg:flex-none lg:grid lg:grid-cols-2 lg:gap-x-(--seam)">
               <div className="relative flex flex-col">
                 <SectionHeader heading={t('projects.heading')} />
                 <p className="section-lead mt-6">{t('projects.lead')}</p>
 
                 {/* The box's index and its only control: a row per project, each
                     a step to that card, with one accent rule that travels down
-                    the list as the ring turns. Wide, the list is centred on the
-                    box's height; below `lg` it sits in the flow above it. */}
+                    the list as the ring turns. It is the ring's driver, so it
+                    is shown only where the ring turns: below `lg` the cards
+                    are all in the flow and there is nothing to walk. */}
                 <ol
                   data-project-list
-                  className="relative mt-8 lg:absolute lg:inset-x-0 lg:top-1/2 lg:mt-0 lg:-translate-y-1/2"
+                  className="relative mt-8 hidden lg:absolute lg:inset-x-0 lg:top-1/2 lg:mt-0 lg:block lg:-translate-y-1/2"
                 >
                   <li aria-hidden="true" className="pointer-events-none absolute top-0 left-0">
                     <span
@@ -512,7 +516,7 @@ export function Projects() {
                   its column's left edge, the body axis the heading sits on. */}
               <div
                 data-cube-slot
-                className="relative flex min-h-0 flex-1 items-center justify-center max-lg:mt-8 @container lg:justify-start"
+                className="relative flex min-h-0 flex-1 items-center justify-center max-lg:mt-8 max-lg:flex-none @container lg:justify-start"
               >
                 <div data-cube-lift className="cube-lift">
                   <div

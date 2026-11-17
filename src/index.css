@@ -350,6 +350,18 @@
   }
 }
 
+/* A finger has no hover to answer, so the mark it lands on holds the frame and
+   the ink a pointer would give it: naming a mark and marking it are one
+   gesture, and the choice stays until the next tap. */
+.rail-item[data-named]::after {
+  opacity: 1;
+}
+
+.rail-item[data-named] .rail-mark {
+  color: var(--color-foreground);
+  opacity: 1;
+}
+
 /* On the card the rail has no page under it: the row that owns the card takes
    its marks to the page's own ink at full strength, and the mark's own colour
    transition carries them. */
@@ -497,6 +509,9 @@
    readable. Below `lg` the scroll cannot turn the ring, so the pin goes too. */
 @media (prefers-reduced-motion: reduce), (width < 64rem) {
   .cube-lift {
+    /* The flat grid takes its column rather than shrink-wrapping the cards, so a
+       wide cover can never push the box past the gutter. */
+    width: 100%;
     transform: none;
   }
 
@@ -520,12 +535,28 @@
   }
 }
 
+/* Below `lg` the cards lie in the flow at once, so there is no face to hand the
+   accent through: the grid is the page's own neutral — its ink, its hairlines,
+   its fill — and no red is painted on it. The rig still writes each face's
+   `--lit` for the ring, so the grid pins it at zero rather than racing it. */
+@media (width < 64rem) {
+  .cube-face {
+    --lit: 0 !important;
+  }
+}
+
 /* One column on a phone: two columns cut the card to 163px, where neither the
    22px name nor its line fits the padding. From `sm` the same two columns hold
    the card whole. */
 @media (width < 40rem) {
   .cube {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The card is the row: the whole column, not the 88% it is held to where the
+     ring's overhang has to close inside the gutter. */
+  .cube-face {
+    max-width: none;
   }
 }
 

@@ -46,10 +46,13 @@ function finePointer() {
  */
 const LogoRail = memo(function LogoRail({
   items,
-  lit
+  lit,
+  named
 }: {
   items: Skill[]
   lit?: boolean
+  /** The mark the tooltip is naming: it keeps the frame and the ink there. */
+  named?: string | null
 }) {
   const { t } = useTranslation()
 
@@ -60,7 +63,12 @@ const LogoRail = memo(function LogoRail({
           const Icon = skill.icon
 
           return (
-            <li key={skill.name} data-skill={skill.name} className="rail-item">
+            <li
+              key={skill.name}
+              data-skill={skill.name}
+              data-named={skill.name === named ? '' : undefined}
+              className="rail-item"
+            >
               <Icon className="rail-mark size-12 shrink-0" />
             </li>
           )
@@ -109,8 +117,11 @@ export function Skills() {
 
   // The tooltip rides the pointer rather than the rail, so it never has to
   // travel to a mark: the frame on the mark says which one is being named.
+  // A mouse names a mark as it passes over it; a finger, which has no hover,
+  // names the one it lands on.
   function trackPointer(event: ReactPointerEvent<HTMLDivElement>) {
-    if (event.pointerType !== 'mouse') return
+    const mouse = event.pointerType === 'mouse'
+    if (mouse ? event.type !== 'pointermove' : event.type !== 'pointerdown') return
 
     const tip = tipRef.current
     if (tip) {
@@ -159,7 +170,11 @@ export function Skills() {
         ref={wrapRef}
         className="relative"
         onPointerMove={trackPointer}
-        onPointerLeave={() => setActive(null)}
+        onPointerDown={trackPointer}
+        onPointerLeave={(event) => {
+          // A touch leaves as it lifts; its name stays until the next tap.
+          if (event.pointerType === 'mouse') setActive(null)
+        }}
       >
         <SectionHeader heading={t('skills.heading')} />
 
@@ -202,7 +217,7 @@ export function Skills() {
                   </h3>
 
                   <div className="lg:min-w-0 lg:flex-1">
-                    <LogoRail items={items} lit={index === current} />
+                    <LogoRail items={items} lit={index === current} named={active?.name ?? null} />
                   </div>
                 </div>
               </li>
