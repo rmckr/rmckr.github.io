@@ -61,7 +61,7 @@ export default defineConfig(
     }
   },
 
-  { ignores: ['dist/'] },
+  { ignores: ['dist/', '.agents/'] },
 
   {
     files: ['**/*.js'],

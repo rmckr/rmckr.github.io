@@ -35,91 +35,62 @@ export const socialLinks = [
 
 // ── Skills ────────────────────────────────────────────────────────────────────
 
-export type SkillTag = 'lang' | 'frontend' | 'backend' | 'tool' | 'db' | 'infra'
-
 export type Skill = {
   name: string
   /** Self-assessed proficiency 1-3 */
   tier: 1 | 2 | 3
-  tag: SkillTag
   icon: IconType
 }
 
 export const skills: Skill[] = [
-  { name: 'TypeScript', tier: 3, tag: 'lang', icon: SiTypescript },
-  { name: 'JavaScript', tier: 3, tag: 'lang', icon: SiJavascript },
-  { name: 'HTML / CSS', tier: 3, tag: 'frontend', icon: SiHtml5 },
-  { name: 'React', tier: 3, tag: 'frontend', icon: SiReact },
-  { name: 'Node.js', tier: 3, tag: 'backend', icon: SiNodedotjs },
-  { name: 'Linux', tier: 3, tag: 'infra', icon: SiLinux },
+  { name: 'TypeScript', tier: 3, icon: SiTypescript },
+  { name: 'JavaScript', tier: 3, icon: SiJavascript },
+  { name: 'HTML / CSS', tier: 3, icon: SiHtml5 },
+  { name: 'React', tier: 3, icon: SiReact },
+  { name: 'Node.js', tier: 3, icon: SiNodedotjs },
+  { name: 'Linux', tier: 3, icon: SiLinux },
 
-  { name: 'Express', tier: 2, tag: 'backend', icon: SiExpress },
-  { name: 'Vue', tier: 2, tag: 'frontend', icon: SiVuedotjs },
-  { name: 'Python', tier: 2, tag: 'lang', icon: SiPython },
-  { name: 'Tailwind CSS', tier: 2, tag: 'frontend', icon: SiTailwindcss },
-  { name: 'Vite', tier: 2, tag: 'tool', icon: SiVite },
-  { name: 'Docker', tier: 2, tag: 'infra', icon: SiDocker },
-  { name: 'Git', tier: 2, tag: 'tool', icon: SiGit },
-  { name: 'GitHub Actions', tier: 2, tag: 'infra', icon: SiGithubactions },
-  { name: 'WebSockets', tier: 2, tag: 'backend', icon: SiSocketdotio },
+  { name: 'Express', tier: 2, icon: SiExpress },
+  { name: 'Vue', tier: 2, icon: SiVuedotjs },
+  { name: 'Python', tier: 2, icon: SiPython },
+  { name: 'Tailwind CSS', tier: 2, icon: SiTailwindcss },
+  { name: 'Vite', tier: 2, icon: SiVite },
+  { name: 'Docker', tier: 2, icon: SiDocker },
+  { name: 'Git', tier: 2, icon: SiGit },
+  { name: 'GitHub Actions', tier: 2, icon: SiGithubactions },
+  { name: 'WebSockets', tier: 2, icon: SiSocketdotio },
 
-  { name: 'MongoDB', tier: 1, tag: 'db', icon: SiMongodb },
-  { name: 'C', tier: 1, tag: 'lang', icon: SiC },
-  { name: 'Java', tier: 1, tag: 'lang', icon: FaJava },
-  { name: 'SQL', tier: 1, tag: 'db', icon: LuDatabase }
+  { name: 'MongoDB', tier: 1, icon: SiMongodb },
+  { name: 'C', tier: 1, icon: SiC },
+  { name: 'Java', tier: 1, icon: FaJava },
+  { name: 'SQL', tier: 1, icon: LuDatabase }
 ]
 
-// ── Tag accent colors ─────────────────────────────────────────────────────────
+// ── Skill groups ──────────────────────────────────────────────────────────────
 
-export const tagColors: Record<SkillTag, string> = {
-  lang: '#F472B6', // pink
-  frontend: '#60A5FA', // blue
-  backend: '#F97316', // orange
-  tool: '#4ADE80', // green
-  db: '#FACC15', // yellow
-  infra: '#D8B4FE' // lavender
-}
+/** The four groups, each with the skills that carry it. The names live in i18n;
+ *  this is only the pairing. */
+export const skillGroups = [
+  { key: 'engineering', skills: ['TypeScript', 'JavaScript', 'Python', 'Java', 'C', 'Git'] },
+  { key: 'fullstack', skills: ['Node.js', 'Express', 'WebSockets', 'SQL', 'MongoDB'] },
+  { key: 'frontend', skills: ['React', 'Vue', 'HTML / CSS', 'Tailwind CSS', 'Vite'] },
+  { key: 'systems', skills: ['Linux', 'Docker', 'GitHub Actions'] }
+] as const
 
 // ── Featured GitHub repos ─────────────────────────────────────────────────────
 
 type FeaturedRepo = {
   name: string
-  /** Screenshots served from public/ — a missing file renders as a placeholder. */
-  images: string[]
+  /** The suffix of its one line in i18n. */
+  id: string
+  /** Cover in public/ — without one the slot is a typographic cover. */
+  image?: string
 }
 
-/** The hand-picked repos behind the GitHub flaps, in display order. */
+/** The hand-picked repos on the Projects ring, in display order. */
 export const featuredRepos: FeaturedRepo[] = [
-  {
-    name: 'kalliope',
-    images: [
-      '/images/repos/kalliope-1.png',
-      '/images/repos/kalliope-2.png',
-      '/images/repos/kalliope-3.png'
-    ]
-  },
-  {
-    name: 'suitbot',
-    images: [
-      '/images/repos/suitbot-1.png',
-      '/images/repos/suitbot-2.png',
-      '/images/repos/suitbot-3.png'
-    ]
-  },
-  {
-    name: 'rasputin',
-    images: [
-      '/images/repos/rasputin-1.png',
-      '/images/repos/rasputin-2.png',
-      '/images/repos/rasputin-3.png'
-    ]
-  },
-  {
-    name: 'rmckr.github.io',
-    images: [
-      '/images/repos/rmckr.github.io-1.png',
-      '/images/repos/rmckr.github.io-2.png',
-      '/images/repos/rmckr.github.io-3.png'
-    ]
-  }
+  { name: 'kalliope', id: 'kalliope', image: '/images/repos/kalliope.webp' },
+  { name: 'suitbot', id: 'suitbot', image: '/images/repos/suitbot.webp' },
+  { name: 'rasputin', id: 'rasputin', image: '/images/repos/rasputin.webp' },
+  { name: 'rmckr.github.io', id: 'portfolio', image: '/images/repos/rmckr.github.io.webp' }
 ]

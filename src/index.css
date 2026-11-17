@@ -1,9 +1,9 @@
 @import 'tailwindcss';
-@import '@fontsource/outfit/300.css';
 @import '@fontsource/outfit/400.css';
 @import '@fontsource/outfit/500.css';
-@import '@fontsource/fira-code/400.css';
-@import '@fontsource/fira-code/500.css';
+@import '@fontsource/outfit/600.css';
+@import '@fontsource/outfit/700.css';
+@import '@fontsource/anton/400.css';
 
 /* Hover states only where a real pointer hovers: on touch, :hover sticks after
    a tap until the next one. */
@@ -15,23 +15,154 @@
   }
 }
 
+/* The holo card's pointer ratios: -1 at an edge, 0 at the centre. Registered so the
+   values stay numbers inside `calc()`, and inherited so the lean and the foil
+   read the same pair. */
+@property --ratio-x {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --ratio-y {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+/* The breath's sway, -1 to 1, animated with the rock: the foil reads it so the
+   light shifts across the face instead of riding rigidly on it. */
+@property --sway {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
 /* ── Tokens ───────────────────────────────────────────────────────────────────
-   One near-black ground, warm paper ink, and red kept for accentuation only:
+   One near-black ground, pale paper ink, and red kept for accentuation only:
    the primary action, the availability mark, the active state, the wordmark.
 ─────────────────────────────────────────────────────────────────────────────── */
 @theme {
-  --color-ground: #080808;
-  --color-surface: #0e0e0f;
-  --color-raise: #151516;
-  --color-ink: #cdcbca;
-  --color-muted: #8a8786;
-  --color-faint: #7a7773;
-  --color-line: #1f1f20;
-  --color-line-strong: #2c2c2e;
-  --color-accent: #d41514;
+  --color-background: #111217;
+  --color-foreground: #dfe5eb;
+  --color-accent: #ef233c;
+
+  --color-surface: color-mix(in srgb, var(--color-foreground) 4%, transparent);
+  --color-muted: color-mix(in srgb, var(--color-foreground) 64%, var(--color-background));
+  --color-line: color-mix(in srgb, var(--color-foreground) 12%, transparent);
+  --color-line-strong: color-mix(in srgb, var(--color-foreground) 20%, transparent);
+
+  /* The page's one inset: the air between the page's edge and its content, and
+     the air on either side of the half wherever a section splits. One number,
+     so the edge and the seam cannot drift apart; across a split the columns
+     stand `--seam` apart. */
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --seam: calc(2 * var(--gutter));
+
+  /* One curve for every state move but the counter: strong ease-out, so the
+     move is mostly done at the moment the eye arrives. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+
+  /* The holo card's half turn: strong ease-in-out, so the card gathers
+     speed off its rest pose and settles square into the other face. */
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  /* The holo card: 23 × 27rem, one trading-card proportion. The fold's card
+     and the cube's faces are cut from these, so the two objects are one size. */
+  --holo-card-width: 23rem;
+  --holo-card-height: 27rem;
+
+  /* The holo card's breath: the card group rocks a little over a degree either side
+     of upright, so the foil on it breathes with it. The keyframes move only the
+     registered `--sway`; the angle is spent by `cube-card`, weighted by the
+     card's flight, so the rock can settle to square as the card becomes a face
+     instead of being cut off when the fold's card docks, and the foil reads the
+     same number. Eight stops on `linear` trace a sine, so the sway keeps its
+     speed through the middle and only eases at the turn, instead of stalling
+     for seconds and then rushing. Slow enough to read as ambience. */
+  --animate-breathe: breathe 9s linear infinite;
+
+  /* The availability dot's pulse: one ring leaves the dot and fades, so the
+     status reads as live rather than printed. The dot itself never moves, so
+     the availability row cannot shift with the beat, and the last third of the
+     cycle is dark, so the beat lands slower than its length suggests. */
+  --animate-ping: ping 2.4s var(--ease-out) infinite;
+
+  @keyframes ping {
+    0% {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+    70%,
+    100% {
+      opacity: 0;
+      transform: scale(2.2);
+    }
+  }
+
+  @keyframes breathe {
+    0% {
+      --sway: -1;
+    }
+    12.5% {
+      --sway: -0.71;
+    }
+    25% {
+      --sway: 0;
+    }
+    37.5% {
+      --sway: 0.71;
+    }
+    50% {
+      --sway: 1;
+    }
+    62.5% {
+      --sway: 0.71;
+    }
+    75% {
+      --sway: 0;
+    }
+    87.5% {
+      --sway: -0.71;
+    }
+    100% {
+      --sway: -1;
+    }
+  }
+
+  /* The experience counter's curve: a damped spring sampled into `linear()`, so
+     a value arrives with a 4.6% overshoot and settles, like a detent rather than
+     a glide. */
+  --ease-mech: linear(
+    0, 0.049, 0.166, 0.315, 0.47, 0.614, 0.739, 0.841, 0.918, 0.974, 1.011, 1.033, 1.043, 1.046, 1.043, 1.038, 1.031, 1.024, 1.017, 1.012, 1.007, 1.004, 1.001, 0.999, 0.998, 0.998, 0.998, 0.998, 1
+  );
 
   --font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'Fira Code', ui-monospace, 'SFMono-Regular', monospace;
+  --font-brand: 'Anton', 'Outfit', ui-sans-serif, system-ui, sans-serif;
+
+  /* The whole type scale: seven steps, each with its own leading. Display is
+     Outfit at 600/700, set tight and tall so headings carry the page the way a
+     masthead does; the body stays at 400 and steps up a little, so the bold
+     display has a quiet reading voice to sit against. */
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.6;
+  --text-lead: 1.375rem;
+  --text-lead--line-height: 1.4;
+  --text-display: clamp(2.5rem, 5.5vw, 5rem);
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.015em;
+  --text-display--font-weight: 600;
+  --text-display-lg: clamp(2.25rem, 5.2vw, 4rem);
+  --text-display-lg--line-height: 0.98;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg--font-weight: 600;
+  /* The year's window is one line tall: at leading 1 the readout shaved the
+     figures' baseline. The extra tenth gives the crop the whole digit and
+     nothing more. */
+  --text-display-xl: clamp(4.25rem, min(13vw, 20vh), 13rem);
+  --text-display-xl--line-height: 1.1;
+  --text-display-xl--letter-spacing: -0.02em;
+  --text-display-xl--font-weight: 700;
 }
 
 @layer base {
@@ -41,8 +172,7 @@
     -webkit-tap-highlight-color: transparent;
     /* No font inflation when a phone rotates to landscape */
     -webkit-text-size-adjust: 100%;
-    scroll-padding-top: 6.5rem;
-    scrollbar-color: #2c2c2e var(--color-ground);
+    scrollbar-color: var(--color-line) var(--color-background);
     scrollbar-width: thin;
   }
 
@@ -54,18 +184,12 @@
   }
 
   body {
-    background-color: var(--color-ground);
-    color: var(--color-ink);
-    font-family: var(--font-sans);
-    font-size: 1rem;
-    font-weight: 400;
-    -webkit-font-smoothing: antialiased;
+    @apply bg-background font-sans text-body text-foreground antialiased;
     text-rendering: optimizeLegibility;
   }
 
   ::selection {
-    background-color: var(--color-accent);
-    color: #fff;
+    @apply bg-accent text-white;
   }
 
   /* Tailwind v4 preflight resets buttons to cursor: default */
@@ -76,119 +200,410 @@
 
   /* One keyboard focus ring for every interactive element. */
   :focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 3px;
+    @apply outline-2 outline-offset-[3px] outline-accent;
   }
 }
 
-/* ── Layout and type utilities ─────────────────────────────────────────────── */
+/* ── Utilities ─────────────────────────────────────────────────────────────── */
 
 @utility container-page {
-  width: 100%;
-  max-width: 84rem;
-  margin-inline: auto;
-  padding-inline: clamp(1.25rem, 4vw, 3rem);
+  @apply mx-auto w-full max-w-[84rem];
+  padding-inline: var(--gutter);
+  /* The page's query container, so a measure can be cut from the real column
+     instead of from the viewport or a guessed length: `50cqi - --gutter` is the
+     left column's content edge at any width. */
+  container-type: inline-size;
 }
 
-@utility label-mono {
-  font-family: var(--font-mono);
+/* One label voice for the whole page: Outfit at 12px, uppercase, tracked. It
+   carries the nav, periods, the footer index and availability. */
+@utility label {
+  @apply font-medium uppercase;
   font-size: 0.75rem;
-  font-weight: 400;
   line-height: 1.4;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-/* ── Shared treatments ─────────────────────────────────────────────────────── */
+/* The brand's own voice: one treatment for all three wordmarks — the hero's
+   poster, the footer's index and the bar's mark — so only their size, and the
+   leading that size needs, differ between them. */
+@utility wordmark {
+  font-family: var(--font-brand);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
 
-@layer components {
-  /* The one surface: a soft radius, a hairline, and a barely-there bevel. */
-  .card {
-    position: relative;
-    border: 1px solid var(--color-line);
-    border-radius: 1rem;
-    background-image: linear-gradient(180deg, #111112 0%, #0b0b0c 100%);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.045);
+/* The section deck: the one line a chapter opens with, in every section, in one
+   voice. Its measure is the page's own column rather than a guessed length: from
+   `lg` it is exactly the left column — half the container's content width, less
+   the gutter, resolved against the container — so it ends a gutter short of the
+   seam whether the deck sits inside that column or at the section's left, and
+   can never run across it. */
+@utility section-lead {
+  max-width: 46ch;
+  font-size: var(--text-lead);
+  line-height: var(--text-lead--line-height);
+  color: var(--color-muted);
+
+  @media (width >= 64rem) {
+    max-width: calc(50cqi - var(--gutter));
+  }
+}
+
+/* The experience counter: a window exactly one line tall, so a figure's
+   overshoot is shaved at both edges the way a machined window would shave it,
+   and a reel that moves in whole lines. React supplies only the row index as
+   `--d`; the geometry, the spring and the reduced-motion snap live here. */
+@utility dial {
+  height: 1lh;
+  overflow: hidden;
+}
+
+@utility dial-reel {
+  translate: 0 calc(var(--d) * -1lh);
+  transition: translate var(--dial-ms, 280ms) var(--ease-mech);
+
+  /* A reel can be inserted after its figure already landed — the fetch
+     resolves late, so React mounts it at its final row. Starting every reel at
+     zero makes that insertion travel the same spring as a value change; under
+     reduced motion the transition is dropped, so the value simply arrives. */
+  @starting-style {
+    translate: 0 0;
   }
 
-  .card-xl {
-    border-radius: 1.25rem;
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+/* The hero's blueprint: the page's only texture, a hairline grid on the plain
+   ground, one major line every 20rem and a minor one every 4rem. */
+@utility blueprint {
+  background-color: var(--color-background);
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--color-foreground) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-foreground) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(to right, color-mix(in srgb, var(--color-foreground) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-foreground) 4%, transparent) 1px, transparent 1px);
+  background-size:
+    20rem 20rem,
+    20rem 20rem,
+    4rem 4rem,
+    4rem 4rem;
+}
+
+/* The signature is the name rather than a picture of it: the scan's ink is baked
+   into the asset's alpha channel, and the mark is masked over `foreground`, so
+   the page's ink is the only ink and no colour is stored in the file. The box
+   carries the asset's ratio, so `contain` lands it edge to edge. */
+@utility signature {
+  aspect-ratio: 600 / 187;
+  background-color: var(--color-foreground);
+  -webkit-mask: url('/images/signature.png') left center / contain no-repeat;
+  mask: url('/images/signature.png') left center / contain no-repeat;
+}
+
+/* The Skills rail: a still row of tool marks, wrapping rather than clipping
+   when the column cannot hold them on one line. A mark sits back at `muted`,
+   held back, until the pointer finds it: then it comes up to ink, takes an ink
+   frame, and is named above itself. */
+@utility rail-item {
+  position: relative;
+  display: flex;
+  padding: 0.625rem;
+}
+
+@utility rail-mark {
+  color: var(--color-muted);
+  opacity: 0.7;
+  transition:
+    color 200ms var(--ease-out),
+    opacity 200ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .rail-item:hover .rail-mark {
+    color: var(--color-foreground);
+    opacity: 1;
+  }
+}
+
+/* The mark the pointer is on takes a 2px ink frame that stands on the mark's
+   own padding, so the frame clears the glyph and the named mark is never in
+   doubt. It is a pseudo-element, so the frame enters neither the layout nor
+   the row. */
+.rail-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--color-foreground);
+  border-radius: 0.625rem;
+  opacity: 0;
+  transition: opacity 200ms var(--ease-out);
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .rail-item:hover::after {
+    opacity: 1;
+  }
+}
+
+/* On the card the rail has no page under it: the row that owns the card takes
+   its marks to the page's own ink at full strength, and the mark's own colour
+   transition carries them. */
+.rail-lit .rail-item .rail-mark {
+  color: var(--color-foreground);
+  opacity: 1;
+}
+
+/* The rail's tooltip: the name and level of the mark under the pointer, carried
+   beside the cursor on a hairlined plate in the page's own ground, so it reads
+   over the page and over the card alike. It is a reading surface rather than an
+   instrument: no ring, and nothing to keep in step with the row. */
+@utility skill-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(
+    calc(var(--tip-x, 0px) + 0.75rem),
+    calc(var(--tip-y, 0px) - 0.75rem - 100%)
+  );
+  border: 1px solid var(--color-line);
+  border-radius: 0.5rem;
+  background-color: var(--color-background);
+  transition: opacity 120ms var(--ease-out);
+  pointer-events: none;
+}
+
+/* The holo card's face: a deeper cut of the accent, mixed from the two tokens
+   rather than declared as a red of its own, so its white labels clear AA. */
+@utility holo-card-face {
+  background-color: color-mix(in srgb, var(--color-accent) 92%, var(--color-background));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.06),
+    0 2.5rem 4rem -1.5rem rgb(0 0 0 / 0.85);
+}
+
+/* ── Projects cube ───────────────────────────────────────────────────────────
+   One card per face, evenly spaced on a Y ring. The radius is half a card over
+   tan(π/cards) — a square box for four, a pentagon for five — plus a hair, so
+   the faces stand apart instead of meeting. `--rot` is the ring's turn and
+   `--p` the hero card's flight; the section's scroll rig writes both, so
+   nothing here animates on its own.
+─────────────────────────────────────────────────────────────────────────────── */
+@utility cube-scene {
+  position: relative;
+  /* `--cube-r` is 1 / (2 tan(π / cards)), set from the card list with the
+     spacing: 0.5 for the four-card box, 0.688 for five cards. The depth is cut
+     from the card's own width. */
+  --cube-d: calc(var(--cube-w) * var(--cube-r, 0.5) + 0.875rem);
+  --cube-step: 90deg;
+  perspective: 1600px;
+}
+
+/* The card's flight lives outside the perspective: a plain move in the page's
+   plane, so the card is never scaled or skewed on its way into the cube, and
+   the same card the hero shows is the cube's front face. Both offsets are
+   written by the section's rig: `--lift` puts the card on the hero's centre
+   line, `--lift-x` puts its painted right edge on the hero's right gutter —
+   painted, not layout, because the front face stands a depth in front of the
+   page and the scene's perspective widens the card past the box that holds it.
+   Both are spent by the time the card is home, so the card at rest starts on
+   its column's left edge and only the card in the fold hangs from the page's
+   right edge. */
+@utility cube-lift {
+  /* The fold's card is the holo card: its width, its height from its own
+     proportion, both cut from the holo card's tokens, so the two objects on
+     the page are one size. Narrower than the card, the column decides — 88% of
+     it, so the face's perspective overhang still closes inside the gutter. The
+     face is that same size, so the flight is a move and nothing else: no width
+     is resized on the way in, and the depth is cut from this one width. The
+     flight also offsets by its half, which is why it is held here. */
+  --cube-w: min(var(--holo-card-width), 88cqi);
+  --cube-h: min(calc(var(--cube-w) * 27 / 23), 52svh);
+  /* The flight moves the whole ring, so it is kept on its own layer: the rig
+     writes `--p` and `--lift` on this element, and with no width in the move
+     nothing below it has to be laid out again. */
+  will-change: transform;
+  transform:
+    translateX(calc((1 - var(--p, 1)) * (var(--lift-x, 0px) + var(--cube-w) / 2)))
+    translateY(calc((var(--p, 1) - 1) * var(--lift, 100svh)));
+}
+
+@utility cube {
+  position: relative;
+  width: var(--cube-w);
+  height: var(--cube-h);
+  transform-style: preserve-3d;
+  /* `--cube-align` is the front face's overhang past its own box, written once
+     per layout by the rig: the card the reader sees starts on the column's
+     left edge, not the box under it. */
+  transform: translateX(var(--cube-align, 0px)) rotateY(var(--rot, 0deg));
+}
+
+/* One face of the ring: turned one step per index and pushed out to the
+   radius. Faces turned away are hidden, so the back of the box never shows. */
+@utility cube-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  transform: rotateY(calc(var(--i) * var(--cube-step, 90deg))) translateZ(var(--cube-d));
+}
+
+/* The card is the page's one object off its plane, so it keeps the holo card's
+   cast shadow in both states — neutral and coloured in. It rides the element
+   that leans, not the face: a shadow cast by the face is drawn where the card
+   would be if it were square to the page, so the lean shows a rectangle of
+   shadow behind it. */
+@utility cube-card {
+  border-radius: 1rem;
+  box-shadow: 0 2.5rem 4rem -1.5rem rgb(0 0 0 / 0.85);
+  /* The breath's rock, spent from `--sway` and weighted by the flight: full in
+     the fold, zero once the card is the ring's front face. A derived `rotate`
+     is what lets the swing be scaled at all — an angle animated in the
+     keyframes cannot be, and removing that animation snapped the card upright
+     the instant it docked. It stays `rotate` rather than `transform`, so it
+     composes over the pointer lean and the flight instead of replacing them. */
+  rotate: calc(var(--sway, 0) * 1.2deg * (1 - var(--p, 1)));
+}
+
+/* A card's ink and its edges are the page's own until the accent reaches it:
+   both read the face's `--lit`, so the type and the hairlines turn white with
+   the surface instead of switching at the end of the turn. */
+@utility ink-accent {
+  color: color-mix(in srgb, white calc(var(--lit, 1) * 100%), var(--color-foreground));
+}
+
+@utility ink-accent-soft {
+  /* The old 70% white cut measured 2.97:1 on the accent, so the small labels
+     go to pure white on the lit face and keep the muted ink when neutral. */
+  color: color-mix(in srgb, white calc(var(--lit, 1) * 100%), var(--color-muted));
+}
+
+@utility edge-accent {
+  border-color: color-mix(
+    in srgb,
+    rgb(255 255 255 / 0.2) calc(var(--lit, 1) * 100%),
+    var(--color-line-strong)
+  );
+}
+
+/* Reduced motion and the narrow layout keep the four cards and drop the box:
+   no turn, no flight, the cards lie in a plain grid so every project stays
+   readable. Below `lg` the scroll cannot turn the ring, so the pin goes too. */
+@media (prefers-reduced-motion: reduce), (width < 64rem) {
+  .cube-lift {
+    transform: none;
   }
 
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.4rem 0.8rem;
-    border: 1px solid var(--color-line-strong);
-    border-radius: 0.5rem;
-    background-color: rgb(255 255 255 / 0.02);
-    white-space: nowrap;
+  .cube {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    height: auto;
+    transform: none;
   }
 
-  /* One action treatment: a pill. Red fills only the primary one. */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    height: 2.875rem;
-    padding-inline: 1.25rem;
-    border: 1px solid var(--color-line-strong);
-    border-radius: 0.625rem;
-    background-color: rgb(255 255 255 / 0.03);
-    color: var(--color-ink);
-    font-family: var(--font-sans);
-    font-size: 0.9375rem;
-    font-weight: 500;
-    line-height: 1;
-    letter-spacing: -0.01em;
-    text-decoration: none;
-    white-space: nowrap;
+  .cube-face {
+    position: static;
+    width: 100%;
+    height: auto;
+    max-width: var(--cube-w);
+    aspect-ratio: 23 / 27;
+    backface-visibility: visible;
+    transform: none;
   }
+}
 
-  .btn-solid {
-    border-color: transparent;
-    background-color: var(--color-accent);
-    color: #fff;
+/* One column on a phone: two columns cut the card to 163px, where neither the
+   22px name nor its line fits the padding. From `sm` the same two columns hold
+   the card whole. */
+@media (width < 40rem) {
+  .cube {
+    grid-template-columns: minmax(0, 1fr);
   }
+}
 
-  @media (hover: hover) and (pointer: fine) {
-    .btn:hover {
-      border-color: #3a3a3d;
-      background-color: rgb(255 255 255 / 0.07);
-    }
+/* ── Named treatments ────────────────────────────────────────────────────────
+   Registered as utilities, so the linter knows them, variants apply, and
+   markup utilities can still override them. A variant (`-solid`) only sets
+   variables the base reads with a fallback, so the order Tailwind emits them
+   in cannot change the result.
+─────────────────────────────────────────────────────────────────────────────── */
 
-    .btn-solid:hover {
-      background-color: #b81211;
-    }
+/* The readout: a window cut into the page. One hairline, and the page's own
+   ground as its fill, so what scrolls up behind its rules is cropped by an
+   opaque edge instead of showing through. Radius and shadow stay in the markup,
+   so the year panel takes the page's arc and its own inset shadow. */
+@utility readout {
+  @apply relative border border-line bg-background;
+}
+
+/* One action treatment. Red fills only the primary one. */
+@utility btn {
+  @apply inline-flex h-[2.875rem] items-center justify-center gap-2 px-5 font-sans text-body font-medium no-underline whitespace-nowrap;
+  border-radius: var(--btn-radius, 0.625rem);
+  border: 1px solid var(--btn-edge, var(--color-line));
+  background-color: var(--btn-fill, color-mix(in srgb, var(--color-surface) 50%, transparent));
+  color: var(--btn-text, var(--color-foreground));
+  line-height: 1;
+  letter-spacing: 0;
+
+  /* The colours settle on the page's curve; the press rides a shorter one, so
+     the button answers the thumb before the eye has to notice it move. */
+  transition:
+    background-color 200ms var(--ease-out),
+    border-color 200ms var(--ease-out),
+    translate 160ms var(--ease-out);
+
+  @variant hover-fine {
+    border-color: var(--btn-edge-hover, color-mix(in srgb, var(--color-line) 90%, var(--color-foreground)));
+    background-color: var(--btn-fill-hover, rgb(255 255 255 / 0.06));
   }
+}
 
-  .btn:active {
-    translate: 0 1px;
-  }
+@utility btn-solid {
+  /* The same deeper cut as the holo card's face: white on the bare accent is
+     4.22:1, and at 92% it clears AA at 4.8:1 without the accent token moving. */
+  --btn-fill: color-mix(in srgb, var(--color-accent) 92%, var(--color-background));
+  --btn-fill-hover: color-mix(in srgb, var(--color-accent) 84%, var(--color-background));
+  --btn-edge: transparent;
+  --btn-text: white;
 
   /* A red ring on a red fill is invisible. */
-  .btn-solid:focus-visible {
-    outline-color: #fff;
+  &:focus-visible {
+    outline-color: white;
   }
+}
 
-  .skip-link {
-    position: fixed;
-    top: 0.75rem;
-    left: 0.75rem;
-    z-index: 100;
-    padding: 0.65rem 1.1rem;
-    border-radius: 0.5rem;
-    background-color: var(--color-ink);
-    color: var(--color-ground);
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.06em;
-    translate: 0 -200%;
+/* One press answer, 1px into the page: the button and the compact controls that are
+   not sized like one move under the same thumb. Declared once, and outside
+   `@utility`, because `@apply` inlines declarations only and would drop the nested
+   `:active`. */
+.btn:active,
+.press:active {
+  translate: 0 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The colours still settle; the press simply arrives. */
+  .btn {
+    transition:
+      background-color 200ms var(--ease-out),
+      border-color 200ms var(--ease-out);
   }
+}
 
-  .skip-link:focus-visible {
+/* Only the box and the slide are its own: size, family, case and tracking come
+   from `.label`, so the page has one label style. */
+@utility skip-link {
+  @apply fixed top-3 left-3 z-[100] rounded-lg bg-foreground px-[1.1rem] py-[0.65rem] text-background;
+  translate: 0 -200%;
+
+  &:focus-visible {
     translate: 0 0;
   }
 }

@@ -30,11 +30,16 @@ void i18n.use(initReactI18next).init({
 })
 
 // The markup starts as English; a stored preference must correct <html lang>
-// before the first paint, not only when the language changes again.
-document.documentElement.lang = i18n.language.startsWith('de') ? 'de' : 'en'
+// before the first paint, not only when the language changes again. The build
+// renders this module in Node, where there is no document.
+function setHtmlLang(lang: string) {
+  if (typeof document !== 'undefined') document.documentElement.lang = lang
+}
+
+setHtmlLang(i18n.language.startsWith('de') ? 'de' : 'en')
 
 i18n.on('languageChanged', (lang) => {
-  document.documentElement.lang = lang
+  setHtmlLang(lang)
   try {
     localStorage.setItem(LANG_KEY, lang)
   } catch {

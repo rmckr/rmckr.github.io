@@ -9,7 +9,7 @@ export function Logo() {
           <path d="M37 8H54L28 92H11L37 8ZM74 8H91L65 92H48L74 8Z" fill="currentColor" />
         </svg>
       </span>
-      <span className="text-[0.9rem] leading-none font-medium tracking-[-0.01em] text-ink">
+      <span className="wordmark text-body text-foreground">
         <span className="sr-only">{NAME}</span>
         <span aria-hidden="true">RMCKR</span>
       </span>

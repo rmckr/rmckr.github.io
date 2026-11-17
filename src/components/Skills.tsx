@@ -1,83 +1,219 @@
-import type { Skill, SkillTag } from '@/data/index'
-import { skills } from '@/data/index'
+import type { PointerEvent as ReactPointerEvent } from 'react'
+import { memo, useLayoutEffect, useRef, useState } from 'react'
+import type { Skill } from '@/data/index'
+import { skillGroups, skills } from '@/data/index'
 import { useTranslation } from '@/i18n/i18n'
+import { cn } from '@/lib/utils'
 import { Section } from './Section'
 import { SectionHeader } from './SectionHeader'
 
-const TAG_ORDER: SkillTag[] = ['lang', 'frontend', 'backend', 'tool', 'db', 'infra']
+const TIER_KEY = { 1: 'basic', 2: 'proficient', 3: 'advanced' } as const
 
-const TIER_LABEL = { 1: 'basic', 2: 'proficient', 3: 'advanced' } as const
+const byName = new Map(skills.map((skill) => [skill.name, skill]))
 
-/** Three slots; the filled ones are the self-assessed level. */
-function Meter({ tier }: { tier: Skill['tier'] }) {
-  return (
-    <span aria-hidden="true" className="flex items-center gap-1">
-      {[1, 2, 3].map((slot) => (
-        <span
-          key={slot}
-          className={slot <= tier ? 'block h-1 w-3.5 rounded-xs bg-ink' : 'block h-1 w-3.5 rounded-xs bg-white/10'}
-        />
-      ))}
-    </span>
-  )
-}
+/** Resolved once, so a rail keeps the same list on every render and a label
+ *  changing in the light never re-renders the marks. */
+const RAILS = new Map<string, Skill[]>(
+  skillGroups.map((group) => [
+    group.key,
+    group.skills.flatMap((name) => {
+      const skill = byName.get(name)
+      return skill ? [skill] : []
+    })
+  ])
+)
 
-export function Skills() {
+/**
+ * The group's tools as a still row. The marks sit back at `muted`; the row that
+ * owns the card takes them up to ink, and the mark's own colour transition
+ * carries that change. A pointer over a mark names it and frames it. The names
+ * are carried by the tooltip and the list below, so the marks are hidden from
+ * assistive tech and the same skills follow as a plain list.
+ */
+const LogoRail = memo(function LogoRail({
+  items,
+  lit
+}: {
+  items: Skill[]
+  lit?: boolean
+}) {
   const { t } = useTranslation()
 
-  const groups = TAG_ORDER.map((tag) => ({
-    tag,
-    items: skills.filter((skill) => skill.tag === tag)
-  })).filter((group) => group.items.length > 0)
+  return (
+    <div className={cn('relative mt-4 lg:mt-0', lit && 'rail-lit')}>
+      <ul aria-hidden="true" className="flex flex-wrap items-center gap-4 py-10">
+        {items.map((skill) => {
+          const Icon = skill.icon
+
+          return (
+            <li key={skill.name} data-skill={skill.name} className="rail-item">
+              <Icon className="rail-mark size-12 shrink-0" />
+            </li>
+          )
+        })}
+      </ul>
+
+      <ul className="sr-only">
+        {items.map((skill) => (
+          <li key={skill.name}>
+            {skill.name} — {t(`skills.tiers.${TIER_KEY[skill.tier]}`)}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+})
+
+/**
+ * Skills: four names in one column, each with its tools still in a row beside
+ * it, every second row mirrored. The section's one chrome is a single accent card
+ * that travels from row to row, and the mark under the cursor is named at the
+ * cursor.
+ */
+export function Skills() {
+  const { t, i18n } = useTranslation()
+  const cardRef = useRef<HTMLDivElement>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const tipRef = useRef<HTMLSpanElement>(null)
+  const rowsRef = useRef<(HTMLLIElement | null)[]>([])
+  const [active, setActive] = useState<Skill | null>(null)
+  // Desktop opens on the first row; a touch device opens neutral, because a
+  // card with no pointer behind it would read as a selected filter. The first
+  // render is always the first row, so the prerendered markup and the client
+  // agree; a coarse pointer drops the card before the browser paints.
+  const [current, setCurrent] = useState<number | null>(0)
+  useLayoutEffect(() => {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) setCurrent(null)
+  }, [])
+
+  // The card answers the pointer rather than the scroll: a row takes it as the
+  // pointer enters and keeps it once the pointer has left, so exactly one row
+  // is in focus and moving the page never changes which one.
+  function focusRow(event: ReactPointerEvent<HTMLElement>, index: number) {
+    if (event.pointerType !== 'mouse') return
+    setCurrent((current) => (current === index ? current : index))
+  }
+
+  // The tooltip rides the pointer rather than the rail, so it never has to
+  // travel to a mark: the frame on the mark says which one is being named.
+  function trackPointer(event: ReactPointerEvent<HTMLDivElement>) {
+    if (event.pointerType !== 'mouse') return
+
+    const tip = tipRef.current
+    if (tip) {
+      const box = event.currentTarget.getBoundingClientRect()
+      tip.style.setProperty('--tip-x', `${event.clientX - box.left}px`)
+      tip.style.setProperty('--tip-y', `${event.clientY - box.top}px`)
+    }
+
+    const mark = (event.target as Element).closest<HTMLElement>('[data-skill]')
+    setActive(mark ? (byName.get(mark.dataset.skill ?? '') ?? null) : null)
+  }
+
+  // The section's one card: it takes the box of the row in focus and rides the
+  // transition to it, so the accent moves from row to row instead of one card
+  // fading in and out of each.
+  useLayoutEffect(() => {
+    const place = () => {
+      const frame = wrapRef.current
+      const row = current === null ? null : rowsRef.current[current]
+      const card = cardRef.current
+      if (!frame || !row || !card) return
+
+      const frameBox = frame.getBoundingClientRect()
+      const box = row.getBoundingClientRect()
+
+      // The card travels on `translate`, not `top`: position becomes a composite
+      // value, so crossing rows never lays out the section. The inset is unchanged
+      // (+6 px at the top, 12 px less height); only the mechanism is.
+      card.style.translate = `0 ${box.top - frameBox.top + 6}px`
+      card.style.height = `${box.height - 12}px`
+      // Edge to edge, but measured against the client area rather than `100vw`:
+      // the scrollbar's width is not part of it, so neither arc is cut.
+      card.style.left = `${-frameBox.left}px`
+      card.style.width = `${document.documentElement.clientWidth}px`
+    }
+
+    place()
+    void document.fonts.ready.then(place)
+    window.addEventListener('resize', place)
+    return () => window.removeEventListener('resize', place)
+  }, [current, i18n.language])
 
   return (
-    <Section id="skills" label={t('skills.label')}>
-      <div className="container-page py-16 md:py-24">
-        <SectionHeader
-          index="03"
-          label={t('skills.label')}
-          heading={t('skills.heading')}
-          aside={
-            <ul className="flex flex-wrap gap-2">
-              {([3, 2, 1] as const).map((tier) => (
-                <li key={tier} className="chip label-mono text-muted">
-                  <Meter tier={tier} />
-                  {t(`skills.tiers.${TIER_LABEL[tier]}`)}
-                </li>
-              ))}
-            </ul>
-          }
-        />
+    <Section id="skills">
+      <div
+        ref={wrapRef}
+        className="relative"
+        onPointerMove={trackPointer}
+        onPointerLeave={() => setActive(null)}
+      >
+        <SectionHeader heading={t('skills.heading')} />
 
-        <div className="mt-10 grid grid-cols-1 gap-3 md:mt-14 md:grid-cols-3">
-          {groups.map((group) => (
-            <div key={group.tag} className="card p-5 md:p-6">
-              <div className="flex items-baseline justify-between gap-3">
-                <h3 className="label-mono text-ink">{t(`skills.tags.${group.tag}`)}</h3>
-                <span className="label-mono text-faint">{String(group.items.length).padStart(2, '0')}</span>
-              </div>
+        <p className="section-lead mt-6">{t('skills.lead')}</p>
 
-              <ul className="mt-4">
-                {group.items.map((skill) => {
-                  const Icon = skill.icon
+        {current !== null && (
+          <div
+            ref={cardRef}
+            aria-hidden="true"
+            className="holo-card-face pointer-events-none absolute top-0 left-0 rounded-2xl border border-white/20 transition-[translate] duration-320 ease-in-out motion-reduce:transition-none"
+          />
+        )}
 
-                  return (
-                    <li key={skill.name} className="flex items-center gap-3 border-t border-line/70 py-2.5">
-                      <span className="grid size-7 shrink-0 place-items-center rounded-md bg-white/[0.04]">
-                        <Icon aria-hidden="true" className="size-3.5 text-muted" />
-                      </span>
-                      <span className="text-[0.95rem] text-ink">{skill.name}</span>
-                      <span className="ml-auto flex items-center gap-3">
-                        <span className="sr-only">{t(`skills.tiers.${TIER_LABEL[skill.tier]}`)}</span>
-                        <Meter tier={skill.tier} />
-                      </span>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-          ))}
-        </div>
+        <ol className="relative mt-12 md:mt-14">
+          {skillGroups.map((group, index) => {
+            const items = RAILS.get(group.key) ?? []
+            const mirrored = index % 2 === 1
+
+            return (
+              <li
+                key={group.key}
+                ref={(node) => {
+                  rowsRef.current[index] = node
+                }}
+                onPointerEnter={(event) => focusRow(event, index)}
+              >
+                <div
+                  className={cn(
+                    'relative flex flex-col gap-2 py-10 md:py-12 lg:flex-row lg:items-center lg:gap-x-(--seam) lg:py-14',
+                    mirrored && 'lg:flex-row-reverse'
+                  )}
+                >
+                  <h3
+                    className={cn(
+                      'text-display-lg text-balance lg:min-w-0 lg:flex-1',
+                      mirrored && 'lg:text-right'
+                    )}
+                  >
+                    {t(`skills.items.${group.key}`)}
+                  </h3>
+
+                  <div className="lg:min-w-0 lg:flex-1">
+                    <LogoRail items={items} lit={index === current} />
+                  </div>
+                </div>
+              </li>
+            )
+          })}
+        </ol>
+
+        {/* The rail's label: the mark under the pointer, named where the cursor
+            already is. It is a reading surface rather than an instrument, so it
+            carries no ring and nothing to keep in step with the row. */}
+        <span
+          ref={tipRef}
+          aria-hidden="true"
+          className="label skill-tip whitespace-nowrap px-2.5 py-1.5 text-foreground"
+          style={{ opacity: active ? 1 : 0 }}
+        >
+          {active?.name}
+          {active && (
+            <span className="text-muted">
+              {' · '}
+              {t(`skills.tiers.${TIER_KEY[active.tier]}`)}
+            </span>
+          )}
+        </span>
       </div>
     </Section>
   )

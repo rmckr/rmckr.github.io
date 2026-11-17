@@ -1,5 +1,5 @@
 {
-  "navCta": "Get in touch",
+  "cta": "Get in touch",
   "ui": {
     "skip": "Skip to content",
     "menu": "Menu",
@@ -10,42 +10,50 @@
     "copyEmail": "Copy email address"
   },
   "hero": {
-    "tagline": "Computer science student with experience in software development. I like building things, figuring out how they work, and learning along the way.",
-    "location": "Ulm, Germany",
-    "status": "M.Sc. Computer Science @ Uni Ulm",
-    "avail": "Open to working student positions",
+    "tagline": "Computer science student. I build things and figure out how they work.",
     "viewPortfolio": "View portfolio",
-    "github": "GitHub",
-    "scroll": "scroll"
+    "github": "GitHub"
+  },
+  "projects": {
+    "label": "Projects",
+    "heading": "A few projects.",
+    "lead": "Four projects I keep coming back to.",
+    "repoLink": "{{name}} on GitHub",
+    "items": {
+      "kalliope": "Discord music bot with a web dashboard and Lavalink playback.",
+      "suitbot": "Its predecessor: a slash-command bot with dashboard and moderation.",
+      "rasputin": "My homelab: one Debian host running Docker stacks from git.",
+      "portfolio": "This site: React, TypeScript and Tailwind, built from scratch."
+    }
   },
   "about": {
     "label": "About",
     "heading": "A bit about me.",
-    "p1": "I'm Lukas, a computer science student based in Ulm. <highlight>I enjoy building things</highlight>, exploring new ideas, and figuring out how things work. Often, I start a project simply because it seems interesting or because I want to try something new.",
-    "p2": "I mostly work with TypeScript, JavaScript and Python. I'm particularly interested in <highlight>full-stack development, with a focus on frontend</highlight>, but I enjoy exploring different areas of software development.",
+    "p1": "I'm Lukas, a computer science student in Ulm. <highlight>I learn by building</highlight>: a project starts because it looks interesting, and it ends when it actually works.",
+    "p2": "Most of it is <highlight>full-stack work with a frontend focus</highlight>: TypeScript and React in the browser, Node.js and Python behind it. I still like following a project into parts of software I haven't touched before.",
     "downloadCv": "Download CV"
   },
   "experience": {
     "label": "Experience",
-    "heading": "From theory to practice.",
-    "desc": "A look at the different stages of my journey through computer science, shaped by a mix of academic study and practical experience. From my first steps in software development to my current studies, each stage has brought new perspectives, challenges, and things to explore.",
+    "heading": "A trip back in time.",
+    "desc": "A look at the different stages of my journey through computer science, shaped by a mix of academic study and practical experience.",
     "entries": [
       {
         "title": "Abitur",
         "organisation": "Kolleg St. Blasien",
-        "period": "2012 — 2020",
+        "period": "09/2012 - 07/2020",
         "desc": "Although my Abitur is not directly related to my later career in computer science, I discovered and developed my interest in programming during my school years."
       },
       {
         "title": "B.Eng. Telecommunication Computer Science",
         "organisation": "HTWK Leipzig",
-        "period": "2022 — 2026",
+        "period": "10/2022 - 03/2026",
         "desc": "Completed a dual-study degree combining academic coursework with practical software development at T-Systems International GmbH. Worked primarily on a large Vue frontend project as part of a larger development team."
       },
       {
         "title": "M.Sc. Computer Science",
         "organisation": "Ulm University",
-        "period": "2026 — present",
+        "period": "10/2026 - present",
         "desc": "Currently pursuing a Master's degree in Computer Science at Ulm University, where I am deepening my knowledge and continuing to develop my technical skills."
       }
     ]
@@ -53,35 +61,26 @@
   "skills": {
     "label": "Skills",
     "heading": "Technical stack.",
+    "lead": "The languages, tools and systems I work in, grouped by the four things I do with them.",
     "tiers": {
       "basic": "Basic",
       "proficient": "Proficient",
       "advanced": "Advanced"
     },
-    "tags": {
-      "lang": "Languages",
+    "items": {
+      "engineering": "Software engineering",
+      "fullstack": "Full stack",
       "frontend": "Frontend",
-      "backend": "Backend",
-      "tool": "Tooling",
-      "db": "Data",
-      "infra": "Infra"
-    },
-    "orbits": "Orbits",
-    "groups": "Groups"
+      "systems": "Systems & infrastructure"
+    }
   },
   "github": {
     "label": "GitHub",
     "heading": "What I've been working on.",
-    "error": "Could not load repositories.",
+    "lead": "The account behind these projects, and what it adds up to.",
+    "error": "Could not load the GitHub figures.",
     "retry": "Retry",
     "viewProfile": "View profile",
-    "viewRepo": "View repository",
-    "noDescription": "No description",
-    "noScreenshot": "No screenshot yet.",
-    "prevImage": "Previous image",
-    "nextImage": "Next image",
-    "image": "Image",
-    "followers": "followers",
     "stats": {
       "stars": "Stars",
       "forks": "Forks",
@@ -91,14 +90,20 @@
   },
   "contact": {
     "label": "Contact",
+    "avail": "Open to working student positions",
     "heading": "Say hello.",
     "desc": "I'm currently looking for a working student position where I can get more experience in software development and contribute to a real project. If you're looking for someone who enjoys learning, building things and getting into the details, feel free to get in touch.",
-    "copyHint": "or copy it:",
-    "copied": "copied"
+    "copied": "Copied!"
+  },
+  "notFound": {
+    "heading": "Page not found.",
+    "lead": "The link may be old, or the address has a typo.",
+    "cta": "Back to the start"
   },
   "footer": {
-    "copyright": "© 2026 Lukas Romacker",
+    "copyright": "© {{year}} Lukas Romacker",
     "builtWith": "Built with",
-    "and": "and"
+    "and": "and",
+    "love": "love"
   }
 }

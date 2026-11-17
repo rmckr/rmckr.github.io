@@ -1,23 +1,12 @@
+/** Only the fields the section reads: the avatar and bio of the account. */
 export type GHUser = {
-  name: string
-  login: string
   bio: string | null
   avatar_url: string
-  public_repos: number
-  followers: number
-  following: number
-  location: string | null
-  blog: string | null
 }
 
+/** The repository list is only summed, so the totals are all it is typed for. */
 export type GHRepo = {
-  id: number
-  name: string
-  description: string | null
   stargazers_count: number
   forks_count: number
-  language: string | null
-  html_url: string
-  topics: string[]
   fork: boolean
 }

@@ -1,5 +1,5 @@
 {
-  "navCta": "Kontakt",
+  "cta": "Kontakt",
   "ui": {
     "skip": "Zum Inhalt springen",
     "menu": "Menü",
@@ -10,42 +10,50 @@
     "copyEmail": "E-Mail-Adresse kopieren"
   },
   "hero": {
-    "tagline": "Informatikstudent mit Erfahrung in der Softwareentwicklung. Ich entwickle gerne Dinge, finde heraus, wie sie funktionieren, und lerne dabei Neues.",
-    "location": "Ulm, Deutschland",
-    "status": "M.Sc. Informatik @ Uni Ulm",
-    "avail": "Offen für Werkstudentenstellen",
+    "tagline": "Informatikstudent. Ich baue Dinge und finde heraus, wie sie funktionieren.",
     "viewPortfolio": "Portfolio ansehen",
-    "github": "GitHub",
-    "scroll": "scrollen"
+    "github": "GitHub"
+  },
+  "projects": {
+    "label": "Projekte",
+    "heading": "Ein paar Projekte.",
+    "lead": "Vier Projekte, zu denen ich immer wieder zurückkomme.",
+    "repoLink": "{{name}} auf GitHub",
+    "items": {
+      "kalliope": "Discord-Musikbot mit Web-Dashboard und Lavalink-Wiedergabe.",
+      "suitbot": "Der Vorgänger: Slash-Command-Bot mit Dashboard und Moderation.",
+      "rasputin": "Mein Homelab: ein Debian-Host, Docker-Stacks aus Git.",
+      "portfolio": "Diese Seite: React, TypeScript und Tailwind, von Grund auf."
+    }
   },
   "about": {
     "label": "Über mich",
     "heading": "Etwas über mich.",
-    "p1": "Ich bin Lukas und studiere Informatik in Ulm. <highlight>Ich entwickle gerne Dinge</highlight>, probiere neue Ideen aus und finde heraus, wie Dinge funktionieren. Oft fange ich ein Projekt einfach an, weil ich es interessant finde oder etwas Neues ausprobieren möchte.",
-    "p2": "Ich arbeite hauptsächlich mit TypeScript, JavaScript und Python. Besonders interessiert mich <highlight>Full-Stack-Entwicklung mit Schwerpunkt auf Frontend</highlight>, aber ich beschäftige mich auch gerne mit anderen Bereichen der Softwareentwicklung.",
+    "p1": "Ich bin Lukas und studiere Informatik in Ulm. <highlight>Ich lerne, indem ich baue</highlight>: Ein Projekt beginnt, weil es interessant aussieht, und ist fertig, wenn es tatsächlich läuft.",
+    "p2": "Meistens ist das <highlight>Full-Stack-Arbeit mit Schwerpunkt Frontend</highlight>: TypeScript und React im Browser, Node.js und Python dahinter. Und ich folge einem Projekt gern in Bereiche, die ich noch nicht angefasst habe.",
     "downloadCv": "Lebenslauf herunterladen"
   },
   "experience": {
     "label": "Erfahrung",
-    "heading": "Von Theorie bis Praxis.",
-    "desc": "Ein Einblick in meinen bisherigen Weg durch die Informatik, geprägt durch die Verbindung von Studium und praktischer Erfahrung. Von meinen ersten Erfahrungen in der Softwareentwicklung bis zu meinem aktuellen Studium hat jede Phase neue Perspektiven, Herausforderungen und Möglichkeiten zum Lernen mit sich gebracht.",
+    "heading": "Eine Reise zurück in die Zeit.",
+    "desc": "Ein Einblick in meinen bisherigen Weg durch die Informatik, geprägt durch die Verbindung von Studium und praktischer Erfahrung.",
     "entries": [
       {
         "title": "Abitur",
         "organisation": "Kolleg St. Blasien",
-        "period": "2012 — 2020",
+        "period": "09/2012 - 07/2020",
         "desc": "Auch wenn das Abitur nicht direkt mit meiner späteren Laufbahn in der Informatik zusammenhängt, habe ich während meiner Schulzeit mein Interesse am Programmieren entdeckt und weiterentwickelt."
       },
       {
         "title": "B.Eng. Telekommunikationsinformatik",
         "organisation": "HTWK Leipzig",
-        "period": "2022 — 2026",
+        "period": "10/2022 - 03/2026",
         "desc": "Duales Studium mit einer Kombination aus Hochschulstudium und praktischer Softwareentwicklung bei der T-Systems International GmbH. Dabei habe ich hauptsächlich an einem großen Vue-Frontend in einem größeren Entwicklungsteam gearbeitet."
       },
       {
         "title": "M.Sc. Informatik",
         "organisation": "Universität Ulm",
-        "period": "2026 — heute",
+        "period": "10/2026 - heute",
         "desc": "Aktuelles Masterstudium der Informatik an der Universität Ulm, in dem ich meine Kenntnisse vertiefe und mich fachlich weiterentwickle."
       }
     ]
@@ -53,52 +61,49 @@
   "skills": {
     "label": "Skills",
     "heading": "Technischer Stack.",
+    "lead": "Die Sprachen, Werkzeuge und Systeme, mit denen ich arbeite — gruppiert nach den vier Bereichen, in denen ich sie einsetze.",
     "tiers": {
       "basic": "Grundkenntnisse",
       "proficient": "Gute Kenntnisse",
       "advanced": "Fortgeschritten"
     },
-    "tags": {
-      "lang": "Sprachen",
+    "items": {
+      "engineering": "Softwareentwicklung",
+      "fullstack": "Full Stack",
       "frontend": "Frontend",
-      "backend": "Backend",
-      "tool": "Werkzeuge",
-      "db": "Daten",
-      "infra": "Infrastruktur"
-    },
-    "orbits": "Umlaufbahnen",
-    "groups": "Gruppen"
+      "systems": "Systeme & Infrastruktur"
+    }
   },
   "github": {
     "label": "GitHub",
     "heading": "Woran ich gerade arbeite.",
-    "error": "Repositories konnten nicht geladen werden.",
+    "lead": "Das Konto hinter diesen Projekten, und was dabei zusammenkommt.",
+    "error": "Die Zahlen von GitHub konnten nicht geladen werden.",
     "retry": "Erneut versuchen",
     "viewProfile": "Profil ansehen",
-    "viewRepo": "Repository ansehen",
-    "noDescription": "Keine Beschreibung",
-    "noScreenshot": "Noch kein Screenshot.",
-    "prevImage": "Vorheriges Bild",
-    "nextImage": "Nächstes Bild",
-    "image": "Bild",
-    "followers": "Follower",
     "stats": {
       "stars": "Sterne",
       "forks": "Forks",
       "pullRequests": "Pull Requests",
-      "issues": "Geöffnete Issues"
+      "issues": "Erstellte Issues"
     }
   },
   "contact": {
     "label": "Kontakt",
-    "heading": "Sag hallo.",
+    "avail": "Offen für Werkstudentenstellen",
+    "heading": "Schreiben Sie mir.",
     "desc": "Ich suche derzeit eine Werkstudentenstelle, in der ich mehr Erfahrung in der Softwareentwicklung sammeln und an einem echten Projekt mitarbeiten kann. Wenn Sie jemanden suchen, der gerne dazulernt, Dinge entwickelt und sich mit den Details beschäftigt, freue ich mich über Ihre Kontaktaufnahme.",
-    "copyHint": "oder kopieren:",
-    "copied": "kopiert"
+    "copied": "Kopiert!"
+  },
+  "notFound": {
+    "heading": "Seite nicht gefunden.",
+    "lead": "Der Link ist vielleicht veraltet oder die Adresse enthält einen Tippfehler.",
+    "cta": "Zurück zum Anfang"
   },
   "footer": {
-    "copyright": "© 2026 Lukas Romacker",
+    "copyright": "© {{year}} Lukas Romacker",
     "builtWith": "Gebaut mit",
-    "and": "und"
+    "and": "und",
+    "love": "Liebe"
   }
 }

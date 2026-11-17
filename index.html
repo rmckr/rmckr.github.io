@@ -6,13 +6,14 @@
     <!-- Dark-only site: paint the first frame dark (no white flash) and keep
          the Android status bar on the page's ground colour. -->
     <meta name="color-scheme" content="dark" />
-    <meta name="theme-color" content="#080808" />
+    <meta name="theme-color" content="#111217" />
     <title>Lukas Romacker · Computer science student, Ulm</title>
     <meta
       name="description"
       content="Lukas Romacker is a computer science M.Sc. student in Ulm, Germany, building full-stack software with a focus on the frontend."
     />
     <meta name="author" content="Lukas Romacker" />
+    <link rel="canonical" href="https://rmckr.com/" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Lukas Romacker · Computer science student, Ulm" />
     <meta
@@ -20,12 +21,43 @@
       content="Computer science student with experience in software development, based in Ulm, Germany."
     />
     <meta property="og:locale" content="en" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:url" content="https://rmckr.com/" />
+    <meta property="og:image" content="https://rmckr.com/images/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="The portfolio's fold: the RMCKR mark in red and white above the name Lukas Romacker, and a red project card at the right." />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="darkreader-lock" />
+    <!-- The wordmark's tile: accent square, rounded like the nav logo, two
+         white slashes. Inline, so it needs no request. -->
     <link
       rel="icon"
-      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M37 8H54L28 92H11L37 8ZM74 8H91L65 92H48L74 8Z' fill='%23d41514'/></svg>"
+      type="image/svg+xml"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%23ef233c'/><path d='M37 8H54L28 92H11L37 8ZM74 8H91L65 92H48L74 8Z' transform='translate(28.125 28.125) scale(0.4375)' fill='%23fff'/></svg>"
     />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Lukas Romacker",
+        "url": "https://rmckr.com/",
+        "jobTitle": "Computer science student",
+        "email": "hello@rmckr.com",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Ulm",
+          "addressCountry": "DE"
+        },
+        "alumniOf": [
+          { "@type": "CollegeOrUniversity", "name": "HTWK Leipzig" },
+          { "@type": "CollegeOrUniversity", "name": "Ulm University" }
+        ],
+        "sameAs": [
+          "https://github.com/rmckr",
+          "https://www.linkedin.com/in/lukas-romacker/"
+        ]
+      }
+    </script>
   </head>
 
   <body>

@@ -1,29 +1,35 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { sections } from '@/data/sections'
 import { CONTACT_EMAIL, NAME } from '@/data/index'
 import { useTranslation } from '@/i18n/i18n'
 import { cn } from '@/lib/utils'
 import { Logo } from './Logo'
 
+const LANGS = ['en', 'de'] as const
+
+function currentLang(language: string) {
+  return language.startsWith('de') ? 'de' : 'en'
+}
+
 function LangToggle({ className }: { className?: string }) {
   const { i18n, t } = useTranslation()
-  const current = i18n.language.startsWith('de') ? 'de' : 'en'
+  const current = currentLang(i18n.language)
 
   return (
     <div
-      className={cn('flex items-center gap-0.5 rounded-lg border border-line bg-white/[0.03] p-0.5', className)}
+      className={cn('flex h-10 items-center', className)}
       role="group"
       aria-label={t('ui.language')}
     >
-      {(['en', 'de'] as const).map((lng) => (
+      {LANGS.map((lng) => (
         <button
           key={lng}
           type="button"
           onClick={() => void i18n.changeLanguage(lng)}
           aria-pressed={current === lng}
           className={cn(
-            'label-mono rounded-md px-2.5 py-1.5',
-            current === lng ? 'bg-white/10 text-ink' : 'text-muted hover-fine:text-ink'
+            'label px-1.5 py-2 transition-[color,background-color,border-color] duration-200 ease-out motion-reduce:transition-none',
+            current === lng ? 'text-foreground' : 'text-muted hover-fine:text-foreground'
           )}
         >
           {lng}
@@ -33,9 +39,27 @@ function LangToggle({ className }: { className?: string }) {
   )
 }
 
+/** One beat, both ways: the surface stays mounted for its own exit. */
+const MENU_MS = 220
+
 function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t } = useTranslation()
   const closeRef = useRef<HTMLButtonElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+  const [mounted, setMounted] = useState(false)
+
+  // The surface outlives `open` by one exit beat, so the menu leaves the edge
+  // it arrived from instead of vanishing in a frame.
+  useEffect(() => {
+    if (open) {
+      setMounted(true)
+      return
+    }
+    if (!mounted) return
+
+    const timer = window.setTimeout(() => setMounted(false), MENU_MS)
+    return () => window.clearTimeout(timer)
+  }, [open, mounted])
 
   useEffect(() => {
     if (!open) return
@@ -43,48 +67,84 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
     closeRef.current?.focus()
 
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose()
+      if (event.key === 'Escape') {
+        onClose()
+        return
+      }
+      if (event.key !== 'Tab') return
+
+      const panel = panelRef.current
+      if (!panel) return
+
+      // The menu is the only surface on screen, so Tab cycles it: the page
+      // behind cannot take focus while `aria-modal` says it is unavailable.
+      const focusables = Array.from(
+        panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled])')
+      )
+      if (focusables.length === 0) return
+
+      const first = focusables[0]
+      const last = focusables[focusables.length - 1]
+      const active = document.activeElement
+
+      if (event.shiftKey && (active === first || !panel.contains(active))) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && (active === last || !panel.contains(active))) {
+        event.preventDefault()
+        first.focus()
+      }
     }
 
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
   }, [open, onClose])
 
-  if (!open) return null
+  if (!mounted) return null
 
   return (
     <div
+      ref={panelRef}
       id="mobile-menu"
       role="dialog"
       aria-modal="true"
       aria-label={t('ui.sections')}
-      className="fixed inset-0 z-[60] flex touch-none flex-col overscroll-contain bg-ground md:hidden"
+      // Closed, it is still on screen for the exit: `inert` and no pointer
+      // events keep the page behind it reachable while it fades.
+      inert={!open}
+      className={cn(
+        'fixed inset-0 z-60 flex touch-none flex-col overscroll-contain bg-background transition-[opacity,translate] duration-220 ease-out motion-reduce:transition-none md:hidden',
+        'starting:translate-y-2 starting:opacity-0',
+        open ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-2 opacity-0'
+      )}
     >
-      <div className="container-page flex h-20 items-center justify-between gap-4">
+      <div className="container-page flex h-16 items-center justify-between gap-4">
         <Logo />
-        <button ref={closeRef} type="button" onClick={onClose} className="btn h-10 px-4 text-[0.85rem]">
+        <button ref={closeRef} type="button" onClick={onClose} className="label h-10 px-2 text-foreground">
           {t('ui.close')}
         </button>
       </div>
 
-      <nav className="container-page flex flex-1 flex-col justify-center gap-2" aria-label={t('ui.sections')}>
+      <nav
+        className="container-page flex flex-1 flex-col justify-center gap-2"
+        aria-label={t('ui.sections')}
+      >
         {sections.map((section, index) => (
           <a
             key={section.id}
             href={`#${section.id}`}
             onClick={onClose}
-            className="flex items-baseline justify-between gap-4 rounded-xl border border-line bg-surface px-5 py-4"
+            data-scroll-duration="1.1"
+            className="flex items-baseline justify-between gap-4 rounded-lg border border-line bg-surface px-5 py-4"
           >
-            <span className="text-[1.5rem] leading-tight font-light tracking-[-0.03em] text-ink">
-              {t(section.labelKey)}
-            </span>
-            <span className="label-mono text-faint">{String(index + 1).padStart(2, '0')}</span>
+            <span className="text-display text-foreground">{t(section.labelKey)}</span>
+            <span className="label text-muted">{String(index + 1).padStart(2, '0')}</span>
           </a>
         ))}
       </nav>
 
       <div className="container-page flex items-center justify-between gap-4 py-6">
-        <a href={`mailto:${CONTACT_EMAIL}`} className="label-mono min-w-0 truncate text-muted">
+        <a href={`mailto:${CONTACT_EMAIL}`} className="label min-w-0 truncate text-muted">
           {CONTACT_EMAIL}
         </a>
         <LangToggle />
@@ -94,10 +154,17 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
 }
 
 export function NavBar() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState('')
+  const [mark, setMark] = useState<{ x: number; scale: number } | null>(null)
 
+  const navRef = useRef<HTMLElement>(null)
+  const labelsRef = useRef<(HTMLSpanElement | null)[]>([])
+
+  // The current section is the one holding the middle of the viewport, read
+  // from the page rather than remembered: at the hero no section reaches the
+  // line, so no link is current and the bar shows no rule.
   useEffect(() => {
     const elements = sections
       .map((section) => document.getElementById(section.id))
@@ -105,20 +172,80 @@ export function NavBar() {
 
     if (elements.length === 0) return
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
+    let frame = 0
 
-        if (visible[0]) setActive(visible[0].target.id)
-      },
-      { rootMargin: '-45% 0px -45% 0px', threshold: [0, 0.5, 1] }
-    )
+    const measure = () => {
+      frame = 0
+      const line = window.innerHeight / 2
+      const current = elements.find((element) => {
+        const rect = element.getBoundingClientRect()
+        return rect.top <= line && rect.bottom > line
+      })
 
-    for (const element of elements) observer.observe(element)
-    return () => observer.disconnect()
+      setActive(current?.id ?? '')
+    }
+
+    const onScroll = () => {
+      if (frame === 0) frame = requestAnimationFrame(measure)
+    }
+
+    measure()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
   }, [])
+
+  // The rule is one element that travels between entries. The label is what is
+  // measured, not the link, so the rule is exactly as wide as the word.
+  useLayoutEffect(() => {
+    const nav = navRef.current
+    if (!nav) return
+
+    let cancelled = false
+
+    const measure = () => {
+      if (cancelled) return
+
+      const index = sections.findIndex((section) => section.id === active)
+      const label = labelsRef.current[index]
+
+      if (!label || nav.offsetWidth === 0) {
+        setMark(null)
+        return
+      }
+
+      const navRect = nav.getBoundingClientRect()
+      const labelRect = label.getBoundingClientRect()
+      // The rule's box is `w-32`, so its base is 8rem in the root's own pixels
+      // rather than a fixed 128: a larger default font grows the box too.
+      const base = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) * 8
+      setMark({
+        x: labelRect.left - navRect.left,
+        scale: base > 0 ? labelRect.width / base : 0
+      })
+    }
+
+    measure()
+    void document.fonts.ready.then(measure)
+
+    // A language switch, a resize or a late webfont changes the label widths
+    // under the rule, so both the labels and the nav are watched.
+    const observer = new ResizeObserver(measure)
+    observer.observe(nav)
+    for (const label of labelsRef.current) {
+      if (label) observer.observe(label)
+    }
+
+    return () => {
+      cancelled = true
+      observer.disconnect()
+    }
+  }, [active, i18n.language])
 
   const menuButtonRef = useRef<HTMLButtonElement>(null)
 
@@ -129,46 +256,78 @@ export function NavBar() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 bg-linear-to-b from-ground via-ground/85 to-transparent pb-4">
-        <div className="container-page">
-          <div className="mt-3 flex h-14 items-center justify-between gap-3 rounded-xl border border-line bg-[#0b0b0c]/85 pr-1.5 pl-3 backdrop-blur-xl md:mt-4 md:pr-2 md:pl-4">
-            <a href="#top" aria-label={NAME} className="shrink-0">
+      {/* The bar is a band across the full width: the page's own ground, lifted
+          one `surface` step so the band is a shade above the page, with one
+          hairline and one short shadow under it. The lift is a layer over the
+          header's own fill, so the band stays opaque and the page scrolls under
+          it rather than through it. */}
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-background shadow-[0_2px_6px_rgb(0_0_0/0.5)]">
+        <div className="bg-surface">
+          <div className="container-page flex h-16 items-center gap-2">
+            <a
+              href="#top"
+              aria-label={`RMCKR, ${NAME}`}
+              data-scroll-duration="1.4"
+              className="mr-auto shrink-0"
+            >
               <Logo />
             </a>
 
-            <nav className="hidden items-center gap-1 md:flex" aria-label={t('ui.sections')}>
-              {sections.map((section) => {
+            <nav
+              ref={navRef}
+              className="relative hidden h-full items-stretch gap-1 md:flex"
+              aria-label={t('ui.sections')}
+            >
+              {mark && (
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute bottom-0 left-0 h-0.5 w-32 origin-left transition-transform duration-200 ease-out motion-reduce:transition-none"
+                  style={{ transform: `translateX(${mark.x}px)` }}
+                >
+                  {/* The width rides its own transition on the same curve, so
+                      the rule stretches on its way and settles under the word. */}
+                  <span
+                    className="block size-full origin-left bg-accent transition-transform duration-200 ease-out motion-reduce:transition-none"
+                    style={{ transform: `scaleX(${mark.scale})` }}
+                  />
+                </span>
+              )}
+
+              {sections.map((section, index) => {
                 const isActive = active === section.id
+
                 return (
                   <a
                     key={section.id}
                     href={`#${section.id}`}
+                    data-scroll-duration="1.2"
                     aria-current={isActive ? 'true' : undefined}
                     className={cn(
-                      'label-mono rounded-lg px-3.5 py-2',
-                      isActive
-                        ? 'bg-white/[0.07] text-ink'
-                        : 'text-muted hover-fine:bg-white/[0.04] hover-fine:text-ink'
+                      'label flex items-center px-2 transition-[color] duration-200 ease-out motion-reduce:transition-none lg:px-3',
+                      isActive ? 'text-foreground' : 'text-muted hover-fine:text-foreground'
                     )}
                   >
-                    {t(section.labelKey)}
+                    <span
+                      ref={(element) => {
+                        labelsRef.current[index] = element
+                      }}
+                    >
+                      {t(section.labelKey)}
+                    </span>
                   </a>
                 )
               })}
             </nav>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 md:ml-4">
               <LangToggle className="hidden sm:flex" />
-              <a href="#contact" className="btn btn-solid hidden h-10 px-4 text-[0.85rem] lg:inline-flex">
-                {t('navCta')}
-              </a>
               <button
                 ref={menuButtonRef}
                 type="button"
                 onClick={() => setOpen(true)}
                 aria-expanded={open}
                 aria-controls="mobile-menu"
-                className="label-mono grid h-10 place-items-center rounded-lg border border-line-strong px-3.5 text-ink md:hidden"
+                className="press label h-10 px-2 text-foreground md:hidden"
               >
                 {t('ui.menu')}
               </button>

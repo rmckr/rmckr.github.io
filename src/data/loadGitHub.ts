@@ -1,11 +1,10 @@
-import { featuredRepos, GITHUB_USERNAME } from './index'
+import { GITHUB_USERNAME } from './index'
 import type { GHRepo, GHUser } from './github'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 export type GitHubData = {
   user: GHUser
-  repos: GHRepo[]
   totalStars: number
   totalForks: number
   prCount: number
@@ -22,11 +21,11 @@ type CacheStore = Pick<Storage, 'getItem' | 'setItem'>
 
 // ── Cache ─────────────────────────────────────────────────────────────────────
 
-const CACHE_KEY = `github-section:${GITHUB_USERNAME}:v2`
+const CACHE_KEY = `github-section:${GITHUB_USERNAME}:v3`
 const CACHE_TTL = 10 * 60 * 1000 // 10 minutes
 
 /**
- * Returns the raw cache entry, even an expired one — staleness is decided by
+ * Returns the raw cache entry, even an expired one. Staleness is decided by
  * the loader, because an expired cache still beats an error box.
  * Missing or corrupt entries read as null.
  */
@@ -78,7 +77,7 @@ async function fetchJson<T>(url: string): Promise<T> {
 }
 
 async function requestGitHubData(): Promise<GitHubData> {
-  const [user, allRepos, prResult, issueResult] = await Promise.all([
+  const [user, repos, prResult, issueResult] = await Promise.all([
     fetchJson<GHUser>(`https://api.github.com/users/${GITHUB_USERNAME}`),
 
     fetchJson<GHRepo[]>(`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100`),
@@ -92,25 +91,11 @@ async function requestGitHubData(): Promise<GitHubData> {
     )
   ])
 
-  const ownRepos = allRepos.filter((repo) => !repo.fork)
-
-  // Hand-picked repos first, in curated order; the most-starred of the rest
-  // fill in, so the flap row always renders featuredRepos.length panels even
-  // if one of them is renamed or deleted.
-  const featured = featuredRepos
-    .map((pick) => ownRepos.find((repo) => repo.name === pick.name))
-    .filter((repo): repo is GHRepo => repo !== undefined)
-
-  const fill = [...ownRepos]
-    .sort((a, b) => b.stargazers_count - a.stargazers_count)
-    .filter((repo) => !featured.includes(repo))
-    .slice(0, featuredRepos.length - featured.length)
-
-  const repos = [...featured, ...fill]
+  // Forks of other people's projects are not this account's work.
+  const ownRepos = repos.filter((repo) => !repo.fork)
 
   return {
     user,
-    repos,
     totalStars: ownRepos.reduce((sum, repo) => sum + repo.stargazers_count, 0),
     totalForks: ownRepos.reduce((sum, repo) => sum + repo.forks_count, 0),
     prCount: prResult.total_count,
