@@ -1,7 +1,9 @@
+import type { CSSProperties } from 'react'
 import { LuArrowDown, LuArrowUpRight } from 'react-icons/lu'
-import { CONTACT_EMAIL, NAME } from '@/data/index'
+import { CONTACT_EMAIL, featuredRepos, NAME } from '@/data/index'
 import { useTranslation } from '@/i18n/i18n'
 import { Blueprint } from './Blueprint'
+import { ProjectCard } from './Projects'
 
 export function Hero() {
   const { t } = useTranslation()
@@ -9,7 +11,7 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative isolate flex h-svh flex-col overflow-hidden pt-24 pb-6 md:pt-28 md:pb-8"
+      className="relative isolate flex min-h-svh flex-col overflow-hidden pt-24 pb-6 md:pt-28 md:pb-8"
     >
       {/* The page's only texture: the blueprint drawing, isolated behind the
           content and nothing else, dissolving into the ground at the foot so it
@@ -29,7 +31,7 @@ export function Hero() {
           <div className="w-full lg:w-[56%]">
             <p
               aria-hidden="true"
-              className="wordmark text-[clamp(4rem,12vw,9.5rem)] leading-[0.8]"
+              className="wordmark text-[clamp(4rem,min(12vw,20vh),9.5rem)] leading-[0.8]"
             >
               <span className="text-accent">{'//'}</span>
               RMCKR
@@ -52,7 +54,20 @@ export function Hero() {
 
           {/* The card's slot: its right edge is the fold's right gutter, which
               the projects card hangs from and measures. */}
-          <div aria-hidden="true" data-hero-gutter className="hidden min-h-0 flex-1 lg:block" />
+          <div
+            aria-hidden="true"
+            data-hero-gutter
+            className="hidden min-h-0 flex-1 lg:flex lg:items-center lg:justify-end"
+          >
+            {/* Reduced motion takes the flight, not the card: the fold keeps the
+                same face, still, on the edge the flight would land it on. */}
+            <div
+              className="hidden w-(--holo-card-width) shrink-0 motion-reduce:block"
+              style={{ aspectRatio: '23 / 27', '--p': 0 } as CSSProperties}
+            >
+              <ProjectCard repo={featuredRepos[0]} index={0} inHero={false} current={false} />
+            </div>
+          </div>
         </div>
 
         {/* The fold closes on its one primary action, with the way into the
@@ -66,7 +81,7 @@ export function Hero() {
           <a
             href="#projects"
             data-scroll-duration="1.1"
-            className="label inline-flex items-center gap-2 py-1.5 text-muted transition-[color] duration-200 ease-out hover-fine:text-foreground motion-reduce:transition-none"
+            className="press label inline-flex items-center gap-2 py-1.5 text-muted transition-[color] duration-200 ease-out hover-fine:text-foreground motion-reduce:transition-none"
           >
             {t('hero.viewPortfolio')}
             <LuArrowDown aria-hidden="true" className="size-3.5" />

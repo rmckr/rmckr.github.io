@@ -101,8 +101,54 @@
     "lead": "Der Link ist vielleicht veraltet oder die Adresse enthält einen Tippfehler.",
     "cta": "Zurück zum Anfang"
   },
+  "legal": {
+    "title": "Impressum & Datenschutz",
+    "lead": "Wer diese Seite betreibt und was beim Besuch mit Daten passiert.",
+    "back": "Zurück zum Anfang",
+    "imprint": {
+      "heading": "Impressum",
+      "sub": "Angaben gemäß § 5 DDG",
+      "emailLabel": "E-Mail",
+      "note": "Verantwortlich für den Inhalt dieser Seite ist die oben genannte Person."
+    },
+    "privacy": {
+      "heading": "Datenschutz",
+      "updated": "Stand: 17. November 2026",
+      "intro": "Diese Seite ist eine statische Website. Es gibt keine Anmeldung, keine Formulare, keine Analyse-Werkzeuge und keine Werbung.",
+      "quiet": "Es laufen hier keine Analyse-, Tracking- oder Werbedienste, es wird kein Profil gebildet und nichts automatisch entschieden.",
+      "controller": {
+        "title": "Verantwortlich",
+        "text": "Verantwortlich für die Verarbeitung personenbezogener Daten auf dieser Seite ist die im Impressum genannte Person. Bei Fragen zum Datenschutz: {{email}}."
+      },
+      "hosting": {
+        "title": "Hosting (GitHub Pages)",
+        "text": "Diese Seite wird über GitHub Pages ausgeliefert. Beim Aufruf verarbeitet GitHub die üblichen Zugriffsdaten, darunter die IP-Adresse Ihres Geräts, Datum und Uhrzeit, die aufgerufene Adresse und Angaben zum Browser. Diese Verarbeitung ist es, die die Seite ausliefert und absichert (Art. 6 Abs. 1 lit. f DSGVO). GitHub kann diese Daten in den USA verarbeiten; die Datenschutzerklärung von GitHub beschreibt die dabei zugrunde gelegten Garantien.",
+        "link": "Datenschutzerklärung von GitHub"
+      },
+      "github": {
+        "title": "Inhalte von GitHub",
+        "text": "Der Abschnitt „GitHub“ lädt die Zahlen zu meinem Konto und das Profilbild direkt aus Ihrem Browser, von api.github.com und avatars.githubusercontent.com. Dabei erhält GitHub Ihre IP-Adresse und die Angaben, die Ihr Browser bei jeder Anfrage mitsendet. Rechtsgrundlage ist mein berechtigtes Interesse, diese Angaben anzuzeigen (Art. 6 Abs. 1 lit. f DSGVO). Die Anfragen werden nur gestellt, während die Seite geöffnet ist."
+      },
+      "storage": {
+        "title": "Cookies und lokale Speicherung",
+        "text": "Diese Seite setzt keine Cookies. Sie speichert zwei Einträge im lokalen Speicher Ihres Browsers:",
+        "lang": "„lang“ hält die gewählte Sprache (Englisch oder Deutsch).",
+        "cache": "„github-section:rmckr:v3“ hält die zuletzt geladenen GitHub-Zahlen für zehn Minuten, damit ein Besuch die Abfrage nicht wiederholt.",
+        "basis": "Beide Einträge sind für die Funktion der Seite erforderlich und werden nicht an Dritte übermittelt; eine Einwilligung ist dafür nach § 25 Abs. 2 TDDDG nicht nötig. Sie können sie jederzeit über die Einstellungen Ihres Browsers löschen."
+      },
+      "contact": {
+        "title": "Kontakt per E-Mail",
+        "text": "Wenn Sie mir schreiben, verarbeite ich Ihre Adresse und den Inhalt der Nachricht, um zu antworten (Art. 6 Abs. 1 lit. b und f DSGVO). Ich gebe die Nachricht nicht weiter und lösche sie, wenn ich sie nicht mehr benötige."
+      },
+      "rights": {
+        "title": "Ihre Rechte",
+        "text": "Sie haben das Recht auf Auskunft (Art. 15), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) und Widerspruch gegen die Verarbeitung (Art. 21 DSGVO). Eine erteilte Einwilligung können Sie jederzeit widerrufen. Außerdem können Sie sich bei einer Datenschutz-Aufsichtsbehörde beschweren; für diese Seite ist das der Landesbeauftragte für den Datenschutz und die Informationsfreiheit Baden-Württemberg."
+      }
+    }
+  },
   "footer": {
     "copyright": "© {{year}} Lukas Romacker",
+    "legal": "Impressum & Datenschutz",
     "builtWith": "Gebaut mit",
     "and": "und",
     "love": "Liebe"

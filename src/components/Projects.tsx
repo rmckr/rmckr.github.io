@@ -28,6 +28,17 @@ function clamp(value: number) {
   return Math.min(Math.max(value, 0), 1)
 }
 
+/** The ring's detent: every face is a well the turn falls into. The mapping is
+ *  still one-to-one — it leaves each face exactly where it was and compresses
+ *  the turn on either side of it — so a stop near a face lands on it while a
+ *  gesture carries through the middle. It shapes the drawing, not the document:
+ *  nothing is snapped and no scroll position is pulled. */
+function detent(turn: number, steps: number) {
+  if (steps <= 0) return turn
+  const step = turn * steps
+  return (step - 0.5 * Math.sin(2 * Math.PI * step) / (2 * Math.PI)) / steps
+}
+
 /**
  * One project card: the cover, the counter and the repository. Every card
  * carries the same chrome, and the accent is painted over it by the face's own
@@ -37,7 +48,7 @@ function clamp(value: number) {
  * The title is the section's one path out: a link to the repository, tabbable
  * only on the face the ring is showing, so a card behind is not a tab stop.
  */
-function ProjectCard({
+export function ProjectCard({
   repo,
   index,
   inHero,
@@ -136,7 +147,7 @@ function ProjectCard({
                 href={`https://github.com/${GITHUB_USERNAME}/${repo.name}`}
                 aria-label={t('projects.repoLink', { name: repo.name })}
                 tabIndex={current ? undefined : -1}
-                className="underline-offset-4 hover-fine:underline"
+                className="press underline-offset-4 hover-fine:underline"
               >
                 <p className="text-lead font-medium ink-accent wrap-break-word">{repo.name}</p>
               </a>
@@ -205,6 +216,10 @@ function useCubeScroll(
     // the box, which is where it is the ring's one driver.
     let picked = 0
     let wasStill = false
+    // The deck's own place below `lg`, 0 across the first card to 1 across the
+    // last: the deck in the flow reports where it has come to rest, and the rig
+    // reads it as the same turn the ring takes from the page.
+    let deckTurn = 0
     // The index's progress rule: where the first row's centre sits in the list,
     // how far the last one is from it, and the rule's own height. Measured per
     // layout — never per frame.
@@ -318,7 +333,7 @@ function useCubeScroll(
       // nothing the rig writes can change, so skip the page's heaviest repaint
       // instead of running it on every footer scroll. The mount paint always
       // runs, so a deep link still lands on the right face.
-      if (painted && scroll > sectionTop + runway + viewport) return
+      if (painted && !narrow.matches && scroll > sectionTop + runway + viewport) return
       painted = true
 
       // The card is already home on a phone and under reduced motion: the
@@ -326,10 +341,16 @@ function useCubeScroll(
       // flight is measured against the section's own top, so the card is on
       // its face at the stage's first pixel and not a fraction short of it.
       const flight = still ? 1 : clamp(scroll / Math.max(sectionTop, 1))
-      const turn =
-        still || runway <= 0
+      // Below `lg` the deck's own scroll is the turn; wide, the page's is.
+      const rawTurn = narrow.matches
+        ? deckTurn
+        : still || runway <= 0
           ? picked / Math.max(count - 1, 1)
           : clamp((scroll - sectionTop) / runway)
+      // The detent shapes the turn, not the scroll: the ring holds a face while
+      // the reader is near it and carries through between, so a stop lands on a
+      // card while the document itself is never pulled.
+      const turn = detent(rawTurn, count - 1)
       const turned = turn * (count - 1) * step
 
       // The card is centred on the hero's own centre line. The lift is a flow
@@ -382,6 +403,35 @@ function useCubeScroll(
       }
     }
 
+    // Below `lg` the ring is a deck in the flow rather than a turn on a runway:
+    // one card per screen, dragged by hand, with the platform's own scrolling
+    // supplying the momentum and the snap. This reads where the deck has come to
+    // rest — as a fraction of a card, so the accent still crosses the handover —
+    // and hands the rig the same turn the page's scroll gives it wide.
+    const deck = () => {
+      if (!narrow.matches || !cubeEl || faces.length === 0) return
+
+      const track = cubeEl.getBoundingClientRect()
+      const centre = track.left + track.width / 2
+      let nearest = 0
+      let reach = Infinity
+      let offset = 0
+
+      faces.forEach((face, index) => {
+        const box = face.getBoundingClientRect()
+        const distance = box.left + box.width / 2 - centre
+        if (Math.abs(distance) < Math.abs(reach)) {
+          nearest = index
+          reach = distance
+          offset = box.width > 0 ? distance / box.width : 0
+        }
+      })
+
+      deckTurn = clamp((nearest - offset) / Math.max(count - 1, 1))
+      picked = nearest
+      request()
+    }
+
     // One face, from the index. Wide, the scroll is the ring's only driver, so a
     // row moves the page to that face's place in the runway; where the scroll
     // cannot turn the box, it moves the ring itself.
@@ -389,6 +439,18 @@ function useCubeScroll(
       const current = stillMode() ? picked : shown
       const next = Math.min(Math.max(Math.round(index), 0), count - 1)
       if (next === current) return
+
+      // Below `lg` the cards are a deck in the flow: a row walks it by scrolling
+      // the deck itself, and the deck's own snap and momentum land the card.
+      if (narrow.matches) {
+        const face = faces[next]
+        const track = cubeEl
+        if (face && track) {
+          const left = face.offsetLeft - (track.clientWidth - face.offsetWidth) / 2
+          track.scrollTo({ left, behavior: reduce.matches ? 'auto' : 'smooth' })
+        }
+        return
+      }
 
       if (stillMode()) {
         // Drop a queued frame: this paint already carries the new face.
@@ -416,19 +478,23 @@ function useCubeScroll(
 
     const relayout = () => {
       measure()
+      deck()
       request()
     }
 
     measure()
+    deck()
     paint()
 
     if (document.fonts) void document.fonts.ready.then(relayout)
+    cubeEl?.addEventListener('scroll', deck, { passive: true })
     window.addEventListener('scroll', request, { passive: true })
     window.addEventListener('resize', relayout, { passive: true })
     reduce.addEventListener('change', request)
     narrow.addEventListener('change', relayout)
 
     return () => {
+      cubeEl?.removeEventListener('scroll', deck)
       window.removeEventListener('scroll', request)
       window.removeEventListener('resize', relayout)
       reduce.removeEventListener('change', request)
@@ -476,12 +542,12 @@ export function Projects() {
 
                 {/* The box's index and its only control: a row per project, each
                     a step to that card, with one accent rule that travels down
-                    the list as the ring turns. It is the ring's driver, so it
-                    is shown only where the ring turns: below `lg` the cards
-                    are all in the flow and there is nothing to walk. */}
+                    the list as the ring turns. Wide it walks the ring; below
+                    `lg` it walks the deck, so the chapter keeps a named step to
+                    every card and every card's link stays reachable. */}
                 <ol
                   data-project-list
-                  className="relative mt-8 hidden lg:absolute lg:inset-x-0 lg:top-1/2 lg:mt-0 lg:block lg:-translate-y-1/2"
+                  className="relative mt-8 lg:absolute lg:inset-x-0 lg:top-1/2 lg:mt-0 lg:-translate-y-1/2"
                 >
                   <li aria-hidden="true" className="pointer-events-none absolute top-0 left-0">
                     <span
@@ -496,7 +562,7 @@ export function Projects() {
                         data-project-row
                         onClick={() => go(index)}
                         aria-current={index === entry ? 'true' : undefined}
-                        className={`grid w-full cursor-pointer grid-cols-[2rem_1fr] items-baseline gap-3 py-2 pl-5 text-left transition-[color,translate] duration-200 ease-out motion-reduce:transition-none hover-fine:translate-x-0.5 lg:py-3 ${
+                        className={`press grid w-full cursor-pointer grid-cols-[2rem_1fr] items-baseline gap-3 py-2 pl-5 text-left transition-[color] duration-200 ease-out motion-reduce:transition-none lg:py-3 ${
                           index === entry ? 'text-foreground' : 'text-muted hover-fine:text-foreground'
                         }`}
                       >

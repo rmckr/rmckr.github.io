@@ -101,8 +101,54 @@
     "lead": "The link may be old, or the address has a typo.",
     "cta": "Back to the start"
   },
+  "legal": {
+    "title": "Legal notice & privacy",
+    "lead": "Who runs this site, and what happens to your data when you visit it.",
+    "back": "Back to the start",
+    "imprint": {
+      "heading": "Legal notice",
+      "sub": "Information pursuant to § 5 DDG",
+      "emailLabel": "Email",
+      "note": "The person named above is responsible for the content of this site."
+    },
+    "privacy": {
+      "heading": "Privacy",
+      "updated": "Last updated: 17 November 2026",
+      "intro": "This is a static website. There is no sign-in, no form, no analytics tool and no advertising.",
+      "quiet": "No analytics, tracking or advertising service runs here, no profile is built and nothing is decided automatically.",
+      "controller": {
+        "title": "Controller",
+        "text": "The person named in the legal notice is responsible for the processing of personal data on this site. For any privacy question: {{email}}."
+      },
+      "hosting": {
+        "title": "Hosting (GitHub Pages)",
+        "text": "This site is served through GitHub Pages. When it is opened, GitHub processes the usual access data, including your device's IP address, the date and time, the address requested and details about your browser. That processing is what delivers and secures the site (Art. 6(1)(f) GDPR). GitHub may process this data in the United States; its privacy statement describes the safeguards it relies on.",
+        "link": "GitHub privacy statement"
+      },
+      "github": {
+        "title": "Content from GitHub",
+        "text": "The GitHub section loads figures for my account and my avatar straight from your browser, from api.github.com and avatars.githubusercontent.com. GitHub receives your IP address and whatever your browser sends with any request. The basis is my legitimate interest in showing these figures (Art. 6(1)(f) GDPR). The requests are only made while the page is open."
+      },
+      "storage": {
+        "title": "Cookies and local storage",
+        "text": "This site sets no cookies. It stores two entries in your browser's local storage:",
+        "lang": "“lang” holds the language you picked (English or German).",
+        "cache": "“github-section:rmckr:v3” holds the GitHub figures fetched last, for ten minutes, so a visit does not repeat the request.",
+        "basis": "Both entries are needed for the site to work and are never sent anywhere else; under § 25(2) TDDDG they need no consent. You can delete them at any time through your browser's settings."
+      },
+      "contact": {
+        "title": "Contact by email",
+        "text": "If you write to me, I process your address and the content of the message in order to reply (Art. 6(1)(b) and (f) GDPR). I do not pass the message on and delete it once I no longer need it."
+      },
+      "rights": {
+        "title": "Your rights",
+        "text": "You have the right to information (Art. 15), rectification (Art. 16), erasure (Art. 17), restriction of processing (Art. 18), data portability (Art. 20) and objection to processing (Art. 21 GDPR). You can withdraw a consent at any time. You may also complain to a data protection supervisory authority; for this site that is the State Commissioner for Data Protection and Freedom of Information of Baden-Württemberg."
+      }
+    }
+  },
   "footer": {
     "copyright": "© {{year}} Lukas Romacker",
+    "legal": "Legal & privacy",
     "builtWith": "Built with",
     "and": "and",
     "love": "love"

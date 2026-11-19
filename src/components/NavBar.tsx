@@ -28,7 +28,7 @@ function LangToggle({ className }: { className?: string }) {
           onClick={() => void i18n.changeLanguage(lng)}
           aria-pressed={current === lng}
           className={cn(
-            'label px-1.5 py-2 transition-[color,background-color,border-color] duration-200 ease-out motion-reduce:transition-none',
+            'press label px-1.5 py-2 transition-[color,background-color,border-color] duration-200 ease-out motion-reduce:transition-none',
             current === lng ? 'text-foreground' : 'text-muted hover-fine:text-foreground'
           )}
         >
@@ -107,7 +107,7 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
       </div>
 
       <nav
-        className="container-page flex flex-1 flex-col justify-center gap-2"
+        className="container-page flex flex-1 flex-col justify-center divide-y divide-line"
         aria-label={t('ui.sections')}
       >
         {sections.map((section) => (
@@ -116,7 +116,7 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
             href={`#${section.id}`}
             onClick={onClose}
             data-scroll-duration="1.1"
-            className="flex items-baseline rounded-lg border border-line bg-surface px-5 py-4"
+            className="press flex items-baseline py-4"
           >
             <span className="text-display text-foreground">{t(section.labelKey)}</span>
           </a>
@@ -247,10 +247,10 @@ export function NavBar() {
     <>
       {/* The bar is a band across the full width: the page's own ground, lifted
           one `surface` step so the band is a shade above the page, with one
-          hairline and one short shadow under it. The lift is a layer over the
-          header's own fill, so the band stays opaque and the page scrolls under
-          it rather than through it. */}
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-background shadow-[0_2px_6px_rgb(0_0_0/0.5)]">
+          hairline under it and nothing else between it and the page. The lift is
+          a layer over the header's own fill, so the band stays opaque and the
+          page scrolls under it rather than through it. */}
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-background">
         <div className="bg-surface">
           <div className="container-page flex h-16 items-center gap-2">
             <a
@@ -290,7 +290,7 @@ export function NavBar() {
                     data-scroll-duration="1.2"
                     aria-current={isActive ? 'true' : undefined}
                     className={cn(
-                      'label flex items-center px-2 transition-[color] duration-200 ease-out motion-reduce:transition-none lg:px-3',
+                      'press label flex items-center px-2 transition-[color] duration-200 ease-out motion-reduce:transition-none lg:px-3',
                       isActive ? 'text-foreground' : 'text-muted hover-fine:text-foreground'
                     )}
                   >

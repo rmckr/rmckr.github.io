@@ -11,7 +11,7 @@ export function Footer() {
   const { t } = useTranslation()
 
   return (
-    <footer className="border-t border-line bg-surface shadow-[0_-2px_6px_rgb(0_0_0/0.5)]">
+    <footer className="border-t border-line bg-surface">
       <div className="container-page py-12 md:py-14">
         <ul className="grid gap-0.5 sm:grid-cols-2 sm:gap-x-(--seam)">
           <li>
@@ -19,7 +19,7 @@ export function Footer() {
               href="#top"
               aria-label={`RMCKR, ${t('ui.backToTop')}`}
               data-scroll-duration="1.6"
-              className="wordmark flex items-center py-2 text-lead leading-none text-foreground"
+              className="press wordmark flex items-center py-2 text-lead leading-none text-foreground"
             >
               <span aria-hidden="true" className="text-accent">
                 {'//'}
@@ -32,7 +32,7 @@ export function Footer() {
               <a
                 href={`#${section.id}`}
                 data-scroll-duration="1.3"
-                className="block py-2 text-body text-muted transition-[color] duration-200 ease-out hover-fine:text-foreground motion-reduce:transition-none"
+                className="press block py-2 text-body text-muted transition-[color] duration-200 ease-out hover-fine:text-foreground motion-reduce:transition-none"
               >
                 {t(section.labelKey)}
               </a>
@@ -45,7 +45,16 @@ export function Footer() {
           same line the footer's own top edge is drawn with. */}
       <div className="border-t border-line">
         <div className="label container-page grid grid-cols-1 gap-2 py-5 text-muted sm:grid-cols-3 sm:items-center sm:gap-6">
-          <span>{t('footer.copyright', { year: YEAR })}</span>
+          <span className="flex flex-wrap items-center gap-x-2">
+            <span>{t('footer.copyright', { year: YEAR })}</span>
+            <span aria-hidden="true">·</span>
+            <a
+              href="/legal"
+              className="press transition-[color] duration-200 ease-out hover-fine:text-foreground motion-reduce:transition-none"
+            >
+              {t('footer.legal')}
+            </a>
+          </span>
           <span className="inline-flex items-center gap-1.5 sm:justify-self-center">
             {t('footer.builtWith')}
             <LuHeart aria-hidden="true" className="size-3.5 fill-accent text-accent" />
@@ -57,7 +66,7 @@ export function Footer() {
           <a
             href="#top"
             data-scroll-duration="1.6"
-            className="inline-flex items-center gap-2 py-1 self-start text-muted transition-[color] duration-200 ease-out hover-fine:text-foreground motion-reduce:transition-none sm:justify-self-end sm:self-auto"
+            className="press inline-flex items-center gap-2 py-1 self-start text-muted transition-[color] duration-200 ease-out hover-fine:text-foreground motion-reduce:transition-none sm:justify-self-end sm:self-auto"
           >
             {t('ui.backToTop')}
             <LuArrowUp aria-hidden="true" className="size-3.5" />

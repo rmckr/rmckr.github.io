@@ -372,18 +372,16 @@
   }
 }
 
-/* The rail's tooltip: the name and level of the mark under the pointer, carried
-   beside the cursor on a hairlined plate in the page's own ground, so it reads
-   over the page and over the card alike. It is a reading surface rather than an
-   instrument: no ring, and nothing to keep in step with the row. */
+/* The rail's tooltip: the name and level of the mark under the pointer, standing
+   above that mark's frame and centred on it, on a hairlined plate in the page's
+   own ground, so it reads over the page and over the card alike. It is a reading
+   surface rather than an instrument: no ring, and nothing to keep in step with
+   the row. */
 @utility skill-tip {
   position: absolute;
   top: 0;
   left: 0;
-  transform: translate(
-    calc(var(--tip-x, 0px) + 0.75rem),
-    calc(var(--tip-y, 0px) - 0.75rem - 100%)
-  );
+  transform: translate(var(--tip-x, 0px), calc(var(--tip-y, 0px) - 0.75rem - 100%));
   border: 1px solid var(--color-line);
   border-radius: 0.5rem;
   background-color: var(--color-background);
@@ -436,7 +434,10 @@
      is resized on the way in, and the depth is cut from this one width. The
      flight also offsets by its half, which is why it is held here. */
   --cube-w: min(var(--holo-card-width), 88cqi);
-  --cube-h: min(calc(var(--cube-w) * 27 / 23), 52svh);
+  /* Capped by the pinned stage, but never below 24rem: the card's type is set in
+     rem, so a reader at a larger text size must not get a box that stayed
+     behind and crops the name it holds. */
+  --cube-h: min(calc(var(--cube-w) * 27 / 23), max(24rem, 52svh));
   /* The flight moves the whole ring, so it is kept on its own layer: the rig
      writes `--p` and `--lift` on this element, and with no width in the move
      nothing below it has to be laid out again. */
@@ -504,13 +505,60 @@
   );
 }
 
-/* Reduced motion and the narrow layout keep the four cards and drop the box:
-   no turn, no flight, the cards lie in a plain grid so every project stays
-   readable. Below `lg` the scroll cannot turn the ring, so the pin goes too. */
-@media (prefers-reduced-motion: reduce), (width < 64rem) {
+/* Below `lg` there is no runway to turn the ring on and no step to detent, so
+   the same four cards lie as a deck: one card per screen in the flow, scrolled
+   by hand, with the platform's own momentum and snap doing what the pin and the
+   scroll do wide. The card is the same object at the same size — only the
+   driver changes. */
+@media (width < 64rem) {
   .cube-lift {
-    /* The flat grid takes its column rather than shrink-wrapping the cards, so a
-       wide cover can never push the box past the gutter. */
+    /* The deck takes its column rather than shrink-wrapping the cards, so a wide
+       cover can never push the box past the gutter. */
+    width: 100%;
+    transform: none;
+  }
+
+  .cube {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    height: auto;
+    transform: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    /* Half the slack on each side, so the first and the last card can come to
+       the middle of the deck instead of stopping short of it. */
+    padding-inline: max(0px, calc((100cqi - var(--cube-w)) / 2));
+    /* The card's shadow falls past its own box, so the deck keeps a floor for
+       it rather than cropping the page's one cast shadow. */
+    padding-block: 0.5rem 3.5rem;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .cube::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cube-face {
+    position: static;
+    flex: 0 0 var(--cube-w);
+    width: var(--cube-w);
+    height: auto;
+    max-width: var(--cube-w);
+    aspect-ratio: 23 / 27;
+    backface-visibility: visible;
+    transform: none;
+    scroll-snap-align: center;
+  }
+}
+
+/* Reduced motion keeps the four cards and drops the box: no turn, no flight, the
+   cards lie in a plain grid so every project stays readable. This block comes
+   last, so a reader who asked for less motion gets the grid at every width. */
+@media (prefers-reduced-motion: reduce) {
+  .cube-lift {
     width: 100%;
     transform: none;
   }
@@ -521,6 +569,8 @@
     gap: 1.5rem;
     width: 100%;
     height: auto;
+    overflow: visible;
+    padding: 0;
     transform: none;
   }
 
@@ -532,31 +582,23 @@
     aspect-ratio: 23 / 27;
     backface-visibility: visible;
     transform: none;
-  }
-}
-
-/* Below `lg` the cards lie in the flow at once, so there is no face to hand the
-   accent through: the grid is the page's own neutral — its ink, its hairlines,
-   its fill — and no red is painted on it. The rig still writes each face's
-   `--lit` for the ring, so the grid pins it at zero rather than racing it. */
-@media (width < 64rem) {
-  .cube-face {
+    /* The grid is the page's own neutral — its ink, its hairlines, its fill — and
+       no red is painted on it. The rig still writes each face's `--lit` for the
+       ring, so the grid pins it at zero rather than racing it. */
     --lit: 0 !important;
   }
-}
 
-/* One column on a phone: two columns cut the card to 163px, where neither the
-   22px name nor its line fits the padding. From `sm` the same two columns hold
-   the card whole. */
-@media (width < 40rem) {
-  .cube {
-    grid-template-columns: minmax(0, 1fr);
-  }
+  /* One column on a phone: two columns cut the card to 163px, where neither the
+     22px name nor its line fits the padding. From `sm` the same two columns
+     hold the card whole. */
+  @media (width < 40rem) {
+    .cube {
+      grid-template-columns: minmax(0, 1fr);
+    }
 
-  /* The card is the row: the whole column, not the 88% it is held to where the
-     ring's overhang has to close inside the gutter. */
-  .cube-face {
-    max-width: none;
+    .cube-face {
+      max-width: none;
+    }
   }
 }
 
@@ -642,5 +684,26 @@
 
   &:focus-visible {
     translate: 0 0;
+  }
+}
+
+/* ── Comfort settings ─────────────────────────────────────────────────────────
+   The quiet ink steps up for a reader who asks for more contrast, and the one
+   translucent control fill is laid flat for a reader who asks for less
+   transparency. Neither adds a colour: both move a mix between the page's own
+   tokens. `.btn-solid` keeps its red, so the primary action stays red.
+─────────────────────────────────────────────────────────────────────────────── */
+@media (prefers-contrast: more) {
+  :root {
+    --color-muted: color-mix(in srgb, var(--color-foreground) 84%, var(--color-background));
+    --color-line: color-mix(in srgb, var(--color-foreground) 24%, transparent);
+    --color-line-strong: color-mix(in srgb, var(--color-foreground) 34%, transparent);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .btn:not(.btn-solid) {
+    --btn-fill: color-mix(in srgb, var(--color-foreground) 6%, var(--color-background));
+    --btn-fill-hover: color-mix(in srgb, var(--color-foreground) 11%, var(--color-background));
   }
 }

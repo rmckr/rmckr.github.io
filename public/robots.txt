@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+# The CV carries a phone number; keep crawlers off it.
+Disallow: /Lukas-Romacker-Resume.pdf
+
 Sitemap: https://rmckr.com/sitemap.xml
